@@ -5,8 +5,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
-import { RolesGuard } from './guards/roles.guard';
-import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -15,8 +13,10 @@ import { APP_GUARD } from '@nestjs/core';
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'superSecretKey123',
       signOptions: { expiresIn: '1d' },
-      // { provide: APP_GUARD, useClass: RolesGuard },
     }),
   ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

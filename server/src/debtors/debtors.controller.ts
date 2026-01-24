@@ -1,43 +1,48 @@
+// src/debtors/debtors.controller.ts
 import {
   Controller,
   Get,
   Post,
-  Body,
-  Param,
   Patch,
   Delete,
+  Body,
+  Param,
+  Query,
   Req,
   UseGuards,
-  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { DebtorsService } from './debtors.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UpdateDebtorDto } from './dtos/update-debtor.dto';
 import { CreateDebtorDto } from './dtos/create-debtor.dto';
+import { UpdateDebtorDto } from './dtos/update-debtor.dto';
 
 @ApiTags('Debtors')
+@ApiBearerAuth()
 @Controller('debtors')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class DebtorsController {
   constructor(private readonly debtorsService: DebtorsService) {}
 
-  // CLIENT ve solo los suyos, ADMIN ve todos
+  // 1) RUTA ESTÁTICA - debe ir antes que :id
+  @Get('paginated')
+  findAllPaginated(@Req() req, @Query() query) {
+    return this.debtorsService.findAllPaginated(req.user, query);
+  }
+
+  // 2) RUTA PARA LISTAR SIN PAGINAR (opcional)
   @Get()
   findAll(@Req() req) {
     return this.debtorsService.findAll(req.user);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.debtorsService.findOne(+id, req.user);
-  }
-
-  @Get('paginated')
-  findAllPaginated(@Req() req, @Query() query) {
-    return this.debtorsService.findAllPaginated(req.user, query);
+  // 3) RUTAS DINÁMICAS - restringidas a números
+  @Get(':id(\\d+)')
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    return this.debtorsService.findOne(id, req.user);
   }
 
   @Roles('CLIENT')
@@ -47,14 +52,14 @@ export class DebtorsController {
   }
 
   @Roles('CLIENT')
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateDebtorDto, @Req() req) {
-    return this.debtorsService.update(+id, body, req.user);
+  @Patch(':id(\\d+)')
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateDebtorDto, @Req() req) {
+    return this.debtorsService.update(id, body, req.user);
   }
 
   @Roles('CLIENT')
-  @Delete(':id')
-  remove(@Param('id') id: string, @Req() req) {
-    return this.debtorsService.remove(+id, req.user);
+  @Delete(':id(\\d+)')
+  remove(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    return this.debtorsService.remove(id, req.user);
   }
 }

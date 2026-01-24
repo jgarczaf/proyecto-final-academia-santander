@@ -1,9 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RequestsService } from './requests.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+
+// Si ya tienes DTOs, descomenta estos:
 import { CreateRequestDto } from './dtos/create-request.dto';
 import { RejectRequestDto } from './dtos/reject-request.dto';
 
@@ -14,42 +26,42 @@ import { RejectRequestDto } from './dtos/reject-request.dto';
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
 
-  // CLIENT: ve las suyas; ADMIN: ve todas
+  // LISTADOS
+  // CLIENT ve sólo las suyas; ADMIN ve todas (lo decide el service con req.user)
   @Get()
   findAll(@Req() req) {
     return this.requestsService.findAll(req.user);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.requestsService.findOne(+id, req.user);
-  }
-
-  // CLIENT crea solicitud a partir de billIds
+  // OPERACIONES ESPECIALES (colócalas antes que el GET ':id' por claridad)
   @Roles('CLIENT')
   @Post()
   create(@Body() dto: CreateRequestDto, @Req() req) {
     return this.requestsService.create(dto, req.user);
   }
 
-  // ADMIN aprueba
   @Roles('ADMIN')
-  @Post(':id/approve')
-  approve(@Param('id') id: string, @Req() req) {
-    return this.requestsService.approve(+id, req.user);
+  @Post(':id(\\d+)/approve')
+  approve(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    return this.requestsService.approve(id, req.user);
   }
 
-  // ADMIN rechaza/cancela
   @Roles('ADMIN')
-  @Post(':id/reject')
-  reject(@Param('id') id: string, @Body() body: RejectRequestDto, @Req() req) {
-    return this.requestsService.reject(+id, req.user, body?.reason);
+  @Post(':id(\\d+)/reject')
+  reject(@Param('id', ParseIntPipe) id: number, @Body() body: RejectRequestDto, @Req() req) {
+    return this.requestsService.reject(id, req.user, body?.reason);
   }
 
-  // CLIENT elimina solicitud en REVIEW (rollback de facturas)
+  // READ / DELETE (restringidos a numérico)
+  @Get(':id(\\d+)')
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    return this.requestsService.findOne(id, req.user);
+  }
+
+  // CLIENT puede eliminar si la solicitud está en REVIEW (el service lo valida)
   @Roles('CLIENT')
-  @Delete(':id')
-  remove(@Param('id') id: string, @Req() req) {
-    return this.requestsService.remove(+id, req.user);
+  @Delete(':id(\\d+)')
+  remove(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    return this.requestsService.remove(id, req.user);
   }
 }

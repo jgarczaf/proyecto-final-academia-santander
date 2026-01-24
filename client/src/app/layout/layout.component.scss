@@ -1,0 +1,42 @@
+.layout-container {
+  height: 100vh;
+}
+
+.layout-sidenav {
+  width: 240px;
+}
+
+.sidenav-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.layout-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.menu-btn {
+  margin-right: 8px;
+}
+
+.app-title {
+  font-weight: 600;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.user-email {
+  margin: 0 8px;
+}
+
+.layout-content {
+  padding: 16px;
+}

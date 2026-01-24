@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+table {
+  width: 100%;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+}
+.spacer {
+  flex: 1;
+}
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}

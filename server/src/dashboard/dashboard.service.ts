@@ -15,9 +15,6 @@ export class DashboardService {
     @InjectRepository(Request) private requestRepo: Repository<Request>
   ) {}
 
-  // ─────────────────────────────────────────────
-  // DASHBOARD CLIENT
-  // ─────────────────────────────────────────────
   async getClientDashboard(user: User) {
     const [
       totalDebtors,
@@ -73,42 +70,28 @@ export class DashboardService {
     ]);
 
     return {
-      totals: {
-        debtors: totalDebtors,
-        bills: totalBills,
-      },
+      totals: { debtors: totalDebtors, bills: totalBills },
       billsByStatus,
       amounts: {
-        pending: Number(pendingAmount.total),
-        inRequest: Number(inRequestAmount.total),
+        pending: Number(pendingAmount?.total ?? 0),
+        inRequest: Number(inRequestAmount?.total ?? 0),
       },
       lastBills,
       lastRequests,
     };
   }
 
-  // ─────────────────────────────────────────────
-  // DASHBOARD ADMIN
-  // ─────────────────────────────────────────────
   async getAdminDashboard() {
     const [totalClients, billsInRequest, totalRequestsReview, amountInReview, lastRequests] =
       await Promise.all([
         this.userRepo.count({ where: { role: 'CLIENT' } }),
-
-        this.billRepo.count({
-          where: { status: BillStatus.IN_REQUEST },
-        }),
-
-        this.requestRepo.count({
-          where: { status: RequestStatus.REVIEW },
-        }),
+        this.billRepo.count({ where: { status: BillStatus.IN_REQUEST } }),
+        this.requestRepo.count({ where: { status: RequestStatus.REVIEW } }),
 
         this.billRepo
           .createQueryBuilder('bill')
           .select('COALESCE(SUM(bill.amount),0)', 'total')
-          .where('bill.status = :status', {
-            status: BillStatus.IN_REQUEST,
-          })
+          .where('bill.status = :status', { status: BillStatus.IN_REQUEST })
           .getRawOne(),
 
         this.requestRepo.find({
@@ -124,7 +107,7 @@ export class DashboardService {
         clients: totalClients,
         billsInRequest,
         requestsInReview: totalRequestsReview,
-        amountInReview: Number(amountInReview.total),
+        amountInReview: Number(amountInReview?.total ?? 0),
       },
       lastRequests,
     };

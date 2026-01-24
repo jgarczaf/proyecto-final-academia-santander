@@ -9,19 +9,20 @@ import { DebtorsModule } from './debtors/debtors.module';
 import { RequestsModule } from './requests/requests.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-
     SeedModule,
     AuthModule,
     UsersModule,
     DebtorsModule,
     BillsModule,
     RequestsModule,
+    DashboardModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',

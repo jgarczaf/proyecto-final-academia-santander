@@ -5,6 +5,22 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // DEBUG: listar rutas Express mapeadas por Nest
+  const server = app.getHttpAdapter().getInstance();
+  if (server._router?.stack) {
+    console.log('--- ROUTES ---');
+    server._router.stack
+      .filter((l: any) => l.route)
+      .forEach((l: any) => {
+        const path = l.route.path;
+        const methods = Object.keys(l.route.methods || {})
+          .join(',')
+          .toUpperCase();
+        console.log(`${methods.padEnd(6)} ${path}`);
+      });
+    console.log('---------------');
+  }
+
   // Configuración de CORS para Shell (4200) y Remote (4201)
   app.enableCors({
     origin: [

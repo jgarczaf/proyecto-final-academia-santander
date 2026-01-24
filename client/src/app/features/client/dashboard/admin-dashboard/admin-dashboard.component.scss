@@ -1,0 +1,42 @@
+.dashboard-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.kpi {
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .kpi-sub {
+    color: #666;
+    margin-top: 6px;
+  }
+}
+
+.block-span-2 {
+  grid-column: span 2;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+@media (max-width: 1080px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .block-span-2 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 680px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .block-span-2 {
+    grid-column: span 1;
+  }
+}

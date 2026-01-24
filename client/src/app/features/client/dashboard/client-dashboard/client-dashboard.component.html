@@ -1,0 +1,99 @@
+<div *ngIf="loading" style="padding: 24px">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+
+<!-- Narrowing: data as d -->
+<div *ngIf="!loading && data as d" class="dashboard-grid">
+  <!-- KPIs -->
+  <mat-card class="kpi">
+    <mat-card-title>Deudores</mat-card-title>
+    <mat-card-content>
+      <div class="kpi-value">{{ d.totals.debtors }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="kpi">
+    <mat-card-title>Facturas</mat-card-title>
+    <mat-card-content>
+      <div class="kpi-value">{{ d.totals.bills }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="kpi">
+    <mat-card-title>Importe PENDING</mat-card-title>
+    <mat-card-content>
+      <div class="kpi-value">{{ d.amounts.pending | number: "1.2-2" }} €</div>
+      <div class="kpi-sub">Facturas: {{ count("PENDING") }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="kpi">
+    <mat-card-title>Importe en Solicitud</mat-card-title>
+    <mat-card-content>
+      <div class="kpi-value">{{ d.amounts.inRequest | number: "1.2-2" }} €</div>
+      <div class="kpi-sub">Facturas: {{ count("IN_REQUEST") }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Últimas facturas -->
+  <mat-card class="block block-span-2">
+    <mat-card-title>Últimas facturas</mat-card-title>
+    <div class="table-wrap">
+      <table mat-table [dataSource]="d.lastBills">
+        <ng-container matColumnDef="invoiceNumber">
+          <th mat-header-cell *matHeaderCellDef>Nº</th>
+          <td mat-cell *matCellDef="let r">{{ r.invoiceNumber }}</td>
+        </ng-container>
+        <ng-container matColumnDef="debtor">
+          <th mat-header-cell *matHeaderCellDef>Deudor</th>
+          <td mat-cell *matCellDef="let r">{{ r.debtor?.companyName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Importe</th>
+          <td mat-cell *matCellDef="let r">
+            {{ r.amount | number: "1.2-2" }} €
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="issueDate">
+          <th mat-header-cell *matHeaderCellDef>Emisión</th>
+          <td mat-cell *matCellDef="let r">{{ r.issueDate | date }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let r">{{ r.status }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="billsTableCols"></tr>
+        <tr mat-row *matRowDef="let row; columns: billsTableCols"></tr>
+      </table>
+    </div>
+  </mat-card>
+
+  <!-- Últimas solicitudes -->
+  <mat-card class="block block-span-2">
+    <mat-card-title>Últimas solicitudes</mat-card-title>
+    <div class="table-wrap">
+      <table mat-table [dataSource]="d.lastRequests">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let r">{{ r.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let r">{{ r.status }}</td>
+        </ng-container>
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let r">
+            {{ r.createdAt | date: "short" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="bills">
+          <th mat-header-cell *matHeaderCellDef># Facturas</th>
+          <td mat-cell *matCellDef="let r">{{ r.bills?.length }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="reqsTableCols"></tr>
+        <tr mat-row *matRowDef="let row; columns: reqsTableCols"></tr>
+      </table>
+    </div>
+  </mat-card>
+</div>

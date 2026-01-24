@@ -4,19 +4,14 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
 
 @ApiTags('Auth')
-@Controller('auth')
+@Controller('auth') // 👈 prefijo de las rutas de este controlador
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
+  @Post('login') // 👈 subruta: /auth/login
   async login(@Body() body: { email: string; password: string }) {
     const user = await this.authService.validateUser(body.email, body.password);
     return this.authService.login(user);
-  }
-
-  @Post('register')
-  async register(@Body() body: any) {
-    return this.authService.register(body);
   }
 
   @UseGuards(JwtAuthGuard)

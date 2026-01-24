@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{ data ? "Editar deudor" : "Nuevo deudor" }}</h2>
+<form [formGroup]="form" (ngSubmit)="save()" mat-dialog-content>
+  <div class="grid">
+    <mat-form-field appearance="outline"
+      ><mat-label>Empresa</mat-label>
+      <input matInput formControlName="companyName"
+    /></mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>NIF/CIF</mat-label>
+      <input matInput formControlName="fiscalId"
+    /></mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>País</mat-label> <input matInput formControlName="country"
+    /></mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>Límite</mat-label>
+      <input matInput type="number" formControlName="limit"
+    /></mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>Estado</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="ACTIVE">Activo</mat-option>
+        <mat-option value="INACTIVE">Inactivo</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>Contacto</mat-label>
+      <input matInput formControlName="contactName"
+    /></mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="contactEmail"
+    /></mat-form-field>
+  </div>
+
+  <div mat-dialog-actions [align]="'end'">
+    <button mat-button mat-dialog-close type="button">Cancelar</button>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="form.invalid"
+      type="submit"
+    >
+      Guardar
+    </button>
+  </div>
+</form>

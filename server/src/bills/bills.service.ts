@@ -5,7 +5,7 @@ import { Bill, BillStatus } from './entities/bills.entity';
 import { User } from 'src/users/entities/users.entity';
 import { Debtor } from 'src/debtors/entities/debtors.entity';
 import { CreateBillDto } from './dtos/create-bill.dto';
-import { UpdateBillDto } from './dtos/update-bills.dto';
+import { UpdateBillDto } from './dtos/update-bill.dto';
 import { PaginatedResult } from 'src/common/interfaces/pagination.interface';
 
 @Injectable()

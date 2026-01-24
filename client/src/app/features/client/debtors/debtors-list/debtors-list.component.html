@@ -1,0 +1,60 @@
+<div class="toolbar">
+  <h2>Deudores</h2>
+  <span class="spacer"></span>
+  <button mat-raised-button color="primary" (click)="openDialog()">
+    Nuevo deudor
+  </button>
+</div>
+
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar</mat-label>
+    <input matInput [(ngModel)]="search" (keyup.enter)="load()" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Estado</mat-label>
+    <mat-select [(ngModel)]="status" (selectionChange)="load()">
+      <mat-option value="">Todos</mat-option>
+      <mat-option value="ACTIVE">Activo</mat-option>
+      <mat-option value="INACTIVE">Inactivo</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<table mat-table [dataSource]="rows" class="mat-elevation-z2">
+  <ng-container matColumnDef="companyName">
+    <th mat-header-cell *matHeaderCellDef>Empresa</th>
+    <td mat-cell *matCellDef="let r">{{ r.companyName }}</td>
+  </ng-container>
+  <ng-container matColumnDef="fiscalId">
+    <th mat-header-cell *matHeaderCellDef>NIF/CIF</th>
+    <td mat-cell *matCellDef="let r">{{ r.fiscalId }}</td>
+  </ng-container>
+  <ng-container matColumnDef="country">
+    <th mat-header-cell *matHeaderCellDef>País</th>
+    <td mat-cell *matCellDef="let r">{{ r.country }}</td>
+  </ng-container>
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Estado</th>
+    <td mat-cell *matCellDef="let r">{{ r.status }}</td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+    <td mat-cell *matCellDef="let r">
+      <button mat-button (click)="openDialog(r)">Editar</button>
+      <button mat-button color="warn" (click)="remove(r)">Borrar</button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="cols"></tr>
+  <tr mat-row *matRowDef="let row; columns: cols"></tr>
+</table>
+
+<mat-paginator
+  [length]="total"
+  [pageIndex]="page - 1"
+  [pageSize]="limit"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPage($event)"
+>
+</mat-paginator>

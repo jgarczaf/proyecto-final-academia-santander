@@ -1,0 +1,70 @@
+<div class="toolbar">
+  <h2>Facturas</h2>
+  <span class="spacer"></span>
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="selectedIds.length === 0"
+    (click)="proceed()"
+  >
+    Proceder
+  </button>
+</div>
+
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar (nº factura)</mat-label>
+    <input matInput [(ngModel)]="search" (keyup.enter)="load()" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Estado</mat-label>
+    <mat-select [(ngModel)]="status" (selectionChange)="load()">
+      <mat-option value="">Todos</mat-option>
+      <mat-option value="PENDING">PENDING</mat-option>
+      <mat-option value="IN_REQUEST">IN_REQUEST</mat-option>
+      <mat-option value="APPROVED">APPROVED</mat-option>
+      <mat-option value="REJECTED">REJECTED</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<table mat-table [dataSource]="rows" class="mat-elevation-z2">
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let r">
+      <mat-checkbox
+        [disabled]="r.status !== 'PENDING'"
+        (change)="toggle(r)"
+        [checked]="selectedIds.includes(r.id)"
+      ></mat-checkbox>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="invoiceNumber">
+    <th mat-header-cell *matHeaderCellDef>Nº</th>
+    <td mat-cell *matCellDef="let r">{{ r.invoiceNumber }}</td>
+  </ng-container>
+  <ng-container matColumnDef="debtor">
+    <th mat-header-cell *matHeaderCellDef>Deudor</th>
+    <td mat-cell *matCellDef="let r">{{ r.debtor?.companyName }}</td>
+  </ng-container>
+  <ng-container matColumnDef="amount">
+    <th mat-header-cell *matHeaderCellDef>Importe</th>
+    <td mat-cell *matCellDef="let r">{{ r.amount | number: "1.2-2" }}</td>
+  </ng-container>
+  <ng-container matColumnDef="issueDate">
+    <th mat-header-cell *matHeaderCellDef>Emisión</th>
+    <td mat-cell *matCellDef="let r">{{ r.issueDate | date }}</td>
+  </ng-container>
+  <ng-container matColumnDef="dueDate">
+    <th mat-header-cell *matHeaderCellDef>Vencimiento</th>
+    <td mat-cell *matCellDef="let r">{{ r.dueDate | date }}</td>
+  </ng-container>
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Estado</th>
+    <td mat-cell *matCellDef="let r">{{ r.status }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="cols"></tr>
+  <tr mat-row *matRowDef="let row; columns: cols"></tr>
+</table>

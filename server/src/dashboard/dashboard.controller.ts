@@ -10,17 +10,17 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 @Controller('dashboard')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class DashboardController {
-  constructor(private readonly dashboardService: DashboardService) {}
+  constructor(private readonly dashboard: DashboardService) {}
 
   @Get('client')
   @Roles('CLIENT')
   getClient(@Req() req) {
-    return this.dashboardService.getClientDashboard(req.user);
+    return this.dashboard.getClientDashboard(req.user);
   }
 
   @Get('admin')
   @Roles('ADMIN')
   getAdmin() {
-    return this.dashboardService.getAdminDashboard();
+    return this.dashboard.getAdminDashboard();
   }
 }
