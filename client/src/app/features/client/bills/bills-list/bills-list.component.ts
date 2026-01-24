@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BillsService } from '../../../../core/services/bills.service';
 import { RequestsService } from '../../../../core/services/requests.service';
 import { Bill } from '../../../../core/models/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { SocketService } from '../../../../core/services/socket.service';
+import { Subscription } from 'rxjs';
 import { BillDialogComponent } from '../bill-dialog/bill-dialog.component';
 
 @Component({
@@ -12,8 +14,8 @@ import { BillDialogComponent } from '../bill-dialog/bill-dialog.component';
   templateUrl: './bills-list.component.html',
   styleUrls: ['./bills-list.component.scss'],
 })
-export class BillsListComponent implements OnInit {
-  cols: string[] = [
+export class BillsListComponent implements OnInit, OnDestroy {
+  cols = [
     'select',
     'invoiceNumber',
     'debtor',
@@ -27,16 +29,24 @@ export class BillsListComponent implements OnInit {
   search = '';
   status = '';
   selectedIds: number[] = [];
+  private sub?: Subscription;
 
   constructor(
     private bills: BillsService,
     private reqs: RequestsService,
     private snack: MatSnackBar,
     private dialog: MatDialog,
+    private socket: SocketService,
   ) {}
 
   ngOnInit() {
     this.load();
+    // 🔔 refrescar cuando llega un evento de request.updated
+    this.sub = this.socket.onRequestUpdated().subscribe(() => this.load());
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
   }
 
   load() {
@@ -59,6 +69,8 @@ export class BillsListComponent implements OnInit {
   }
 
   proceed() {
+    if (this.selectedIds.length === 0) return;
+
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
@@ -69,26 +81,25 @@ export class BillsListComponent implements OnInit {
       .afterClosed()
       .subscribe((ok) => {
         if (!ok) return;
-        this.reqs.create(this.selectedIds).subscribe({
+
+        const ids = this.selectedIds.slice();
+        this.reqs.create(ids).subscribe({
           next: () => {
             this.snack.open('Solicitud enviada', 'OK', { duration: 1500 });
             this.selectedIds = [];
             this.load();
           },
-          error: () =>
-            this.snack.open('No se pudo enviar la solicitud', 'Cerrar', {
-              duration: 2500,
-            }),
+          error: (err) => {
+            const msg = err?.error?.message || 'No se pudo enviar la solicitud';
+            this.snack.open(msg, 'Cerrar', { duration: 2500 });
+          },
         });
       });
   }
 
   openBillDialog(row?: Bill) {
     this.dialog
-      .open(BillDialogComponent, {
-        width: '600px',
-        data: row ?? null,
-      })
+      .open(BillDialogComponent, { width: '600px', data: row ?? null })
       .afterClosed()
       .subscribe((ok) => ok && this.load());
   }

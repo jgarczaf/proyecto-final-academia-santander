@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DashboardService } from '../../../../core/services/dashboard.service';
 import {
   ClientDashboardResponse,
@@ -6,15 +6,18 @@ import {
   Bill,
 } from '../../../../core/models/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SocketService } from '../../../../core/services/socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-client-dashboard',
   templateUrl: './client-dashboard.component.html',
   styleUrls: ['./client-dashboard.component.scss'],
 })
-export class ClientDashboardComponent implements OnInit {
+export class ClientDashboardComponent implements OnInit, OnDestroy {
   loading = true;
   data: ClientDashboardResponse | null = null;
+  private sub?: Subscription;
 
   billsTableCols = ['invoiceNumber', 'debtor', 'amount', 'issueDate', 'status'];
   reqsTableCols = ['id', 'status', 'createdAt', 'bills'];
@@ -22,9 +25,21 @@ export class ClientDashboardComponent implements OnInit {
   constructor(
     private dash: DashboardService,
     private snack: MatSnackBar,
+    private socket: SocketService,
   ) {}
 
   ngOnInit(): void {
+    this.load();
+    // 🔔 Refrescar Dashboard al evento
+    this.sub = this.socket.onRequestUpdated().subscribe(() => this.load());
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+  }
+
+  private load() {
+    this.loading = true;
     this.dash.getClient().subscribe({
       next: (res) => {
         this.data = res;

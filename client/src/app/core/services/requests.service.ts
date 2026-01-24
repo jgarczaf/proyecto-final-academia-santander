@@ -16,7 +16,10 @@ export class RequestsService {
     return this.http.get<RequestItem>(`${this.base}/${id}`);
   }
   create(billIds: number[]) {
-    return this.http.post<RequestItem>(this.base, { billIds });
+    const ids = (billIds || [])
+      .map((x) => Number(x))
+      .filter((x) => Number.isFinite(x));
+    return this.http.post<RequestItem>(`${this.base}`, { billIds: ids });
   }
   approve(id: number) {
     return this.http.post<RequestItem>(`${this.base}/${id}/approve`, {});

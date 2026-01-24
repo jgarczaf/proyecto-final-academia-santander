@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -9,19 +9,49 @@ import { Router } from '@angular/router';
   template: `
     <mat-card>
       <h2>Acceso</h2>
+
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email" />
+          <input
+            matInput
+            formControlName="email"
+            type="email"
+            autocomplete="username"
+          />
+          <mat-error *ngIf="form.controls['email'].hasError('required')"
+            >El email es obligatorio</mat-error
+          >
+          <mat-error *ngIf="form.controls['email'].hasError('email')"
+            >Formato de email no válido</mat-error
+          >
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Contraseña</mat-label>
-          <input matInput formControlName="password" type="password" />
+          <input
+            matInput
+            formControlName="password"
+            type="password"
+            autocomplete="current-password"
+          />
+          <mat-error *ngIf="form.controls['password'].hasError('required')"
+            >La contraseña es obligatoria</mat-error
+          >
         </mat-form-field>
 
-        <button mat-raised-button color="primary" [disabled]="form.invalid">
-          Entrar
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid || loading"
+        >
+          <mat-spinner
+            *ngIf="loading"
+            diameter="20"
+            style="margin-right:8px"
+          ></mat-spinner>
+          <span *ngIf="!loading">Entrar</span>
         </button>
       </form>
     </mat-card>
@@ -40,30 +70,47 @@ import { Router } from '@angular/router';
   ],
 })
 export class LoginComponent {
-  form = this.fb.group({
-    email: ['client@empresa.com', [Validators.required, Validators.email]],
-    password: ['123456', [Validators.required]],
-  });
+  form: FormGroup;
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-    private snk: MatSnackBar,
     private router: Router,
-  ) {}
+    private snack: MatSnackBar,
+  ) {
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+    });
+  }
 
+  // ✅ Nombre del método alineado con el template
   onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.loading) return;
+
     const { email, password } = this.form.value;
-    this.auth.login(email!, password!).subscribe({
+    this.loading = true;
+
+    this.auth.login(email, password).subscribe({
       next: (resp) => {
+        // Guardar sesión
         this.auth.setSession(resp);
-        const role = resp.user.role;
-        this.snk.open('Bienvenido', 'OK', { duration: 1500 });
-        this.router.navigate([role === 'ADMIN' ? '/admin' : '/client']);
+
+        // Redirigir según rol
+        const role = this.auth.getUser()?.role;
+        const target =
+          role === 'ADMIN' ? '/admin/dashboard' : '/client/dashboard';
+        this.router.navigate([target]);
       },
-      error: () =>
-        this.snk.open('Credenciales inválidas', 'Cerrar', { duration: 2500 }),
+      error: (err) => {
+        const msg = err?.error?.message || 'Credenciales incorrectas';
+        this.snack.open(msg, 'Cerrar', { duration: 2500 });
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
+      },
     });
   }
 }

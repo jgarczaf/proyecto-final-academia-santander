@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RequestsService } from '../../../core/services/requests.service';
 import { RequestItem } from '../../../core/models/models';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SocketService } from '../../../core/services/socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-review',
@@ -35,29 +37,44 @@ import { MatSnackBar } from '@angular/material/snack-bar';
           <button mat-button color="warn" (click)="reject(r)">Cancelar</button>
         </td></ng-container
       >
-
       <tr mat-header-row *matHeaderRowDef="cols"></tr>
       <tr mat-row *matRowDef="let row; columns: cols"></tr>
     </table>
   `,
 })
-export class AdminReviewComponent implements OnInit {
+export class AdminReviewComponent implements OnInit, OnDestroy {
   cols = ['id', 'bills', 'createdAt', 'actions'];
   rows: RequestItem[] = [];
+  private sub?: Subscription;
+  private sub2?: Subscription;
 
   constructor(
     private api: RequestsService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
+    private socket: SocketService,
   ) {}
 
   ngOnInit() {
     this.load();
+    this.sub = this.socket.onAdminRequestCreated().subscribe((p) => {
+      this.snack.open(`Nueva solicitud #${p?.requestId} recibida`, 'OK', {
+        duration: 2000,
+      });
+      this.load();
+    });
+
+    this.sub2 = this.socket
+      .onAdminRequestsChanged()
+      .subscribe(() => this.load());
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+    this.sub2?.unsubscribe();
   }
 
   load() {
-    // el backend ya filtra por rol ADMIN devolviendo todas, incluídas REVIEW;
-    // si quieres traer solo REVIEW, podrías crear un endpoint específico o filtrar aquí.
     this.api
       .list()
       .subscribe((r) => (this.rows = r.filter((x) => x.status === 'REVIEW')));

@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, ArrayNotEmpty, IsInt, Min } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsInt, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateRequestDto {
-  @ApiProperty({ type: [Number], description: 'IDs de facturas a incluir en la solicitud' })
+  @ApiProperty({ type: [Number] })
   @IsArray()
   @ArrayNotEmpty()
+  @Type(() => Number)
   @IsInt({ each: true })
   @Min(1, { each: true })
   billIds: number[];

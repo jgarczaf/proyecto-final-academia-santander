@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
+import { SocketService } from './socket.service';
 
 interface LoginResponse {
   access_token: string;
@@ -17,6 +18,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private socket: SocketService,
   ) {}
 
   login(email: string, password: string) {
@@ -29,9 +31,13 @@ export class AuthService {
   setSession(resp: LoginResponse) {
     localStorage.setItem(this.tokenKey, resp.access_token);
     localStorage.setItem(this.userKey, JSON.stringify(resp.user));
+    // Conectar socket tras login, pasándole el token
+    this.socket.connect(resp.access_token);
   }
 
   logout() {
+    // Desconectar socket al salir
+    this.socket.disconnect();
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
     this.router.navigate(['/login']);

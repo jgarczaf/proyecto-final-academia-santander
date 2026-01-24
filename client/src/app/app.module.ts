@@ -28,6 +28,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // Interceptor JWT
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
@@ -46,6 +47,7 @@ import { ClientDashboardComponent } from './features/client/dashboard/client-das
 import { AdminDashboardComponent } from './features/client/dashboard/admin-dashboard/admin-dashboard.component';
 import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
 import { BillDialogComponent } from './features/client/bills/bill-dialog/bill-dialog.component';
+import { HomeRedirectComponent } from './shared/components/home-redirect/home-redirect.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +64,7 @@ import { BillDialogComponent } from './features/client/bills/bill-dialog/bill-di
     ClientDashboardComponent,
     AdminDashboardComponent,
     ConfirmDialogComponent,
+    HomeRedirectComponent,
   ],
 
   imports: [
@@ -93,6 +96,7 @@ import { BillDialogComponent } from './features/client/bills/bill-dialog/bill-di
     MatPaginatorModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

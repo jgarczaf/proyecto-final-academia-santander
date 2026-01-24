@@ -4,9 +4,10 @@ import { RequestsService } from './requests.service';
 import { RequestsController } from './requests.controller';
 import { Request } from './entities/requests.entity';
 import { Bill } from 'src/bills/entities/bills.entity';
+import { RealtimeModule } from 'src/realtime/realtime.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Request, Bill])],
+  imports: [RealtimeModule, TypeOrmModule.forFeature([Request, Bill])],
   controllers: [RequestsController],
   providers: [RequestsService],
 })

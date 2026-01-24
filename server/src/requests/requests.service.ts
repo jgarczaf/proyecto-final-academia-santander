@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { Request, RequestStatus } from './entities/requests.entity'; // ← ajusta si tu archivo se llama distinto
-import { Bill, BillStatus } from 'src/bills/entities/bills.entity'; // ← ajusta path si es distinto
-import { User } from 'src/users/entities/users.entity'; // ← ajusta path si es distinto
+import { Request, RequestStatus } from './entities/requests.entity'; // ajusta path si difiere
+import { Bill, BillStatus } from 'src/bills/entities/bills.entity'; // ajusta path si difiere
+import { User } from 'src/users/entities/users.entity'; // ajusta path si difiere
 import { CreateRequestDto } from './dtos/create-request.dto';
+import { NotificationsGateway } from 'src/realtime/notifications.gateway';
 
 @Injectable()
 export class RequestsService {
@@ -17,7 +18,8 @@ export class RequestsService {
     @InjectRepository(Request)
     private readonly requestRepo: Repository<Request>,
     @InjectRepository(Bill)
-    private readonly billRepo: Repository<Bill>
+    private readonly billRepo: Repository<Bill>,
+    private readonly notifier: NotificationsGateway
   ) {}
 
   // ADMIN: todas; CLIENT: solo las suyas
@@ -40,9 +42,7 @@ export class RequestsService {
       where: { id },
       relations: ['user', 'bills', 'bills.debtor'],
     });
-    if (!req) {
-      throw new NotFoundException('Solicitud no encontrada');
-    }
+    if (!req) throw new NotFoundException('Solicitud no encontrada');
     if (user.role === 'CLIENT' && req.user.id !== user.id) {
       throw new ForbiddenException('No tiene acceso a esta solicitud');
     }
@@ -51,82 +51,74 @@ export class RequestsService {
 
   /**
    * CLIENT crea una solicitud con facturas propias en estado PENDING
-   * - billIds: no vacío, únicos
-   * - ownership: todas del usuario
-   * - estado: todas PENDING
-   * - transacción: create request + bills -> IN_REQUEST
    */
+
   async create(dto: CreateRequestDto, user: User): Promise<Request> {
-    if (!dto.billIds?.length) {
-      throw new BadRequestException('Debe indicar al menos una factura');
-    }
-
-    // Asegurar IDs únicos
+    if (!dto.billIds?.length) throw new BadRequestException('Debe indicar al menos una factura');
     const uniqueIds = Array.from(new Set(dto.billIds.map(Number)));
-    if (uniqueIds.length !== dto.billIds.length) {
+    if (uniqueIds.length !== dto.billIds.length)
       throw new BadRequestException('Hay IDs de factura duplicados en la solicitud');
-    }
 
-    // Cargar facturas primero (sin lock) para validar existencia y ownership básica
-    const bills = await this.billRepo.find({
-      where: { id: In(uniqueIds) },
-      relations: ['user'],
-    });
-
-    if (bills.length !== uniqueIds.length) {
-      throw new NotFoundException('Alguna factura no existe');
-    }
+    const bills = await this.billRepo.find({ where: { id: In(uniqueIds) }, relations: ['user'] });
+    if (bills.length !== uniqueIds.length) throw new NotFoundException('Alguna factura no existe');
     for (const b of bills) {
-      if (b.user.id !== user.id) {
+      if (b.user.id !== user.id)
         throw new ForbiddenException(`La factura ${b.id} no pertenece al usuario`);
-      }
-      if (b.status !== BillStatus.PENDING) {
+      if (b.status !== BillStatus.PENDING)
         throw new ForbiddenException(`La factura ${b.id} no está en estado PENDING`);
-      }
     }
 
-    // Transacción robusta: volver a cargar con lock para evitar carreras
-    return await this.requestRepo.manager.transaction(async (mgr) => {
-      // Releer facturas con bloqueo pesimista
+    const saved = await this.requestRepo.manager.transaction(async (mgr) => {
       const billsForUpdate = await mgr
         .createQueryBuilder(Bill, 'b')
         .setLock('pessimistic_write')
         .where('b.id IN (:...ids)', { ids: uniqueIds })
+        .andWhere('b.userId = :userId', { userId: user.id })
+        .andWhere('b.status = :status', { status: BillStatus.PENDING })
         .getMany();
 
       if (billsForUpdate.length !== uniqueIds.length) {
-        throw new NotFoundException('Alguna factura dejó de existir');
-      }
-      // Validar que siguen PENDING
-      for (const b of billsForUpdate) {
-        if (b.user.id !== user.id) {
-          throw new ForbiddenException(`La factura ${b.id} no pertenece al usuario`);
-        }
-        if (b.status !== BillStatus.PENDING) {
-          throw new ForbiddenException(`La factura ${b.id} ya no está en PENDING`);
-        }
+        throw new ForbiddenException('Alguna factura ya no cumple los requisitos');
       }
 
-      // Crear solicitud
       const req = mgr.create(Request, {
         user: { id: user.id },
         status: RequestStatus.REVIEW,
         bills: billsForUpdate,
       });
-      const saved = await mgr.save(req);
+      const created = await mgr.save(req);
 
-      // Actualizar estado de facturas -> IN_REQUEST
-      // (update masivo en bucle; si prefieres, puedes usar queryBuilder update IN (...))
       for (const b of billsForUpdate) {
         await mgr.update(Bill, b.id, { status: BillStatus.IN_REQUEST });
       }
 
-      // Devolver con relaciones
       return mgr.getRepository(Request).findOne({
-        where: { id: saved.id },
+        where: { id: created.id },
         relations: ['user', 'bills', 'bills.debtor'],
       }) as Promise<Request>;
     });
+
+    // 🔔 Notificar al dueño
+    this.notifier.emitToUser(user.id, 'request.updated', {
+      requestId: saved.id,
+      status: saved.status,
+      billIds: saved.bills.map((b) => b.id),
+    });
+
+    // 🔔 Notificar a TODOS los ADMIN: hay nueva solicitud en revisión
+    this.notifier.emitToRole('ADMIN', 'request.created', {
+      requestId: saved.id,
+      clientId: user.id,
+      bills: saved.bills.map((b) => ({
+        id: b.id,
+        amount: b.amount,
+        invoiceNumber: b.invoiceNumber,
+      })),
+      createdAt: saved.createdAt,
+      status: saved.status,
+    });
+
+    return saved;
   }
 
   /**
@@ -137,7 +129,6 @@ export class RequestsService {
       throw new ForbiddenException('Solo ADMIN puede aprobar solicitudes');
     }
 
-    // Cargar solicitud + bills (sin lock)
     const req = await this.requestRepo.findOne({
       where: { id },
       relations: ['user', 'bills'],
@@ -147,8 +138,8 @@ export class RequestsService {
       throw new ForbiddenException('La solicitud no está en revisión');
     }
 
-    return await this.requestRepo.manager.transaction(async (mgr) => {
-      // Bloquear solicitud para evitar dobles aprobaciones
+    const updated = await this.requestRepo.manager.transaction(async (mgr) => {
+      // Bloquear solicitud
       const lockedReq = await mgr
         .createQueryBuilder(Request, 'r')
         .setLock('pessimistic_write')
@@ -160,8 +151,9 @@ export class RequestsService {
         throw new ForbiddenException('La solicitud ya no está en revisión');
       }
 
-      // Bloquear también las facturas involucradas
       const billIds = req.bills.map((b) => b.id);
+
+      // Bloquear facturas SIN joins
       const lockedBills = await mgr
         .createQueryBuilder(Bill, 'b')
         .setLock('pessimistic_write')
@@ -172,25 +164,34 @@ export class RequestsService {
         throw new NotFoundException('Alguna factura de la solicitud no existe');
       }
 
-      // Actualizar facturas -> APPROVED
+      // Facturas -> APPROVED
       for (const b of lockedBills) {
         await mgr.update(Bill, b.id, { status: BillStatus.APPROVED });
       }
 
-      // Actualizar solicitud -> APPROVED
+      // Solicitud -> APPROVED
       await mgr.update(Request, lockedReq.id, { status: RequestStatus.APPROVED });
 
-      // Devolver con relaciones
       return mgr.getRepository(Request).findOne({
         where: { id: lockedReq.id },
         relations: ['user', 'bills', 'bills.debtor'],
       }) as Promise<Request>;
     });
+
+    // Notificar al dueño
+    this.notifier.emitToUser(updated.user.id, 'request.updated', {
+      requestId: updated.id,
+      status: updated.status,
+      billIds: updated.bills.map((b) => b.id),
+    });
+
+    return updated;
   }
 
   /**
    * ADMIN rechaza/cancela: solicitud -> REJECTED, facturas -> PENDING
    */
+
   async reject(id: number, admin: User, reason?: string): Promise<Request> {
     if (admin.role !== 'ADMIN') {
       throw new ForbiddenException('Solo ADMIN puede rechazar solicitudes');
@@ -205,7 +206,7 @@ export class RequestsService {
       throw new ForbiddenException('La solicitud no está en revisión');
     }
 
-    return await this.requestRepo.manager.transaction(async (mgr) => {
+    const updated = await this.requestRepo.manager.transaction(async (mgr) => {
       const lockedReq = await mgr
         .createQueryBuilder(Request, 'r')
         .setLock('pessimistic_write')
@@ -218,6 +219,8 @@ export class RequestsService {
       }
 
       const billIds = req.bills.map((b) => b.id);
+
+      // Bloqueamos las facturas sin joins
       const lockedBills = await mgr
         .createQueryBuilder(Bill, 'b')
         .setLock('pessimistic_write')
@@ -228,12 +231,11 @@ export class RequestsService {
         throw new NotFoundException('Alguna factura de la solicitud no existe');
       }
 
-      // Devolver facturas a PENDING
       for (const b of lockedBills) {
-        await mgr.update(Bill, b.id, { status: BillStatus.PENDING });
+        await mgr.update(Bill, b.id, { status: BillStatus.REJECTED });
       }
 
-      // Actualizar solicitud -> REJECTED (con motivo)
+      // La request pasa a REJECTED con motivo opcional
       await mgr.update(Request, lockedReq.id, {
         status: RequestStatus.REJECTED,
         rejectionReason: reason ?? null,
@@ -244,11 +246,20 @@ export class RequestsService {
         relations: ['user', 'bills', 'bills.debtor'],
       }) as Promise<Request>;
     });
+
+    // Notificamos al dueño (ya estaba)
+    this.notifier.emitToUser(updated.user.id, 'request.updated', {
+      requestId: updated.id,
+      status: updated.status,
+      reason: updated.rejectionReason ?? null,
+      billIds: updated.bills.map((b) => b.id),
+    });
+
+    return updated;
   }
 
   /**
-   * CLIENT puede eliminar su solicitud si está en REVIEW
-   * (rollback de facturas -> PENDING)
+   * CLIENT elimina su solicitud en REVIEW (rollback a PENDING)
    */
   async remove(id: number, user: User): Promise<void> {
     const req = await this.requestRepo.findOne({
@@ -265,8 +276,8 @@ export class RequestsService {
     }
 
     await this.requestRepo.manager.transaction(async (mgr) => {
-      // Bloquear las facturas y volver a PENDING
       const billIds = req.bills.map((b) => b.id);
+
       if (billIds.length) {
         const lockedBills = await mgr
           .createQueryBuilder(Bill, 'b')
@@ -279,8 +290,13 @@ export class RequestsService {
         }
       }
 
-      // Eliminar la solicitud
       await mgr.delete(Request, req.id);
+    });
+
+    this.notifier.emitToUser(req.user.id, 'request.updated', {
+      requestId: req.id,
+      status: 'DELETED',
+      billIds: req.bills.map((b) => b.id),
     });
   }
 }
