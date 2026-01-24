@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { BillsService } from '../../../core/services/bills.service';
-import { RequestsService } from '../../../core/services/requests.service';
-import { Bill } from '../../../core/models/models';
+import { BillsService } from '../../../../core/services/bills.service';
+import { RequestsService } from '../../../../core/services/requests.service';
+import { Bill } from '../../../../core/models/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { BillDialogComponent } from '../bill-dialog/bill-dialog.component';
 
 @Component({
   selector: 'app-bills-list',
@@ -20,6 +21,7 @@ export class BillsListComponent implements OnInit {
     'issueDate',
     'dueDate',
     'status',
+    'actions',
   ];
   rows: Bill[] = [];
   search = '';
@@ -79,5 +81,15 @@ export class BillsListComponent implements OnInit {
             }),
         });
       });
+  }
+
+  openBillDialog(row?: Bill) {
+    this.dialog
+      .open(BillDialogComponent, {
+        width: '600px',
+        data: row ?? null,
+      })
+      .afterClosed()
+      .subscribe((ok) => ok && this.load());
   }
 }

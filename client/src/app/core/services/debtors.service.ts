@@ -14,6 +14,10 @@ export class DebtorsService {
 
   constructor(private http: HttpClient) {}
 
+  listAll() {
+    return this.http.get<Debtor[]>(`${this.base}`);
+  }
+
   listPaginated(query: any) {
     let params = new HttpParams();
     Object.keys(query).forEach((k) => {

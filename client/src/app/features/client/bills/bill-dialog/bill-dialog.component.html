@@ -1,0 +1,96 @@
+<h2 mat-dialog-title>{{ data ? "Editar factura" : "Nueva factura" }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()" mat-dialog-content>
+  <!-- Info solo lectura si no está PENDING -->
+  <mat-card
+    *ngIf="readOnly"
+    color="warn"
+    style="margin-bottom: 12px; padding: 8px"
+  >
+    <div><strong>Estado:</strong> {{ data?.status }}</div>
+    <div>
+      Las facturas con estado distinto de <strong>PENDING</strong> no pueden
+      editarse.
+    </div>
+  </mat-card>
+
+  <div class="grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Deudor</mat-label>
+      <mat-select formControlName="debtorId" [disabled]="readOnly">
+        <mat-option *ngFor="let d of debtors" [value]="d.id">{{
+          d.companyName
+        }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls['debtorId'].hasError('required')"
+        >Obligatorio</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nº de factura</mat-label>
+      <input matInput formControlName="invoiceNumber" [readonly]="readOnly" />
+      <mat-error *ngIf="form.controls['invoiceNumber'].hasError('required')"
+        >Obligatorio</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Importe</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="amount"
+        [readonly]="readOnly"
+      />
+      <mat-error *ngIf="form.controls['amount'].hasError('required')"
+        >Obligatorio</mat-error
+      >
+      <mat-error *ngIf="form.controls['amount'].hasError('min')"
+        >El importe debe ser ≥ 0</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de emisión</mat-label>
+      <input
+        matInput
+        [matDatepicker]="dp1"
+        formControlName="issueDate"
+        [readonly]="readOnly"
+      />
+      <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+      <mat-datepicker #dp1></mat-datepicker>
+      <mat-error *ngIf="form.controls['issueDate'].hasError('required')"
+        >Obligatorio</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de vencimiento</mat-label>
+      <input
+        matInput
+        [matDatepicker]="dp2"
+        formControlName="dueDate"
+        [readonly]="readOnly"
+      />
+      <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+      <mat-datepicker #dp2></mat-datepicker>
+      <mat-error *ngIf="form.controls['dueDate'].hasError('required')"
+        >Obligatorio</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions [align]="'end'">
+    <button mat-button type="button" mat-dialog-close>Cancelar</button>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="form.invalid || readOnly"
+      type="submit"
+    >
+      Guardar
+    </button>
+  </div>
+</form>

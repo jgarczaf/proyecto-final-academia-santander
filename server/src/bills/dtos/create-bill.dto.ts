@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   Min,
@@ -34,8 +35,8 @@ export class CreateBillDto {
   @IsDateString()
   dueDate: string;
 
-  // Opcional: normalmente lo fija el servicio en PENDING
   @ApiProperty({ enum: BillStatus, required: false })
+  @IsOptional()
   @IsEnum(BillStatus)
   status?: BillStatus;
 }

@@ -144,17 +144,44 @@ export class BillsService {
   // ───────────────────────────────────────────────────────────
   // EDITAR FACTURA
   // ───────────────────────────────────────────────────────────
+
   async update(id: number, data: UpdateBillDto, user: User): Promise<Bill> {
+    // 1) Cargar y validar ownership
     const bill = await this.findOne(id, user);
 
-    // Si el cliente intenta editar una factura ya enviada a solicitud → NO PERMITIDO
-    if (bill.status !== BillStatus.PENDING && user.role === 'CLIENT') {
+    // 2) Regla: CLIENT no puede editar si no está PENDING
+    if (user.role === 'CLIENT' && bill.status !== BillStatus.PENDING) {
       throw new ForbiddenException('No puede modificar facturas ya procesadas');
     }
 
-    await this.billRepo.update(id, data);
+    // 3) Si solicita cambiar de deudor, validar ownership del deudor
+    let debtor = bill.debtor;
+    if (typeof data.debtorId !== 'undefined') {
+      const d = await this.debtorRepo.findOne({
+        where: { id: data.debtorId, user: { id: user.id } },
+        relations: ['user'],
+      });
+      if (!d) throw new ForbiddenException('El deudor no pertenece a este usuario');
+      debtor = d;
+    }
 
-    return this.findOne(id, user);
+    // 4) Proteger status cuando viene desde CLIENT
+    if (user.role === 'CLIENT' && 'status' in data) {
+      delete (data as any).status; // <-- ahora sí usamos "data", no "dto"
+    }
+
+    // 5) Merge + save (mejor práctica frente a repository.update)
+    const merged = this.billRepo.merge(bill, {
+      invoiceNumber: data.invoiceNumber ?? bill.invoiceNumber,
+      amount: typeof data.amount === 'number' ? data.amount : bill.amount,
+      issueDate: (data.issueDate as any) ?? bill.issueDate,
+      dueDate: (data.dueDate as any) ?? bill.dueDate,
+      // Si fuese ADMIN y quisieras permitir cambios de estado podrías respetar data.status:
+      status: data.status ?? bill.status,
+      debtor,
+    });
+
+    return this.billRepo.save(merged);
   }
 
   // ───────────────────────────────────────────────────────────

@@ -7,8 +7,8 @@ import { Debtor } from '../../../../core/models/models';
 
 @Component({
   selector: 'app-debtor-dialog',
-  templateUrl: './debtors-dialog.component.html',
-  styleUrls: ['./debtors-dialog.component.scss'],
+  templateUrl: './debtor-dialog.component.html',
+  styleUrls: ['./debtor-dialog.component.scss'],
 })
 export class DebtorDialogComponent {
   form: FormGroup;

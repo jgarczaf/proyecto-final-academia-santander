@@ -20,7 +20,7 @@
   </mat-card>
 
   <mat-card class="kpi">
-    <mat-card-title>Importe PENDING</mat-card-title>
+    <mat-card-title>Importe pendiente</mat-card-title>
     <mat-card-content>
       <div class="kpi-value">{{ d.amounts.pending | number: "1.2-2" }} €</div>
       <div class="kpi-sub">Facturas: {{ count("PENDING") }}</div>
@@ -28,7 +28,7 @@
   </mat-card>
 
   <mat-card class="kpi">
-    <mat-card-title>Importe en Solicitud</mat-card-title>
+    <mat-card-title>Importe en solicitud</mat-card-title>
     <mat-card-content>
       <div class="kpi-value">{{ d.amounts.inRequest | number: "1.2-2" }} €</div>
       <div class="kpi-sub">Facturas: {{ count("IN_REQUEST") }}</div>

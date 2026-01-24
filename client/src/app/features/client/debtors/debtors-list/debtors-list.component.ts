@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DebtorsService } from '../../../../core/services/debtors.service';
 import { Debtor } from '../../../../core/models/models';
 import { MatDialog } from '@angular/material/dialog';
-import { DebtorDialogComponent } from '../debtors-dialog/debtors-dialog.component';
+import { DebtorDialogComponent } from '../debtor-dialog/debtor-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 

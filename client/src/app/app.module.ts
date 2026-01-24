@@ -26,6 +26,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 // Interceptor JWT
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
@@ -36,13 +38,14 @@ import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { ForbiddenComponent } from './shared/components/forbidden/forbidden.component';
 import { DebtorsListComponent } from './features/client/debtors/debtors-list/debtors-list.component';
-import { DebtorDialogComponent } from './features/client/debtors/debtors-dialog/debtors-dialog.component';
-import { BillsListComponent } from './features/client/bills-list/bills-list.component';
+import { DebtorDialogComponent } from './features/client/debtors/debtor-dialog/debtor-dialog.component';
+import { BillsListComponent } from './features/client/bills/bills-list/bills-list.component';
 import { RequestsListComponent } from './features/client/requests-list/requests-list.component';
 import { AdminReviewComponent } from './features/admin/review/admin-review.component';
 import { ClientDashboardComponent } from './features/client/dashboard/client-dashboard/client-dashboard.component';
 import { AdminDashboardComponent } from './features/client/dashboard/admin-dashboard/admin-dashboard.component';
 import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
+import { BillDialogComponent } from './features/client/bills/bill-dialog/bill-dialog.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +56,7 @@ import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confi
     DebtorsListComponent,
     DebtorDialogComponent,
     BillsListComponent,
+    BillDialogComponent,
     RequestsListComponent,
     AdminReviewComponent,
     ClientDashboardComponent,
@@ -87,6 +91,8 @@ import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confi
     MatSelectModule,
     MatCheckboxModule,
     MatPaginatorModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

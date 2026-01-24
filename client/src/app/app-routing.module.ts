@@ -15,8 +15,7 @@ import { ForbiddenComponent } from './shared/components/forbidden/forbidden.comp
 // CLIENT features
 import { ClientDashboardComponent } from './features/client/dashboard/client-dashboard/client-dashboard.component';
 import { DebtorsListComponent } from './features/client/debtors/debtors-list/debtors-list.component';
-import { DebtorDialogComponent } from './features/client/debtors/debtors-dialog/debtors-dialog.component';
-import { BillsListComponent } from './features/client/bills-list/bills-list.component';
+import { BillsListComponent } from './features/client/bills/bills-list/bills-list.component';
 import { RequestsListComponent } from './features/client/requests-list/requests-list.component';
 
 // ADMIN features
