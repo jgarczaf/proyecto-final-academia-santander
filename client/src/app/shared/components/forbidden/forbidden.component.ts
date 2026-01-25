@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 @Component({
-  template: `<div style="text-align:center;margin-top:64px">
-    <h2>403 - Acceso denegado</h2>
-  </div>`,
+  templateUrl: './forbidden.component.html',
+  styleUrls: ['./forbidden.component.scss'],
 })
 export class ForbiddenComponent {}

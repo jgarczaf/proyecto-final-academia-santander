@@ -4,12 +4,8 @@ import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-home-redirect',
-  template: `
-    <div style="padding: 24px; text-align: center;">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      <p>Redirigiendo...</p>
-    </div>
-  `,
+  templateUrl: './home-redirect.component.html',
+  styleUrls: ['./home-redirect.component.scss'],
 })
 export class HomeRedirectComponent implements OnInit {
   constructor(

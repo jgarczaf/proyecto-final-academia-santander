@@ -1,0 +1,30 @@
+<h2>Solicitudes en revisión</h2>
+<table mat-table [dataSource]="rows" class="mat-elevation-z2">
+  <ng-container matColumnDef="id"
+    ><th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let r">{{ r.id }}</td></ng-container
+  >
+  <ng-container matColumnDef="bills"
+    ><th mat-header-cell *matHeaderCellDef>Facturas</th>
+    <td mat-cell *matCellDef="let r">
+      {{ r.bills?.length }}
+    </td></ng-container
+  >
+  <ng-container matColumnDef="createdAt"
+    ><th mat-header-cell *matHeaderCellDef>Fecha</th>
+    <td mat-cell *matCellDef="let r">
+      {{ r.createdAt | date: "short" }}
+    </td></ng-container
+  >
+  <ng-container matColumnDef="actions"
+    ><th mat-header-cell *matHeaderCellDef>Acciones</th>
+    <td mat-cell *matCellDef="let r">
+      <button mat-raised-button color="primary" (click)="approve(r)">
+        Anticipar
+      </button>
+      <button mat-button color="warn" (click)="reject(r)">Cancelar</button>
+    </td></ng-container
+  >
+  <tr mat-header-row *matHeaderRowDef="cols"></tr>
+  <tr mat-row *matRowDef="let row; columns: cols"></tr>
+</table>
