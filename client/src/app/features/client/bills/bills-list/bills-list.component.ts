@@ -15,7 +15,7 @@ import { BillDialogComponent } from '../bill-dialog/bill-dialog.component';
   styleUrls: ['./bills-list.component.scss'],
 })
 export class BillsListComponent implements OnInit, OnDestroy {
-  cols = [
+  cols: string[] = [
     'select',
     'invoiceNumber',
     'debtor',
@@ -102,5 +102,36 @@ export class BillsListComponent implements OnInit, OnDestroy {
       .open(BillDialogComponent, { width: '600px', data: row ?? null })
       .afterClosed()
       .subscribe((ok) => ok && this.load());
+  }
+
+  delete(r: Bill) {
+    if (r.status !== 'PENDING') return; // protección extra en cliente
+
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: 'Eliminar factura',
+          message: `¿Desea eliminar la factura ${r.invoiceNumber}? Esta acción no se puede deshacer.`,
+        },
+      })
+      .afterClosed()
+      .subscribe((ok) => {
+        if (!ok) return;
+
+        this.bills.delete(r.id).subscribe({
+          next: () => {
+            this.snack.open('Factura eliminada', 'OK', { duration: 1500 });
+            // refrescar tabla
+            this.load();
+            // por si estaba seleccionada para solicitud, quitarla
+            const i = this.selectedIds.indexOf(r.id);
+            if (i >= 0) this.selectedIds.splice(i, 1);
+          },
+          error: (err) => {
+            const msg = err?.error?.message || 'No se pudo eliminar la factura';
+            this.snack.open(msg, 'Cerrar', { duration: 2500 });
+          },
+        });
+      });
   }
 }

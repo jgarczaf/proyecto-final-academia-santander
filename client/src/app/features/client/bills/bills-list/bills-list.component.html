@@ -95,11 +95,31 @@
     <td mat-cell *matCellDef="let r">{{ r.status }}</td>
   </ng-container>
 
-  <!-- Acciones (Editar) -->
+  <!-- Acciones (Editar y Eliminar) -->
+
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Acciones</th>
     <td mat-cell *matCellDef="let r">
-      <button mat-button (click)="openBillDialog(r)">Editar</button>
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="openBillDialog(r)"
+        [matTooltip]="r.status === 'PENDING' ? 'Editar factura' : 'Ver detalle'"
+        aria-label="Ver/Editar factura"
+      >
+        <mat-icon>{{
+          r.status === "PENDING" ? "edit" : "visibility"
+        }}</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="warn"
+        (click)="delete(r)"
+        [disabled]="r.status !== 'PENDING'"
+        aria-label="Eliminar factura"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
     </td>
   </ng-container>
 

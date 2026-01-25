@@ -187,13 +187,25 @@ export class BillsService {
   // ───────────────────────────────────────────────────────────
   // ELIMINAR FACTURA
   // ───────────────────────────────────────────────────────────
-  async remove(id: number, user: User): Promise<void> {
-    const bill = await this.findOne(id, user);
 
+  async remove(id: number, user: User): Promise<void> {
+    const bill = await this.billRepo.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+
+    if (!bill) throw new NotFoundException('Factura no encontrada');
+
+    // Ownership
+    if (user.role === 'CLIENT' && bill.user.id !== user.id) {
+      throw new ForbiddenException('No puede eliminar esta factura');
+    }
+
+    // Solo las facturas PENDING pueden eliminarse
     if (bill.status !== BillStatus.PENDING) {
       throw new ForbiddenException('Solo puede eliminar facturas en estado PENDING');
     }
 
-    await this.billRepo.delete(id);
+    await this.billRepo.remove(bill);
   }
 }

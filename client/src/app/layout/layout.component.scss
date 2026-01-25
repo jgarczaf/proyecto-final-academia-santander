@@ -1,42 +1,139 @@
-.layout-container {
-  height: 100vh;
-}
-
-.layout-sidenav {
-  width: 240px;
-}
-
-.sidenav-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: 600;
-}
+/* =========================
+   TOP BAR
+========================= */
 
 .layout-toolbar {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
 }
 
-.menu-btn {
+.flex-spacer {
+  flex: 1 1 auto;
+}
+
+/* =========================
+   USER BOX (HEADER RIGHT)
+========================= */
+
+.user-box {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 4px 10px;
   margin-right: 8px;
 }
 
-.app-title {
+.user-icon {
+  margin-right: 8px;
+  color: #fff;
+}
+
+.user-info {
+  line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+}
+
+.company {
   font-weight: 600;
+  color: #fff;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
 }
 
-.spacer {
-  flex: 1;
+.email {
+  color: #e0e0e0;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
 }
 
-.user-email {
-  margin: 0 8px;
+/* =========================
+   SIDENAV
+========================= */
+
+.layout-sidenav {
+  width: 240px;
+  box-sizing: border-box;
 }
 
-.layout-content {
-  padding: 16px;
+/* --- HEADER (Brand: icon + Factoring) --- */
+.sidenav-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  height: 64px;
+  padding: 0 16px;
+  box-sizing: border-box;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Icono Partenón */
+.brand-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  color: #424242;
+  flex-shrink: 0;
+}
+
+/* Texto Factoring */
+.brand-text {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: #212121;
+  font-size: 20px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* =========================
+   NAV LIST (items)
+========================= */
+
+mat-nav-list {
+  padding: 0;
+}
+
+mat-nav-list .mat-mdc-list-item {
+  padding: 0 16px;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+/* Iconos del menú */
+mat-nav-list .mat-mdc-list-item mat-icon {
+  margin-right: 12px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Texto del menú */
+mat-nav-list .mat-mdc-list-item span {
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+/* Hover suave */
+mat-nav-list .mat-mdc-list-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Estado activo (si aplicas routerLinkActive='active') */
+mat-nav-list .mat-mdc-list-item.active {
+  background: rgba(63, 81, 181, 0.08);
+  font-weight: 600;
 }

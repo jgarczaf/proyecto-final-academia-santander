@@ -2,6 +2,7 @@
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(4, 1fr);
+  box-sizing: border-box;
 }
 
 .kpi {
@@ -32,6 +33,12 @@
   }
 }
 
+@media (max-width: 768px) {
+  .dashboard-grid {
+    padding: 0 16px;
+  }
+}
+
 @media (max-width: 680px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
@@ -39,4 +46,9 @@
   .block-span-2 {
     grid-column: span 1;
   }
+}
+.dashboard-grid .mat-mdc-card-title {
+  padding: 6px 8px 0;
+  margin: 0;
+  box-sizing: border-box;
 }

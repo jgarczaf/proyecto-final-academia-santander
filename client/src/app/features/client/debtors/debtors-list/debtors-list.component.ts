@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DebtorDialogComponent } from '../debtor-dialog/debtor-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-debtors-list',
@@ -59,15 +60,42 @@ export class DebtorsListComponent implements OnInit {
       .subscribe((ok) => ok && this.load());
   }
 
-  remove(row: Debtor) {
-    if (!confirm('¿Seguro que deseas eliminar este deudor?')) return;
-    this.api.delete(row.id).subscribe({
-      next: () => {
-        this.snack.open('Deudor eliminado', 'OK', { duration: 1500 });
-        this.load();
-      },
-      error: () =>
-        this.snack.open('No se pudo eliminar', 'Cerrar', { duration: 2500 }),
-    });
+  canDeleteDebtor(d: Debtor): boolean {
+    if (typeof (d as any).billsCount === 'number') {
+      return (d as any).billsCount === 0;
+    }
+
+    if ((d as any).canDelete !== undefined) {
+      return !!(d as any).canDelete;
+    }
+
+    return true;
+  }
+
+  delete(d: Debtor) {
+    if (!this.canDeleteDebtor(d)) return;
+
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: 'Eliminar deudor',
+          message: `¿Desea eliminar al deudor ${d.companyName}? Esta acción no se puede deshacer.`,
+        },
+      })
+      .afterClosed()
+      .subscribe((ok) => {
+        if (!ok) return;
+
+        this.api.delete(d.id).subscribe({
+          next: () => {
+            this.snack.open('Deudor eliminado', 'OK', { duration: 1500 });
+            this.load();
+          },
+          error: (err) => {
+            const msg = err?.error?.message || 'No se pudo eliminar el deudor';
+            this.snack.open(msg, 'Cerrar', { duration: 2500 });
+          },
+        });
+      });
   }
 }

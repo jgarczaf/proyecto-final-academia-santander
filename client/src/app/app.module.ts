@@ -29,6 +29,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Interceptor JWT
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
@@ -99,6 +100,7 @@ import { SignInComponent } from './features/auth/sign-in/sign-in.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
