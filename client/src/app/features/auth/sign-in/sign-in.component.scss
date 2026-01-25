@@ -1,0 +1,29 @@
+.signin-card {
+  width: 480px;
+  max-width: 95vw;
+  margin: 60px auto;
+  padding: 24px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

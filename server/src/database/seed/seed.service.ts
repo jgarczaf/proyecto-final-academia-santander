@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
+// Ajusta estas rutas si tus entidades están en otra ubicación o con otro nombre
 import { User } from '../../users/entities/users.entity';
 import { Debtor } from '../../debtors/entities/debtors.entity';
 import { Bill, BillStatus } from '../../bills/entities/bills.entity';
@@ -22,8 +23,8 @@ export class SeedService {
 
   async seed() {
     console.log('🌱 Starting database seed...');
-
     await this.cleanDatabase();
+
     const { admin, client } = await this.createUsers();
     const debtors = await this.createDebtors(client);
     await this.createBills(client, debtors);
@@ -32,16 +33,19 @@ export class SeedService {
   }
 
   // ─────────────────────────────────────────────
-
+  // LIMPIEZA
+  // ─────────────────────────────────────────────
   private async cleanDatabase() {
+    // El orden importa por claves foráneas
     await this.billRepo.delete({});
     await this.debtorRepo.delete({});
     await this.userRepo.delete({});
   }
 
   // ─────────────────────────────────────────────
-
-  private async createUsers() {
+  // USUARIOS (ADMIN y CLIENT)
+  // ─────────────────────────────────────────────
+  private async createUsers(): Promise<{ admin: User; client: User }> {
     const password = await bcrypt.hash('123456', 10);
 
     const admin = this.userRepo.create({
@@ -61,14 +65,14 @@ export class SeedService {
     });
 
     await this.userRepo.save([admin, client]);
-
-    console.log('👤 Users created');
+    console.log('👤 Users created: admin and client');
 
     return { admin, client };
   }
 
   // ─────────────────────────────────────────────
-
+  // DEUDORES (para el CLIENT)
+  // ─────────────────────────────────────────────
   private async createDebtors(client: User): Promise<Debtor[]> {
     const debtors = this.debtorRepo.create([
       {
@@ -94,14 +98,18 @@ export class SeedService {
     ]);
 
     const saved = await this.debtorRepo.save(debtors);
-    console.log('🏢 Debtors created');
+    console.log('🏢 Debtors created:', saved.map((d) => d.companyName).join(', '));
 
     return saved;
   }
 
   // ─────────────────────────────────────────────
-
+  // FACTURAS (para el CLIENT, vinculadas a los deudores)
+  // ─────────────────────────────────────────────
   private async createBills(client: User, debtors: Debtor[]) {
+    // Aseguramos índices por legibilidad
+    const [debtorA, debtorB] = debtors;
+
     const bills = this.billRepo.create([
       {
         invoiceNumber: 'F-001',
@@ -110,7 +118,7 @@ export class SeedService {
         dueDate: new Date('2024-03-01'),
         status: BillStatus.PENDING,
         user: client,
-        debtor: debtors[0],
+        debtor: debtorA,
       },
       {
         invoiceNumber: 'F-002',
@@ -119,7 +127,7 @@ export class SeedService {
         dueDate: new Date('2024-04-15'),
         status: BillStatus.PENDING,
         user: client,
-        debtor: debtors[1],
+        debtor: debtorB,
       },
       {
         invoiceNumber: 'F-003',
@@ -128,11 +136,11 @@ export class SeedService {
         dueDate: new Date('2024-02-01'),
         status: BillStatus.APPROVED,
         user: client,
-        debtor: debtors[0],
+        debtor: debtorA,
       },
     ]);
 
     await this.billRepo.save(bills);
-    console.log('📄 Bills created');
+    console.log('📄 Bills created:', bills.map((b) => b.invoiceNumber).join(', '));
   }
 }

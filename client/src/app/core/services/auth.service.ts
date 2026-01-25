@@ -61,4 +61,14 @@ export class AuthService {
     if (!user) return false;
     return roles.includes(user.role);
   }
+
+  register(payload: {
+    email: string;
+    password: string;
+    role: 'ADMIN' | 'CLIENT';
+    name: string;
+    companyName?: string | null;
+  }) {
+    return this.http.post(`${this.base}/auth/register`, payload);
+  }
 }

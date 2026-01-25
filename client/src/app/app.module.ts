@@ -48,6 +48,7 @@ import { AdminDashboardComponent } from './features/client/dashboard/admin-dashb
 import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
 import { BillDialogComponent } from './features/client/bills/bill-dialog/bill-dialog.component';
 import { HomeRedirectComponent } from './shared/components/home-redirect/home-redirect.component';
+import { SignInComponent } from './features/auth/sign-in/sign-in.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { HomeRedirectComponent } from './shared/components/home-redirect/home-re
     AdminDashboardComponent,
     ConfirmDialogComponent,
     HomeRedirectComponent,
+    SignInComponent,
   ],
 
   imports: [

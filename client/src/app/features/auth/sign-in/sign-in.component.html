@@ -1,0 +1,126 @@
+<mat-card class="signin-card">
+  <h2>Crear cuenta</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <!-- Nombre -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Nombre</mat-label>
+      <input matInput type="text" formControlName="name" />
+      <mat-error *ngIf="f['name'].hasError('required')">Obligatorio</mat-error>
+      <mat-error *ngIf="f['name'].hasError('minlength')"
+        >Mínimo 2 caracteres</mat-error
+      >
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        autocomplete="username"
+      />
+      <mat-error *ngIf="f['email'].hasError('required')">Obligatorio</mat-error>
+      <mat-error *ngIf="f['email'].hasError('email')"
+        >Formato de email no válido</mat-error
+      >
+    </mat-form-field>
+
+    <!-- Rol -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Rol</mat-label>
+      <mat-select formControlName="role">
+        <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="f['role'].hasError('required')"
+        >Selecciona un rol</mat-error
+      >
+    </mat-form-field>
+
+    <!-- Empresa (obligatorio solo para CLIENT) -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Empresa</mat-label>
+      <input matInput type="text" formControlName="companyName" />
+      <mat-hint *ngIf="form.value.role === 'ADMIN'"
+        >Opcional para ADMIN</mat-hint
+      >
+      <mat-error *ngIf="f['companyName'].hasError('required')"
+        >Obligatorio para CLIENT</mat-error
+      >
+      <mat-error *ngIf="f['companyName'].hasError('minlength')"
+        >Mínimo 2 caracteres</mat-error
+      >
+    </mat-form-field>
+
+    <!-- Passwords -->
+    <div formGroupName="credentials">
+      <div class="grid">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            [type]="hide ? 'password' : 'text'"
+            formControlName="password"
+            autocomplete="new-password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hide = !hide"
+          >
+            <mat-icon>{{ hide ? "visibility" : "visibility_off" }}</mat-icon>
+          </button>
+          <mat-error *ngIf="fc['password'].hasError('required')"
+            >Obligatoria</mat-error
+          >
+          <mat-error *ngIf="fc['password'].hasError('minlength')"
+            >Mín. 6 caracteres</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Confirmar contraseña</mat-label>
+          <input
+            matInput
+            [type]="hide2 ? 'password' : 'text'"
+            formControlName="confirm"
+            autocomplete="new-password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hide2 = !hide2"
+          >
+            <mat-icon>{{ hide2 ? "visibility" : "visibility_off" }}</mat-icon>
+          </button>
+          <mat-error *ngIf="fc['confirm'].hasError('required')"
+            >Obligatoria</mat-error
+          >
+          <mat-error *ngIf="form.get('credentials')?.hasError('mismatch')"
+            >Las contraseñas no coinciden</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid || loading"
+      >
+        <mat-spinner
+          *ngIf="loading"
+          diameter="20"
+          style="margin-right: 8px"
+        ></mat-spinner>
+        <span *ngIf="!loading">Crear cuenta</span>
+      </button>
+    </div>
+  </form>
+</mat-card>

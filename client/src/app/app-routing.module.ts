@@ -22,6 +22,7 @@ import { RequestsListComponent } from './features/client/requests-list/requests-
 // ADMIN
 import { AdminDashboardComponent } from './features/client/dashboard/admin-dashboard/admin-dashboard.component';
 import { AdminReviewComponent } from './features/admin/review/admin-review.component';
+import { SignInComponent } from './features/auth/sign-in/sign-in.component';
 
 const routes: Routes = [
   // 🔹 Home por rol (FUERA del layout): decide a dónde ir
@@ -29,6 +30,7 @@ const routes: Routes = [
 
   // Rutas públicas
   { path: 'login', component: LoginComponent },
+  { path: 'sign-in', component: SignInComponent },
   { path: 'forbidden', component: ForbiddenComponent },
 
   // Rutas autenticadas (layout)
