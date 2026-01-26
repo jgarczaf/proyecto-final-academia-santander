@@ -21,10 +21,10 @@
     <!-- ===== HEADER ===== -->
     <div class="header-row">
       <div class="col-expand"></div>
-      <div class="col-id">ID</div>
+      <div class="col-id">ID solicitud</div>
       <div class="col-count">Nº facturas</div>
       <div class="col-total">Total adeudado</div>
-      <div class="col-status">Estado</div>
+      <div class="col-status">Estado solicitud</div>
     </div>
 
     <!-- ===== FILAS ===== -->
@@ -49,7 +49,9 @@
         </div>
 
         <div class="col-status">
-          <mat-chip>{{ r.status }}</mat-chip>
+          <mat-chip [ngClass]="'status-' + r.status.toLowerCase()">{{
+            r.status
+          }}</mat-chip>
         </div>
       </div>
 

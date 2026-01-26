@@ -122,6 +122,27 @@ mat-chip {
   text-transform: uppercase;
 }
 
+/* Estilos por estado */
+mat-chip.status-rejected {
+  background-color: #e8b4b4;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+mat-chip.status-pending {
+  background-color: #f5e6b8;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+mat-chip.status-approved {
+  background-color: #c8e6c9;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+mat-chip.status-in_request {
+  background-color: #bbdefb;
+  color: rgba(0, 0, 0, 0.8);
+}
+
 /* Hover fila */
 .data-row:hover {
   background: rgba(0, 0, 0, 0.025);
