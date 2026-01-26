@@ -13,7 +13,14 @@ import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog
   styleUrls: ['./debtors-list.component.scss'],
 })
 export class DebtorsListComponent implements OnInit {
-  cols: string[] = ['companyName', 'fiscalId', 'country', 'status', 'actions'];
+  cols: string[] = [
+    'createdAt',
+    'companyName',
+    'contactName',
+    'country',
+    'limit',
+    'actions',
+  ];
   rows: Debtor[] = [];
   page = 1;
   limit = 10;

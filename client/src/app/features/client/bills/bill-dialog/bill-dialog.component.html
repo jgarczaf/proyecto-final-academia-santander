@@ -3,6 +3,7 @@
 <form [formGroup]="form" (ngSubmit)="save()" mat-dialog-content>
   <!-- Info solo lectura si no está PENDING -->
   <mat-card
+    class="warn-msg"
     *ngIf="readOnly"
     color="warn"
     style="margin-bottom: 12px; padding: 8px"
