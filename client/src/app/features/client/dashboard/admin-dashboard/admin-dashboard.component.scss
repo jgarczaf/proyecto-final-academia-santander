@@ -1,42 +1,102 @@
-.dashboard-grid {
+:host {
+  display: block;
+}
+
+/* ===== Layout global del dashboard ===== */
+.admin-dash {
+  padding: 0 24px 24px;
+  box-sizing: border-box;
+}
+
+/* ===== KPIs: rejilla fluida, una sola fila que se adapta ===== */
+.kpis {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(260px, 1fr)
+  ); /* 💡 auto-fit, ocupa todo el ancho */
+  align-items: stretch;
+  margin: 12px 0 20px;
 }
 
 .kpi {
-  .kpi-value {
-    font-size: 28px;
-    font-weight: 700;
-  }
-  .kpi-sub {
-    color: #666;
-    margin-top: 6px;
-  }
+  display: flex;
+  flex-direction: column;
 }
 
-.block-span-2 {
-  grid-column: span 2;
+.kpi .kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+/* KPI principal un poco más notorio (importe) */
+.kpi.highlight .kpi-value.big {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+/* ===== Bloque tabla: ancho completo, tarjeta limpia ===== */
+.last-requests .block {
+  width: 100%;
 }
 
 .table-wrap {
   overflow: auto;
 }
 
-@media (max-width: 1080px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .block-span-2 {
-    grid-column: span 2;
-  }
+table {
+  width: 100%;
 }
 
+/* ===== Chips de estado (colores) ===== */
+mat-chip {
+  height: 22px;
+  line-height: 22px;
+  font-size: 11px;
+  text-transform: uppercase;
+  border-radius: 16px;
+}
+
+/* Amarillo: PENDING */
+.st-pending {
+  background-color: #f5e6b8;
+  color: rgba(0, 0, 0, 0.8);
+}
+/* Azul: REVIEW */
+.st-review {
+  background-color: #bbdefb;
+  color: rgba(0, 0, 0, 0.8);
+}
+/* Verde: APPROVED */
+.st-approved {
+  background-color: #c8e6c9;
+  color: rgba(0, 0, 0, 0.8);
+}
+/* Rojo: REJECTED */
+.st-rejected {
+  background-color: #e8b4b4;
+  color: rgba(0, 0, 0, 0.8);
+}
+/* Gris: desconocido */
+.st-unknown {
+  background: #eee;
+  color: #555;
+}
+
+/* ===== Responsivo ===== */
 @media (max-width: 680px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+  .admin-dash {
+    padding: 0 16px 16px;
   }
-  .block-span-2 {
-    grid-column: span 1;
+  .kpis {
+    grid-gap: 12px;
+  }
+  .kpi .kpi-value {
+    font-size: 24px;
+  }
+  .kpi.highlight .kpi-value.big {
+    font-size: 28px;
   }
 }
