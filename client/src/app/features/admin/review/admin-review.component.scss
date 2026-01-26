@@ -228,7 +228,7 @@ mat-chip {
   }
   .client-badge {
     display: none;
-  } /* oculta badge cliente en detalle si hay poco ancho */
+  }
 }
 
 @media (max-width: 640px) {
@@ -245,5 +245,5 @@ mat-chip {
   }
   .col-status {
     display: none;
-  } /* oculta columna Estado en móviles (opcional) */
+  }
 }
