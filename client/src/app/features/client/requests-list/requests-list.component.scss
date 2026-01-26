@@ -1,0 +1,192 @@
+/* ===================================================
+   Requests List – Equal Columns (REAL)
+   1 columna fija + 4 columnas 100% iguales
+=================================================== */
+
+:host {
+  display: block;
+}
+
+/* ===== Toolbar ===== */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* ===== Wrapper ===== */
+.table-card {
+  padding: 0;
+}
+.table-wrap {
+  width: 100%; /* 🔑 CLAVE */
+  overflow-x: auto;
+}
+
+/* ===================================================
+   GRID BASE
+=================================================== */
+
+.header-row,
+.data-row {
+  display: grid;
+  width: 100%; /* 🔑 CLAVE */
+  grid-template-columns:
+    40px /* chevron */
+    repeat(4, minmax(0, 1fr)); /* ✅ 4 columnas IGUALES */
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* ===== Header ===== */
+.header-row {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+  background: #fafafa;
+}
+
+/* ===== Celdas ===== */
+.header-row > div,
+.data-row > div {
+  padding: 0 12px;
+  overflow: hidden;
+}
+
+/* ===================================================
+   CHEVRON
+=================================================== */
+
+.col-expand {
+  display: flex;
+  justify-content: center;
+}
+
+.col-expand button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+}
+
+.col-expand mat-icon {
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.col-expand button:hover mat-icon {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* ===================================================
+   COLUMN CONTENT WRAPPERS
+   (esto es lo que fija la alineación SIN romper el grid)
+=================================================== */
+
+.cell {
+  display: flex;
+  align-items: center;
+  width: 100%; /* 🔑 CLAVE */
+}
+
+/* ID */
+.cell-id {
+  justify-content: flex-start;
+  font-weight: 500;
+}
+
+/* Nº facturas */
+.cell-count {
+  justify-content: center;
+}
+
+/* Total adeudado */
+.cell-total {
+  justify-content: flex-end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Estado */
+.cell-status {
+  justify-content: center;
+}
+
+/* Chip */
+mat-chip {
+  height: 22px;
+  line-height: 22px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* Hover fila */
+.data-row:hover {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+/* ===================================================
+   DETALLE
+=================================================== */
+
+.request-detail {
+  padding: 12px 18px 16px;
+  background: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.request-detail h4 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.request-detail .muted {
+  color: #757575;
+}
+
+/* Subtabla */
+.detail-table {
+  width: 100%;
+}
+.detail-table th,
+.detail-table td {
+  padding: 6px 10px;
+}
+.detail-table th:last-child,
+.detail-table td:last-child {
+  text-align: right;
+}
+
+/* ===================================================
+   RESPONSIVE
+=================================================== */
+
+@media (max-width: 900px) {
+  .header-row,
+  .data-row {
+    grid-template-columns:
+      36px
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .col-total {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .header-row,
+  .data-row {
+    grid-template-columns:
+      32px
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .col-count,
+  .col-total {
+    display: none;
+  }
+}
