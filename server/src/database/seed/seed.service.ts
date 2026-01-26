@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-
-// Ajusta estas rutas si tus entidades están en otra ubicación o con otro nombre
 import { User } from '../../users/entities/users.entity';
 import { Debtor } from '../../debtors/entities/debtors.entity';
 import { Bill, BillStatus } from '../../bills/entities/bills.entity';
@@ -32,9 +30,6 @@ export class SeedService {
     console.log('✅ Database seed completed');
   }
 
-  // ─────────────────────────────────────────────
-  // LIMPIEZA
-  // ─────────────────────────────────────────────
   private async cleanDatabase() {
     // El orden importa por claves foráneas
     await this.billRepo.delete({});
@@ -42,9 +37,6 @@ export class SeedService {
     await this.userRepo.delete({});
   }
 
-  // ─────────────────────────────────────────────
-  // USUARIOS (ADMIN y CLIENT)
-  // ─────────────────────────────────────────────
   private async createUsers(): Promise<{ admin: User; client: User }> {
     const password = await bcrypt.hash('123456', 10);
 
@@ -70,9 +62,6 @@ export class SeedService {
     return { admin, client };
   }
 
-  // ─────────────────────────────────────────────
-  // DEUDORES (para el CLIENT)
-  // ─────────────────────────────────────────────
   private async createDebtors(client: User): Promise<Debtor[]> {
     const debtors = this.debtorRepo.create([
       {
@@ -103,11 +92,7 @@ export class SeedService {
     return saved;
   }
 
-  // ─────────────────────────────────────────────
-  // FACTURAS (para el CLIENT, vinculadas a los deudores)
-  // ─────────────────────────────────────────────
   private async createBills(client: User, debtors: Debtor[]) {
-    // Aseguramos índices por legibilidad
     const [debtorA, debtorB] = debtors;
 
     const bills = this.billRepo.create([

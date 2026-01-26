@@ -7,6 +7,8 @@ import { SocketService } from './core/services/socket.service';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
+  title = 'App Component';
+
   constructor(
     private auth: AuthService,
     private socket: SocketService,

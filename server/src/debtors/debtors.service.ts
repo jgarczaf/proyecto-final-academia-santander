@@ -14,10 +14,6 @@ export class DebtorsService {
     private readonly debtorRepo: Repository<Debtor>
   ) {}
 
-  // ───────────────────────────────────────────────
-  // CLIENT: obtiene solo sus deudores
-  // ADMIN: obtiene todos
-  // ───────────────────────────────────────────────
   async findAll(user: User): Promise<Debtor[]> {
     if (user.role === 'ADMIN') {
       return this.debtorRepo.find({ relations: ['user'] });
@@ -28,9 +24,6 @@ export class DebtorsService {
     });
   }
 
-  // ───────────────────────────────────────────────
-  // Listado paginado + filtros + orden (QueryBuilder)
-  // ───────────────────────────────────────────────
   async findAllPaginated(user: User, query: any): Promise<PaginatedResult<Debtor>> {
     const page = Math.max(1, Number(query.page) || 1);
     const limit = Math.min(100, Number(query.limit) || 10);
@@ -38,19 +31,16 @@ export class DebtorsService {
 
     const qb = this.debtorRepo.createQueryBuilder('debtor').leftJoinAndSelect('debtor.user', 'u'); // ✅ NO usar alias 'user'
 
-    // Ownership
     if (user?.role === 'CLIENT') {
       qb.where('u.id = :userId', { userId: user.id });
     }
 
-    // Search (companyName | fiscalId)
     if (query.search) {
       qb.andWhere('(debtor.companyName ILIKE :s OR debtor.fiscalId ILIKE :s)', {
         s: `%${query.search}%`,
       });
     }
 
-    // Status validado
     if (query.status) {
       const allowed = ['ACTIVE', 'INACTIVE'];
       if (allowed.includes(String(query.status))) {
@@ -58,20 +48,14 @@ export class DebtorsService {
       }
     }
 
-    // Country
     if (query.country) {
       qb.andWhere('debtor.country = :c', { c: query.country });
     }
 
-    // Orden controlado
     const sortable = ['companyName', 'createdAt'];
     const sortBy = sortable.includes(query.sortBy) ? query.sortBy : 'createdAt';
     const order = String(query.order).toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
     qb.orderBy(`debtor.${sortBy}`, order);
-
-    // Para ayudar si vuelve a fallar, puedes descomentar esto 2 líneas para ver la SQL
-    // console.log(qb.getSql());
-    // console.log(qb.getParameters());
 
     const [data, total] = await qb.skip(skip).take(limit).getManyAndCount();
 
@@ -81,9 +65,6 @@ export class DebtorsService {
     };
   }
 
-  // ───────────────────────────────────────────────
-  // Versión ALTERNATIVA (sin QueryBuilder) por si quieres probar rápido
-  // ───────────────────────────────────────────────
   async findAllPaginatedRepo(user: User, query: any): Promise<PaginatedResult<Debtor>> {
     const page = Math.max(1, Number(query.page) || 1);
     const limit = Math.min(100, Number(query.limit) || 10);
@@ -91,7 +72,6 @@ export class DebtorsService {
 
     const whereBase: any = user?.role === 'CLIENT' ? { user: { id: user.id } } : {};
 
-    // Filtros
     const orSearch = query.search
       ? [
           { ...whereBase, companyName: ILike(`%${query.search}%`) },
@@ -127,9 +107,6 @@ export class DebtorsService {
     return { data, meta: { page, limit, total, pages: Math.ceil(total / limit) } };
   }
 
-  // ───────────────────────────────────────────────
-  // Read con ownership
-  // ───────────────────────────────────────────────
   async findOne(id: number, user: User): Promise<Debtor> {
     const debtor = await this.debtorRepo.findOne({ where: { id }, relations: ['user'] });
     if (!debtor) throw new NotFoundException('Deudor no encontrado');
@@ -139,26 +116,17 @@ export class DebtorsService {
     return debtor;
   }
 
-  // ───────────────────────────────────────────────
-  // Create (vinculado al CLIENT)
-  // ───────────────────────────────────────────────
   async create(data: CreateDebtorDto, user: User): Promise<Debtor> {
     const debtor = this.debtorRepo.create({ ...data, user: { id: user.id } });
     return this.debtorRepo.save(debtor);
   }
 
-  // ───────────────────────────────────────────────
-  // Update (merge + save)
-  // ───────────────────────────────────────────────
   async update(id: number, data: UpdateDebtorDto, user: User): Promise<Debtor> {
     const debtor = await this.findOne(id, user);
     const updated = this.debtorRepo.merge(debtor, data);
     return this.debtorRepo.save(updated);
   }
 
-  // ───────────────────────────────────────────────
-  // Delete (remove para ejecutar hooks)
-  // ───────────────────────────────────────────────
   async remove(id: number, user: User): Promise<void> {
     const debtor = await this.findOne(id, user);
     await this.debtorRepo.remove(debtor);

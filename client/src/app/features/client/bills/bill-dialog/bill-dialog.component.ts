@@ -8,14 +8,12 @@ import { BillsService } from '../../../../core/services/bills.service';
 import { DebtorsService } from '../../../../core/services/debtors.service';
 import { Bill, Debtor } from '../../../../core/models/models';
 
-// Si usas DTOs tipados:
 interface CreateBillPayload {
   debtorId: number;
   invoiceNumber: string;
   amount: number;
-  issueDate: string; // 'YYYY-MM-DD'
-  dueDate: string; // 'YYYY-MM-DD'
-  // status opcional, normalmente se fija a PENDING en backend
+  issueDate: string;
+  dueDate: string;
 }
 
 interface UpdateBillPayload extends Partial<CreateBillPayload> {}
@@ -28,7 +26,7 @@ interface UpdateBillPayload extends Partial<CreateBillPayload> {}
 export class BillDialogComponent implements OnInit {
   form: FormGroup;
   debtors: Debtor[] = [];
-  readOnly = false; // si status !== PENDING, solo lectura
+  readOnly = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Bill | null,
@@ -71,7 +69,6 @@ export class BillDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // cargar deudores del cliente
     this.debtorsApi.listAll().subscribe({
       next: (rows) => (this.debtors = rows),
       error: () =>
@@ -88,7 +85,6 @@ export class BillDialogComponent implements OnInit {
   save() {
     if (this.form.invalid) return;
 
-    // formatea fechas al formato que espera el backend (YYYY-MM-DD)
     const toISO = (d: Date | string): string =>
       typeof d === 'string' ? d : formatDate(d, 'yyyy-MM-dd', 'en');
 
@@ -102,8 +98,8 @@ export class BillDialogComponent implements OnInit {
     };
 
     const req$ = this.data
-      ? this.bills.update(this.data.id, payload) // UPDATE
-      : this.bills.create(payload); // CREATE
+      ? this.bills.update(this.data.id, payload)
+      : this.bills.create(payload);
 
     req$.subscribe({
       next: () => {

@@ -23,11 +23,6 @@ h2 {
   overflow-x: auto;
 }
 
-/* ===================================================
-   GRID: chevron fijo + 6 columnas
-   [40px] + [ID, Cliente, #, Total, Estado, Acciones]
-=================================================== */
-
 .header-row,
 .data-row {
   display: grid;
@@ -39,7 +34,7 @@ h2 {
     140px
     180px
     160px
-    220px; /* acciones */
+    220px;
   align-items: center;
   min-height: 44px;
   border-bottom: 1px solid #e0e0e0;
@@ -58,7 +53,6 @@ h2 {
   white-space: nowrap;
 }
 
-/* Chevron */
 .col-expand {
   display: flex;
   justify-content: center;
@@ -73,7 +67,6 @@ h2 {
   color: rgba(0, 0, 0, 0.62);
 }
 
-/* Celdas (alineaciones) */
 .cell {
   display: flex;
   align-items: center;
@@ -84,36 +77,38 @@ h2 {
   justify-content: flex-start;
   font-weight: 500;
 }
+
 .cell-client {
   justify-content: flex-start;
 }
+
 .cell-count {
   justify-content: center;
   color: rgba(0, 0, 0, 0.78);
 }
+
 .cell-total {
   justify-content: flex-end;
   font-variant-numeric: tabular-nums;
 }
+
 .cell-status {
   justify-content: center;
 }
+
 .cell-actions {
   justify-content: flex-end;
   gap: 8px;
 }
 
-/* Hover fila principal */
 .data-row:hover {
   background: rgba(0, 0, 0, 0.02);
 }
 
-/* Acciones */
 .cell-actions button[mat-raised-button] {
   min-width: 112px;
 }
 
-/* ===== Chips de estado (colores) ===== */
 mat-chip {
   height: 22px;
   line-height: 22px;
@@ -121,18 +116,22 @@ mat-chip {
   text-transform: uppercase;
   border-radius: 16px;
 }
+
 .st-pending {
   background-color: #f5e6b8;
   color: rgba(0, 0, 0, 0.8);
 }
+
 .st-review {
   background-color: #bbdefb !important;
   color: rgba(0, 0, 0, 0.8);
 }
+
 .st-approved {
   background-color: #c8e6c9;
   color: rgba(0, 0, 0, 0.8);
 }
+
 .st-rejected {
   background-color: #e8b4b4;
   color: rgba(0, 0, 0, 0.8);
@@ -142,7 +141,6 @@ mat-chip {
   color: #555;
 }
 
-/* ===== Detalle ===== */
 .request-detail {
   background: #fafafa;
   border-bottom: 1px solid #e0e0e0;
@@ -159,6 +157,7 @@ mat-chip {
 .detail-title {
   font-weight: 600;
 }
+
 .muted {
   color: #757575;
   font-weight: 400;
@@ -173,33 +172,36 @@ mat-chip {
   border-radius: 8px;
   padding: 6px 10px;
 }
+
 .client-badge mat-icon {
   font-size: 18px;
   width: 18px;
   height: 18px;
 }
+
 .client-badge .name {
   font-weight: 600;
 }
+
 .client-badge .email {
   font-size: 12px;
   color: #5a89d6;
 }
 
-/* Subtabla */
 .detail-table {
   width: 100%;
 }
+
 .detail-table th,
 .detail-table td {
   padding: 6px 10px;
 }
+
 .detail-table th:last-child,
 .detail-table td:last-child {
   text-align: right;
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 1050px) {
   .header-row,
   .data-row {

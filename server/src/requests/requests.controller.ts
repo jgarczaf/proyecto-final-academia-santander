@@ -23,28 +23,17 @@ import { RejectRequestDto } from './dtos/reject-request.dto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
-
-  // ─────────────────────────────────────────────
-  // LISTADOS
-  // CLIENT ve sólo las suyas; ADMIN ve todas (lo decide el service)
-  // ─────────────────────────────────────────────
   @Get()
   findAll(@Req() req) {
     return this.requestsService.findAll(req.user);
   }
 
-  // ─────────────────────────────────────────────
-  // CREATE (CLIENT)
-  // ─────────────────────────────────────────────
   @Roles('CLIENT')
   @Post()
   create(@Body() dto: CreateRequestDto, @Req() req) {
     return this.requestsService.create(dto, req.user);
   }
 
-  // ─────────────────────────────────────────────
-  // ACCIONES ADMIN (colocadas antes que :id para claridad)
-  // ─────────────────────────────────────────────
   @Roles('ADMIN')
   @Post(':id(\\d+)/approve')
   approve(@Param('id', ParseIntPipe) id: number, @Req() req) {
@@ -57,15 +46,11 @@ export class RequestsController {
     return this.requestsService.reject(id, req.user, body?.reason);
   }
 
-  // ─────────────────────────────────────────────
-  // READ / DELETE (restringidas a numérico)
-  // ─────────────────────────────────────────────
   @Get(':id(\\d+)')
   findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
     return this.requestsService.findOne(id, req.user);
   }
 
-  // CLIENT puede eliminar si está en REVIEW (el service valida estado y ownership)
   @Roles('CLIENT')
   @Delete(':id(\\d+)')
   remove(@Param('id', ParseIntPipe) id: number, @Req() req) {

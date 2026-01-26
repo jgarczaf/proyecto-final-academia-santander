@@ -37,10 +37,6 @@ export class User {
   @CreateDateColumn()
   createdAt: Date;
 
-  // ──────────────────────────────────────────────
-  // Relaciones
-  // ──────────────────────────────────────────────
-
   @ApiProperty({ type: () => [Debtor] })
   @OneToMany(() => Debtor, (debtor) => debtor.user)
   debtors: Debtor[];

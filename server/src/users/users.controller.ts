@@ -13,43 +13,28 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // ────────────────────────────────────────────────
-  // SOLO ADMIN: ver todos los usuarios
-  // ────────────────────────────────────────────────
   @Roles('ADMIN')
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  // ────────────────────────────────────────────────
-  // Obtener un usuario por ID (ADMIN o el propio usuario)
-  // ────────────────────────────────────────────────
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findById(+id);
   }
 
-  // ────────────────────────────────────────────────
-  // Crear usuario (normalmente solo desde AuthService)
-  // ────────────────────────────────────────────────
   @Roles('ADMIN')
   @Post()
   create(@Body() body: CreateUserDto) {
     return this.usersService.create(body);
   }
 
-  // ────────────────────────────────────────────────
-  // Actualizar usuario
-  // ────────────────────────────────────────────────
   @Patch(':id')
   update(@Param('id') id: string, @Body() body: UpdateUserDto) {
     return this.usersService.update(+id, body);
   }
 
-  // ────────────────────────────────────────────────
-  // Eliminar usuario
-  // ────────────────────────────────────────────────
   @Roles('ADMIN')
   @Delete(':id')
   remove(@Param('id') id: string) {

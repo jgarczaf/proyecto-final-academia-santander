@@ -8,7 +8,6 @@ export class RolesGuard implements CanActivate {
   canActivate(ctx: ExecutionContext): boolean {
     const requiredRoles = this.reflector.get<string[]>('roles', ctx.getHandler());
 
-    // Si el endpoint no define roles -> permitir acceso
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
     }

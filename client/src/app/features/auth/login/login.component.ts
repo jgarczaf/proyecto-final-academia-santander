@@ -25,7 +25,6 @@ export class LoginComponent {
     });
   }
 
-  // ✅ Nombre del método alineado con el template
   onSubmit() {
     if (this.form.invalid || this.loading) return;
 
@@ -34,10 +33,8 @@ export class LoginComponent {
 
     this.auth.login(email, password).subscribe({
       next: (resp) => {
-        // Guardar sesión
         this.auth.setSession(resp);
 
-        // Redirigir según rol
         const role = this.auth.getUser()?.role;
         const target =
           role === 'ADMIN' ? '/admin/dashboard' : '/client/dashboard';

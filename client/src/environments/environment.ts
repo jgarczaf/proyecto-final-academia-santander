@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:3000', // ← ajusta si es necesario
+  apiBaseUrl: 'http://localhost:3000',
   storageKeys: {
     token: 'auth_token',
     user: 'auth_user',

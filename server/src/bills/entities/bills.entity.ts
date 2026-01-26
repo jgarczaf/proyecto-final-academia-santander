@@ -52,10 +52,6 @@ export class Bill {
   @CreateDateColumn()
   createdAt: Date;
 
-  // ──────────────────────────────────────────────
-  // RELACIONES
-  // ──────────────────────────────────────────────
-
   @ApiProperty({ type: () => User })
   @ManyToOne(() => User, (user) => user.bills, { onDelete: 'CASCADE' })
   user: User;

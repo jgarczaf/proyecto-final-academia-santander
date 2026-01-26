@@ -12,16 +12,10 @@ export class UsersService {
     private readonly usersRepository: Repository<User>
   ) {}
 
-  // ─────────────────────────────────────────────────────────────
-  // LISTAR TODOS LOS USUARIOS (normalmente sólo accesible para ADMIN)
-  // ─────────────────────────────────────────────────────────────
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // BUSCAR UN USUARIO POR ID
-  // ─────────────────────────────────────────────────────────────
   async findById(id: number): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id } });
 
@@ -32,24 +26,14 @@ export class UsersService {
     return user;
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // BUSCAR POR EMAIL (NECESARIO PARA LOGIN)
-  // ─────────────────────────────────────────────────────────────
   async findByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // CREAR USUARIO (normalmente llamado por AuthService.register)
-  // ─────────────────────────────────────────────────────────────
   async create(data: CreateUserDto): Promise<User> {
     const user = this.usersRepository.create(data);
     return this.usersRepository.save(user);
   }
-
-  // ─────────────────────────────────────────────────────────────
-  // ACTUALIZAR USUARIO
-  // ─────────────────────────────────────────────────────────────
 
   async update(id: number, data: UpdateUserDto): Promise<User> {
     const user = await this.findById(id);
@@ -58,10 +42,6 @@ export class UsersService {
 
     return this.usersRepository.save(mergedUser);
   }
-
-  // ─────────────────────────────────────────────────────────────
-  // ELIMINAR USUARIO
-  // ─────────────────────────────────────────────────────────────
 
   async remove(id: number): Promise<void> {
     const user = await this.findById(id);

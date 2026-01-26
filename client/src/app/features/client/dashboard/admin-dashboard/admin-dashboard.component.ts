@@ -17,7 +17,6 @@ export class AdminDashboardComponent implements OnInit {
   loading = true;
   data: AdminDashboardResponse | null = null;
 
-  // ⚠️ Debe coincidir con los matColumnDef del HTML
   reqsCols: string[] = [
     'id',
     'createdAt',
@@ -53,7 +52,6 @@ export class AdminDashboardComponent implements OnInit {
     return this.data?.lastRequests ?? [];
   }
 
-  // ==== Helpers ====
   fmtDate(value: string | Date | null | undefined): string {
     if (!value) return '';
     return this.date.transform(value, 'dd/MM/yyyy, HH:mm') ?? '';
@@ -80,7 +78,6 @@ export class AdminDashboardComponent implements OnInit {
     );
   }
 
-  // Colores de estado
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
     if (s === 'PENDING') return 'st-pending';

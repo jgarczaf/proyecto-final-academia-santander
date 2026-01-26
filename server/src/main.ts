@@ -5,7 +5,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // DEBUG: listar rutas Express mapeadas por Nest
   const server = app.getHttpAdapter().getInstance();
   if (server._router?.stack) {
     console.log('--- ROUTES ---');
@@ -21,7 +20,6 @@ async function bootstrap() {
     console.log('---------------');
   }
 
-  // Configuración de CORS para Shell (4200) y Remote (4201)
   app.enableCors({
     origin: [
       'http://localhost:4200',
@@ -34,7 +32,6 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  // Validación global de DTOs
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

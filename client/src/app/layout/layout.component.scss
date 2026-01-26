@@ -1,7 +1,3 @@
-/* =========================
-   TOP BAR
-========================= */
-
 .layout-toolbar {
   position: sticky;
   top: 0;
@@ -14,10 +10,6 @@
 .flex-spacer {
   flex: 1 1 auto;
 }
-
-/* =========================
-   USER BOX (HEADER RIGHT)
-========================= */
 
 .user-box {
   display: inline-flex;
@@ -58,16 +50,11 @@
   max-width: 260px;
 }
 
-/* =========================
-   SIDENAV
-========================= */
-
 .layout-sidenav {
   width: 240px;
   box-sizing: border-box;
 }
 
-/* --- HEADER (Brand: icon + Factoring) --- */
 .sidenav-header {
   display: flex;
   align-items: center;
@@ -80,7 +67,6 @@
   user-select: none;
 }
 
-/* Icono Partenón */
 .brand-icon {
   font-size: 24px;
   width: 24px;
@@ -90,7 +76,6 @@
   flex-shrink: 0;
 }
 
-/* Texto Factoring */
 .brand-text {
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -99,10 +84,6 @@
   line-height: 1;
   white-space: nowrap;
 }
-
-/* =========================
-   NAV LIST (items)
-========================= */
 
 mat-nav-list {
   padding: 0;
@@ -114,24 +95,20 @@ mat-nav-list .mat-mdc-list-item {
   box-sizing: border-box;
 }
 
-/* Iconos del menú */
 mat-nav-list .mat-mdc-list-item mat-icon {
   margin-right: 12px;
   color: rgba(0, 0, 0, 0.7);
 }
 
-/* Texto del menú */
 mat-nav-list .mat-mdc-list-item span {
   font-size: 18px;
   line-height: 1.2;
 }
 
-/* Hover suave */
 mat-nav-list .mat-mdc-list-item:hover {
   background: rgba(0, 0, 0, 0.04);
 }
 
-/* Estado activo (si aplicas routerLinkActive='active') */
 mat-nav-list .mat-mdc-list-item.active {
   background: rgba(63, 81, 181, 0.08);
   font-weight: 600;

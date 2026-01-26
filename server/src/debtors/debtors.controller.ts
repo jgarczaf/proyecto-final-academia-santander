@@ -1,4 +1,3 @@
-// src/debtors/debtors.controller.ts
 import {
   Controller,
   Get,
@@ -27,19 +26,16 @@ import { UpdateDebtorDto } from './dtos/update-debtor.dto';
 export class DebtorsController {
   constructor(private readonly debtorsService: DebtorsService) {}
 
-  // 1) RUTA ESTÁTICA - debe ir antes que :id
   @Get('paginated')
   findAllPaginated(@Req() req, @Query() query) {
     return this.debtorsService.findAllPaginated(req.user, query);
   }
 
-  // 2) RUTA PARA LISTAR SIN PAGINAR (opcional)
   @Get()
   findAll(@Req() req) {
     return this.debtorsService.findAll(req.user);
   }
 
-  // 3) RUTAS DINÁMICAS - restringidas a números
   @Get(':id(\\d+)')
   findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
     return this.debtorsService.findOne(id, req.user);

@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { Request, RequestStatus } from './entities/requests.entity'; // ajusta path si difiere
-import { Bill, BillStatus } from 'src/bills/entities/bills.entity'; // ajusta path si difiere
-import { User } from 'src/users/entities/users.entity'; // ajusta path si difiere
+import { Request, RequestStatus } from './entities/requests.entity';
+import { Bill, BillStatus } from 'src/bills/entities/bills.entity';
+import { User } from 'src/users/entities/users.entity';
 import { CreateRequestDto } from './dtos/create-request.dto';
 import { NotificationsGateway } from 'src/realtime/notifications.gateway';
 
@@ -22,7 +22,6 @@ export class RequestsService {
     private readonly notifier: NotificationsGateway
   ) {}
 
-  // ADMIN: todas; CLIENT: solo las suyas
   async findAll(user: User): Promise<Request[]> {
     if (user.role === 'ADMIN') {
       return this.requestRepo.find({
@@ -48,10 +47,6 @@ export class RequestsService {
     }
     return req;
   }
-
-  /**
-   * CLIENT crea una solicitud con facturas propias en estado PENDING
-   */
 
   async create(dto: CreateRequestDto, user: User): Promise<Request> {
     if (!dto.billIds?.length) throw new BadRequestException('Debe indicar al menos una factura');
@@ -98,14 +93,12 @@ export class RequestsService {
       }) as Promise<Request>;
     });
 
-    // 🔔 Notificar al dueño
     this.notifier.emitToUser(user.id, 'request.updated', {
       requestId: saved.id,
       status: saved.status,
       billIds: saved.bills.map((b) => b.id),
     });
 
-    // 🔔 Notificar a TODOS los ADMIN: hay nueva solicitud en revisión
     this.notifier.emitToRole('ADMIN', 'request.created', {
       requestId: saved.id,
       clientId: user.id,
@@ -121,9 +114,6 @@ export class RequestsService {
     return saved;
   }
 
-  /**
-   * ADMIN aprueba: solicitud -> APPROVED, facturas -> APPROVED
-   */
   async approve(id: number, admin: User): Promise<Request> {
     if (admin.role !== 'ADMIN') {
       throw new ForbiddenException('Solo ADMIN puede aprobar solicitudes');
@@ -139,7 +129,6 @@ export class RequestsService {
     }
 
     const updated = await this.requestRepo.manager.transaction(async (mgr) => {
-      // Bloquear solicitud
       const lockedReq = await mgr
         .createQueryBuilder(Request, 'r')
         .setLock('pessimistic_write')
@@ -153,7 +142,6 @@ export class RequestsService {
 
       const billIds = req.bills.map((b) => b.id);
 
-      // Bloquear facturas SIN joins
       const lockedBills = await mgr
         .createQueryBuilder(Bill, 'b')
         .setLock('pessimistic_write')
@@ -164,12 +152,10 @@ export class RequestsService {
         throw new NotFoundException('Alguna factura de la solicitud no existe');
       }
 
-      // Facturas -> APPROVED
       for (const b of lockedBills) {
         await mgr.update(Bill, b.id, { status: BillStatus.APPROVED });
       }
 
-      // Solicitud -> APPROVED
       await mgr.update(Request, lockedReq.id, { status: RequestStatus.APPROVED });
 
       return mgr.getRepository(Request).findOne({
@@ -178,7 +164,6 @@ export class RequestsService {
       }) as Promise<Request>;
     });
 
-    // Notificar al dueño
     this.notifier.emitToUser(updated.user.id, 'request.updated', {
       requestId: updated.id,
       status: updated.status,
@@ -187,10 +172,6 @@ export class RequestsService {
 
     return updated;
   }
-
-  /**
-   * ADMIN rechaza/cancela: solicitud -> REJECTED, facturas -> PENDING
-   */
 
   async reject(id: number, admin: User, reason?: string): Promise<Request> {
     if (admin.role !== 'ADMIN') {
@@ -220,7 +201,6 @@ export class RequestsService {
 
       const billIds = req.bills.map((b) => b.id);
 
-      // Bloqueamos las facturas sin joins
       const lockedBills = await mgr
         .createQueryBuilder(Bill, 'b')
         .setLock('pessimistic_write')
@@ -235,7 +215,6 @@ export class RequestsService {
         await mgr.update(Bill, b.id, { status: BillStatus.REJECTED });
       }
 
-      // La request pasa a REJECTED con motivo opcional
       await mgr.update(Request, lockedReq.id, {
         status: RequestStatus.REJECTED,
         rejectionReason: reason ?? null,
@@ -247,7 +226,6 @@ export class RequestsService {
       }) as Promise<Request>;
     });
 
-    // Notificamos al dueño (ya estaba)
     this.notifier.emitToUser(updated.user.id, 'request.updated', {
       requestId: updated.id,
       status: updated.status,
@@ -258,9 +236,6 @@ export class RequestsService {
     return updated;
   }
 
-  /**
-   * CLIENT elimina su solicitud en REVIEW (rollback a PENDING)
-   */
   async remove(id: number, user: User): Promise<void> {
     const req = await this.requestRepo.findOne({
       where: { id },

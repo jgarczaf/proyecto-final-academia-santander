@@ -61,7 +61,6 @@ mat-chip {
   text-transform: uppercase;
 }
 
-/* Estilos por estado */
 mat-chip.status-rejected {
   background-color: #e8b4b4;
   color: rgba(0, 0, 0, 0.8);
@@ -87,7 +86,6 @@ mat-chip.status-in-review {
   color: rgba(0, 0, 0, 0.8);
 }
 
-/* Chip */
 mat-chip {
   height: 22px;
   line-height: 22px;
@@ -95,7 +93,6 @@ mat-chip {
   text-transform: uppercase;
 }
 
-/* Estilos por estado */
 mat-chip.status-rejected {
   background-color: #e8b4b4;
   color: rgba(0, 0, 0, 0.8);
@@ -116,7 +113,7 @@ mat-chip.status-in_request {
   color: rgba(0, 0, 0, 0.8);
 }
 
-mat-chip.status-in-review {
+mat-chip.status-review {
   background-color: #bbdefb;
   color: rgba(0, 0, 0, 0.8);
 }

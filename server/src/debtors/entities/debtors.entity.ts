@@ -16,10 +16,6 @@ export class Debtor {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // ─────────────────────────────
-  // Datos principales del deudor
-  // ─────────────────────────────
-
   @ApiProperty({ description: 'Nombre de la empresa deudora' })
   @Column()
   companyName: string;
@@ -44,10 +40,6 @@ export class Debtor {
   @CreateDateColumn()
   createdAt: Date;
 
-  // ─────────────────────────────
-  // Contacto
-  // ─────────────────────────────
-
   @ApiProperty({ description: 'Nombre de la persona de contacto del deudor' })
   @Column()
   contactName: string;
@@ -55,10 +47,6 @@ export class Debtor {
   @ApiProperty({ description: 'Email del contacto del deudor' })
   @Column()
   contactEmail: string;
-
-  // ─────────────────────────────
-  // Relaciones
-  // ─────────────────────────────
 
   @ApiProperty({ type: () => User, description: 'Cliente propietario del deudor' })
   @ManyToOne(() => User, (user) => user.debtors, { onDelete: 'CASCADE' })

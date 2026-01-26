@@ -41,7 +41,6 @@ export class BillsListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.load();
-    // 🔔 refrescar cuando llega un evento de request.updated
     this.sub = this.socket.onRequestUpdated().subscribe(() => this.load());
   }
 
@@ -105,7 +104,7 @@ export class BillsListComponent implements OnInit, OnDestroy {
   }
 
   delete(r: Bill) {
-    if (r.status !== 'PENDING') return; // protección extra en cliente
+    if (r.status !== 'PENDING') return;
 
     this.dialog
       .open(ConfirmDialogComponent, {
@@ -121,9 +120,9 @@ export class BillsListComponent implements OnInit, OnDestroy {
         this.bills.delete(r.id).subscribe({
           next: () => {
             this.snack.open('Factura eliminada', 'OK', { duration: 1500 });
-            // refrescar tabla
+
             this.load();
-            // por si estaba seleccionada para solicitud, quitarla
+
             const i = this.selectedIds.indexOf(r.id);
             if (i >= 0) this.selectedIds.splice(i, 1);
           },

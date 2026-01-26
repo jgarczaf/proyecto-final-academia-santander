@@ -34,17 +34,13 @@ export class SignInComponent {
     private snack: MatSnackBar,
   ) {
     this.form = this.fb.group({
-      // Identidad
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
 
-      // Rol
       role: ['CLIENT', [Validators.required]],
 
-      // Empresa (solo obligatorio si es CLIENT)
       companyName: [''],
 
-      // Credenciales
       credentials: this.fb.group(
         {
           password: ['', [Validators.required, Validators.minLength(6)]],
@@ -54,7 +50,6 @@ export class SignInComponent {
       ),
     });
 
-    // 👉 Reglas dinámicas: companyName obligatorio si role === 'CLIENT'
     this.form.get('role')!.valueChanges.subscribe((role) => {
       const ctrl = this.form.get('companyName')!;
       if (role === 'CLIENT') {
