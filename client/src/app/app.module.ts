@@ -34,6 +34,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
@@ -104,6 +105,7 @@ import { SignInComponent } from './features/auth/sign-in/sign-in.component';
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatChipsModule,
+    MatTabsModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

@@ -95,7 +95,6 @@ export class DashboardService {
           .getRawOne(),
 
         this.requestRepo.find({
-          where: { status: RequestStatus.REVIEW },
           order: { createdAt: 'DESC' },
           take: 5,
           relations: ['user', 'bills'],

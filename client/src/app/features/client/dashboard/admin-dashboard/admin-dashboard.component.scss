@@ -18,29 +18,78 @@
 .kpi {
   display: flex;
   flex-direction: column;
+  padding: 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  &.highlight {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+
+    .kpi-value {
+      color: white;
+    }
+
+    &:hover {
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    }
+  }
+
+  .kpi-value.big {
+    font-size: 36px;
+    font-weight: 800;
+  }
 }
 
-.kpi .kpi-value {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.15;
+.last-requests,
+.review-requests {
+  margin-bottom: 24px;
 }
 
-.kpi.highlight .kpi-value.big {
-  font-size: 32px;
-  font-weight: 800;
-}
-
-.last-requests .block {
+.block {
   width: 100%;
 }
 
 .table-wrap {
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 table {
   width: 100%;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: #999;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
 }
 
 mat-chip {
@@ -49,31 +98,26 @@ mat-chip {
   font-size: 11px;
   text-transform: uppercase;
   border-radius: 16px;
-}
 
-.st-pending {
-  background-color: #f5e6b8;
-  color: rgba(0, 0, 0, 0.8);
-}
+  &.st-pending {
+    background-color: #f5e6b8;
+    color: rgba(0, 0, 0, 0.8);
+  }
 
-.st-review {
-  background-color: #bbdefb !important;
-  color: rgba(0, 0, 0, 0.8);
-}
+  &.st-approved {
+    background-color: #c8e6c9;
+    color: rgba(0, 0, 0, 0.8);
+  }
 
-.st-approved {
-  background-color: #c8e6c9;
-  color: rgba(0, 0, 0, 0.8);
-}
+  &.st-rejected {
+    background-color: #e8b4b4;
+    color: rgba(0, 0, 0, 0.8);
+  }
 
-.st-rejected {
-  background-color: #e8b4b4;
-  color: rgba(0, 0, 0, 0.8);
-}
-
-.st-unknown {
-  background: #eee;
-  color: #555;
+  &.st-unknown {
+    background: #eee;
+    color: #555;
+  }
 }
 
 @media (max-width: 680px) {

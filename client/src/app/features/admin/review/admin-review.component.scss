@@ -6,6 +6,10 @@ h2 {
   margin: 8px 0 6px;
 }
 
+::ng-deep .mat-mdc-tab-list {
+  margin-bottom: 12px;
+}
+
 .toolbar {
   display: flex;
   align-items: center;
@@ -101,6 +105,28 @@ h2 {
   gap: 8px;
 }
 
+.cell-sortable {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
+    padding: 0 4px;
+  }
+
+  .sort-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+  }
+}
+
 .data-row:hover {
   background: rgba(0, 0, 0, 0.02);
 }
@@ -115,30 +141,31 @@ mat-chip {
   font-size: 11px;
   text-transform: uppercase;
   border-radius: 16px;
-}
 
-.st-pending {
-  background-color: #f5e6b8;
-  color: rgba(0, 0, 0, 0.8);
-}
+  &.st-pending {
+    background-color: #f5e6b8;
+    color: rgba(0, 0, 0, 0.8);
+  }
 
-.st-review {
-  background-color: #bbdefb !important;
-  color: rgba(0, 0, 0, 0.8);
-}
+  &.st-review {
+    background-color: #bbdefb;
+    color: rgba(0, 0, 0, 0.8);
+  }
 
-.st-approved {
-  background-color: #c8e6c9;
-  color: rgba(0, 0, 0, 0.8);
-}
+  &.st-approved {
+    background-color: #c8e6c9;
+    color: rgba(0, 0, 0, 0.8);
+  }
 
-.st-rejected {
-  background-color: #e8b4b4;
-  color: rgba(0, 0, 0, 0.8);
-}
-.st-unknown {
-  background: #eee;
-  color: #555;
+  &.st-rejected {
+    background-color: #e8b4b4;
+    color: rgba(0, 0, 0, 0.8);
+  }
+
+  &.st-unknown {
+    background: #eee;
+    color: #555;
+  }
 }
 
 .request-detail {

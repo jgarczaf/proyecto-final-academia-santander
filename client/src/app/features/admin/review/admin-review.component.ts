@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 import { RequestsService } from '../../../core/services/requests.service';
 import { SocketService } from '../../../core/services/socket.service';
@@ -9,7 +10,7 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 
-// === Modelos mínimos para tipado local (ajusta si tu models.ts ya lo define) ===
+// === Modelos mínimos para tipado local ===
 interface DebtorLite {
   companyName?: string;
 }
@@ -31,8 +32,11 @@ interface RequestItem {
   status: RequestStatus;
   createdAt: string | Date;
   bills: BillRow[];
-  user?: UserLite; // 👈 cliente dueño de la solicitud
+  user?: UserLite;
 }
+
+type SortColumn = 'id' | 'client' | 'bills' | 'total' | 'status' | 'createdAt';
+type SortDirection = 'asc' | 'desc';
 
 @Component({
   selector: 'app-admin-review',
@@ -41,12 +45,32 @@ interface RequestItem {
   providers: [DatePipe, CurrencyPipe],
 })
 export class AdminReviewComponent implements OnInit, OnDestroy {
-  // Grid: chevron + [ID, Cliente, Nº facturas, Total, Estado, Acciones]
-  cols = ['id', 'client', 'bills', 'total', 'status', 'actions'];
+  // Tabs de estado
+  statusTabs: { label: string; value: RequestStatus | null }[] = [
+    { label: 'Todas', value: null },
+    { label: 'Validadas', value: 'APPROVED' },
+    { label: 'Pendientes de revisión', value: 'REVIEW' },
+    { label: 'Rechazadas', value: 'REJECTED' },
+  ];
+  selectedStatus: RequestStatus | null = null;
 
+  // Datos y vista
+  allRows: RequestItem[] = [];
   rows: RequestItem[] = [];
+  paginatedRows: RequestItem[] = [];
   expanded = new Set<number>();
   loading = false;
+
+  // Ordenación
+  sortColumn: SortColumn = 'createdAt';
+  sortDirection: SortDirection = 'desc';
+
+  // Paginación
+  pageSize = 10;
+  pageIndex = 0;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  cols = ['id', 'client', 'bills', 'total', 'status', 'actions'];
 
   private subSocketNew?: Subscription;
   private subSocketChanged?: Subscription;
@@ -63,7 +87,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.load();
 
-    // 🔔 Notificación: solicitud creada por cliente
     this.subSocketNew = this.socket.onAdminRequestCreated().subscribe((p) => {
       this.snack.open(`Nueva solicitud #${p?.requestId} recibida`, 'OK', {
         duration: 2000,
@@ -71,7 +94,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       this.load();
     });
 
-    // 🔔 Cambios entre admins (aprob/rech)
     this.subSocketChanged = this.socket
       .onAdminRequestsChanged()
       .subscribe(() => this.load());
@@ -88,8 +110,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.api.list().subscribe({
       next: (res) => {
-        // Sólo en REVISIÓN
-        this.rows = (res || []).filter((x) => x.status === 'REVIEW');
+        // CARGAR TODAS, sin filtrar por status
+        this.allRows = res || [];
+        this.applyFiltersAndSort();
         this.loading = false;
       },
       error: () => {
@@ -99,6 +122,107 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
     });
+  }
+
+  /* ========= Filtrado y Ordenación ========= */
+
+  onTabChange(status: RequestStatus | null): void {
+    this.selectedStatus = status;
+    this.applyFiltersAndSort();
+  }
+
+  applyFiltersAndSort(): void {
+    // Aplicar filtro de estado
+    let filtered = this.allRows;
+    if (this.selectedStatus) {
+      filtered = filtered.filter((r) => r.status === this.selectedStatus);
+    }
+
+    // Aplicar ordenación
+    filtered = this.sortData(filtered);
+    this.rows = filtered;
+
+    // Reset pagination when filters/sort change
+    this.pageIndex = 0;
+    this.updatePaginatedRows();
+    this.expanded.clear();
+  }
+
+  sortData(data: RequestItem[]): RequestItem[] {
+    const sorted = [...data].sort((a, b) => {
+      let aVal: any, bVal: any;
+
+      switch (this.sortColumn) {
+        case 'id':
+          aVal = a.id;
+          bVal = b.id;
+          break;
+        case 'client':
+          aVal = this.clientLabel(a);
+          bVal = this.clientLabel(b);
+          break;
+        case 'bills':
+          aVal = a.bills?.length ?? 0;
+          bVal = b.bills?.length ?? 0;
+          break;
+        case 'total':
+          aVal = this.totalAmount(a);
+          bVal = this.totalAmount(b);
+          break;
+        case 'status':
+          aVal = a.status;
+          bVal = b.status;
+          break;
+        case 'createdAt':
+          aVal = new Date(a.createdAt).getTime();
+          bVal = new Date(b.createdAt).getTime();
+          break;
+      }
+
+      if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  }
+
+  onSort(column: SortColumn): void {
+    if (this.sortColumn === column) {
+      // Toggle dirección
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Nueva columna
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.applyFiltersAndSort();
+  }
+
+  getSortIcon(column: SortColumn): string {
+    if (this.sortColumn !== column) return 'unfold_more';
+    return this.sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward';
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedRows();
+  }
+
+  updatePaginatedRows(): void {
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedRows = this.rows.slice(start, end);
+  }
+
+  statusLabel(status?: string): string {
+    const s = (status || '').toUpperCase();
+    if (s === 'REVIEW') return 'Pendiente';
+    if (s === 'APPROVED') return 'Validada';
+    if (s === 'REJECTED') return 'Rechazada';
+    if (s === 'PENDING') return 'Pendiente';
+    return status || '';
   }
 
   /* ========= Helpers de vista ========= */
@@ -152,14 +276,19 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
     if (s === 'PENDING') return 'st-pending';
-    if (s === 'REVIEW') return 'st-review';
-    if (s === 'APPROVED') return 'st-approved';
-    if (s === 'REJECTED') return 'st-rejected';
+    if (s === 'REVIEW') return 'st-pending'; // Pendiente de revisión = amarillo
+    if (s === 'APPROVED') return 'st-approved'; // Validada = verde
+    if (s === 'REJECTED') return 'st-rejected'; // Rechazada = rojo
     return 'st-unknown';
   }
 
   clientLabel(r: RequestItem): string {
     return r.user?.companyName || r.user?.name || r.user?.email || '—';
+  }
+
+  canAction(status?: string): boolean {
+    const s = (status || '').toUpperCase();
+    return s === 'REVIEW' || s === 'PENDING';
   }
 
   /* ========= Acciones ========= */

@@ -26,6 +26,8 @@ export class AdminDashboardComponent implements OnInit {
     'client',
   ];
 
+  reviewCols: string[] = ['id', 'client', 'bills', 'total', 'createdAt'];
+
   constructor(
     private dash: DashboardService,
     private snack: MatSnackBar,
@@ -50,6 +52,21 @@ export class AdminDashboardComponent implements OnInit {
 
   lastRequests(): RequestItem[] {
     return this.data?.lastRequests ?? [];
+  }
+
+  getLastUpdatedRequests(): RequestItem[] {
+    const all = this.data?.lastRequests ?? [];
+    return [...all]
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
+      .slice(0, 3);
+  }
+
+  getRequestsInReview(): RequestItem[] {
+    const all = this.data?.lastRequests ?? [];
+    return all.filter((r) => r.status === 'REVIEW');
   }
 
   fmtDate(value: string | Date | null | undefined): string {
@@ -81,9 +98,18 @@ export class AdminDashboardComponent implements OnInit {
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
     if (s === 'PENDING') return 'st-pending';
-    if (s === 'REVIEW') return 'st-review';
+    if (s === 'REVIEW') return 'st-pending';
     if (s === 'APPROVED') return 'st-approved';
     if (s === 'REJECTED') return 'st-rejected';
     return 'st-unknown';
+  }
+
+  statusLabel(status?: string): string {
+    const s = (status || '').toUpperCase();
+    if (s === 'REVIEW') return 'Pendiente';
+    if (s === 'APPROVED') return 'Validada';
+    if (s === 'REJECTED') return 'Rechazada';
+    if (s === 'PENDING') return 'Pendiente';
+    return status || '';
   }
 }
