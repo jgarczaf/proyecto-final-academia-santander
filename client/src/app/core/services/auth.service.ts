@@ -31,12 +31,10 @@ export class AuthService {
   setSession(resp: LoginResponse) {
     localStorage.setItem(this.tokenKey, resp.access_token);
     localStorage.setItem(this.userKey, JSON.stringify(resp.user));
-    // Conectar socket tras login, pasándole el token
     this.socket.connect(resp.access_token);
   }
 
   logout() {
-    // Desconectar socket al salir
     this.socket.disconnect();
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);

@@ -4,26 +4,26 @@
 
 <!-- ===== Dashboard ===== -->
 <div *ngIf="!loading && data as d" class="admin-dash">
-  <!-- ===== KPIs (rejilla fluida en una fila) ===== -->
+  <!-- ===== KPIs ===== -->
   <section class="kpis">
     <mat-card class="kpi">
       <mat-card-title>Clientes</mat-card-title>
       <mat-card-content>
-        <div class="kpi-value">{{ d.totals?.clients ?? 0 }}</div>
+        <div class="kpi-value">{{ d.totals.clients }}</div>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="kpi">
       <mat-card-title>Facturas en revisión</mat-card-title>
       <mat-card-content>
-        <div class="kpi-value">{{ d.totals?.billsInRequest ?? 0 }}</div>
+        <div class="kpi-value">{{ d.totals.billsInRequest }}</div>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="kpi">
       <mat-card-title>Solicitudes en revisión</mat-card-title>
       <mat-card-content>
-        <div class="kpi-value">{{ d.totals?.requestsInReview ?? 0 }}</div>
+        <div class="kpi-value">{{ d.totals.requestsInReview }}</div>
       </mat-card-content>
     </mat-card>
 
@@ -31,13 +31,13 @@
       <mat-card-title>Importe en revisión</mat-card-title>
       <mat-card-content>
         <div class="kpi-value big">
-          {{ fmtAmount(d.totals?.amountInReview) }}
+          {{ fmtAmount(d.totals.amountInReview) }}
         </div>
       </mat-card-content>
     </mat-card>
   </section>
 
-  <!-- ===== Últimas solicitudes (bloque de ancho completo) ===== -->
+  <!-- ===== Últimas solicitudes ===== -->
   <section class="last-requests">
     <mat-card class="block">
       <mat-card-title>Últimas solicitudes</mat-card-title>
@@ -59,7 +59,7 @@
           <!-- # Facturas -->
           <ng-container matColumnDef="bills">
             <th mat-header-cell *matHeaderCellDef># Facturas</th>
-            <td mat-cell *matCellDef="let r">{{ r.bills?.length ?? 0 }}</td>
+            <td mat-cell *matCellDef="let r">{{ r.bills.length }}</td>
           </ng-container>
 
           <!-- Total facturas -->
@@ -68,7 +68,7 @@
             <td mat-cell *matCellDef="let r">{{ fmtAmount(totalOf(r)) }}</td>
           </ng-container>
 
-          <!-- Estado (chip coloreado) -->
+          <!-- Estado -->
           <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef>Estado</th>
             <td mat-cell *matCellDef="let r">

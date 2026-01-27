@@ -9,11 +9,9 @@ import localeEs from '@angular/common/locales/es';
 registerLocaleData(localeEs);
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 
-// Enrutado
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 
-// Material necesarios para layout y dashboard
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,10 +35,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 
-// Interceptor JWT
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
-// Componentes (asegúrate de tenerlos declarados)
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './features/auth/login/login.component';
