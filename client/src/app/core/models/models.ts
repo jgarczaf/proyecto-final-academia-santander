@@ -27,6 +27,7 @@ export interface Bill {
   dueDate: string | Date;
   status: BillStatus;
   debtor: Debtor;
+  selected?: boolean;
 }
 
 export type RequestStatus = 'REVIEW' | 'APPROVED' | 'REJECTED';
@@ -35,6 +36,7 @@ export interface RequestItem {
   status: RequestStatus;
   createdAt: string;
   bills: Bill[];
+  selected?: boolean;
 }
 
 export interface BillsByStatusRaw {

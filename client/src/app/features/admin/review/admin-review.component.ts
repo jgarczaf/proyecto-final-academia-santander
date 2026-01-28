@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { BillDialogComponent } from '../../client/bills/bill-dialog/bill-dialog.component';
 import { RequestsService } from '../../../core/services/requests.service';
 import { SocketService } from '../../../core/services/socket.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -10,7 +11,6 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 
-// === Modelos mínimos para tipado local ===
 interface DebtorLite {
   companyName?: string;
 }
@@ -33,6 +33,7 @@ interface RequestItem {
   createdAt: string | Date;
   bills: BillRow[];
   user?: UserLite;
+  selected?: boolean;
 }
 
 type SortColumn = 'id' | 'client' | 'bills' | 'total' | 'status' | 'createdAt';
@@ -225,24 +226,18 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return status || '';
   }
 
-  /* ========= Helpers de vista ========= */
-
   hasRows(): boolean {
     return this.rows.length > 0;
   }
+
   isExpanded(id: number): boolean {
     return this.expanded.has(id);
   }
+
   toggleRow(r: RequestItem): void {
     this.isExpanded(r.id)
       ? this.expanded.delete(r.id)
       : this.expanded.add(r.id);
-  }
-  expandAll(): void {
-    this.rows.forEach((r) => this.expanded.add(r.id));
-  }
-  collapseAll(): void {
-    this.expanded.clear();
   }
 
   fmtDate(v: string | Date | null | undefined): string {
@@ -276,9 +271,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
     if (s === 'PENDING') return 'st-pending';
-    if (s === 'REVIEW') return 'st-pending'; // Pendiente de revisión = amarillo
-    if (s === 'APPROVED') return 'st-approved'; // Validada = verde
-    if (s === 'REJECTED') return 'st-rejected'; // Rechazada = rojo
+    if (s === 'REVIEW') return 'st-pending';
+    if (s === 'APPROVED') return 'st-approved';
+    if (s === 'REJECTED') return 'st-rejected';
     return 'st-unknown';
   }
 
@@ -291,53 +286,152 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return s === 'REVIEW' || s === 'PENDING';
   }
 
+  /* ========= Selección de filas ========= */
+
+  hasSelectedRows(): boolean {
+    return this.allRows.some((r) => r.selected);
+  }
+
+  getTotalSelectedCount(): number {
+    return this.allRows.filter((r) => r.selected).length;
+  }
+
+  isAllCurrentPageSelected(): boolean {
+    if (this.paginatedRows.length === 0) return false;
+    return this.paginatedRows.every((r) => r.selected);
+  }
+
+  isCurrentPageIndeterminate(): boolean {
+    if (this.paginatedRows.length === 0) return false;
+    const selectedCount = this.paginatedRows.filter((r) => r.selected).length;
+    return selectedCount > 0 && selectedCount < this.paginatedRows.length;
+  }
+
+  toggleSelectAllCurrentPage(event: MatCheckboxChange): void {
+    const checked = event.checked;
+    this.paginatedRows.forEach((r) => {
+      r.selected = checked;
+    });
+  }
+
+  onCheckboxChange(r: RequestItem): void {
+    // Método para manejar cambios en los checkboxes
+  }
+
   /* ========= Acciones ========= */
 
-  approve(r: RequestItem): void {
+  approveSelected(): void {
+    const selected = this.allRows.filter((r) => r.selected);
+    if (selected.length === 0) return;
+
+    const totalBills = selected.reduce(
+      (sum, r) => sum + (r.bills?.length ?? 0),
+      0,
+    );
+
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
           title: 'Confirmación',
-          message: `¿Está seguro de anticipar ${r.bills?.length} factura(s)?`,
+          message: `¿Está seguro de anticipar ${selected.length} solicitud(es) con ${totalBills} factura(s)?`,
         },
       })
       .afterClosed()
       .subscribe((ok) => {
         if (!ok) return;
-        this.api.approve(r.id).subscribe({
-          next: () => {
-            this.snack.open('Solicitud aprobada', 'Cerrar', { duration: 1500 });
-            this.load();
-          },
-          error: () =>
-            this.snack.open('No se pudo aprobar', 'Cerrar', { duration: 2500 }),
+
+        let completed = 0;
+        let errors = 0;
+
+        selected.forEach((r) => {
+          this.api.approve(r.id).subscribe({
+            next: () => {
+              completed++;
+              if (completed + errors === selected.length) {
+                this.snack.open(
+                  `${completed} solicitud(es) aprobada(s)`,
+                  'Cerrar',
+                  { duration: 1500 },
+                );
+                this.load();
+              }
+            },
+            error: () => {
+              errors++;
+              if (completed + errors === selected.length) {
+                this.snack.open(
+                  `${completed} aprobada(s), ${errors} error(es)`,
+                  'Cerrar',
+                  { duration: 2500 },
+                );
+                this.load();
+              }
+            },
+          });
         });
       });
   }
 
-  reject(r: RequestItem): void {
+  rejectSelected(): void {
+    const selected = this.allRows.filter((r) => r.selected);
+    if (selected.length === 0) return;
+
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
           title: 'Cancelar',
-          message: '¿Está seguro de cancelar la solicitud?',
+          message: `¿Está seguro de cancelar ${selected.length} solicitud(es)?`,
         },
       })
       .afterClosed()
       .subscribe((ok) => {
         if (!ok) return;
-        this.api.reject(r.id).subscribe({
-          next: () => {
-            this.snack.open('Solicitud rechazada', 'Cerrar', {
-              duration: 1500,
-            });
-            this.load();
-          },
-          error: () =>
-            this.snack.open('No se pudo cancelar', 'Cerrar', {
-              duration: 2500,
-            }),
+
+        let completed = 0;
+        let errors = 0;
+
+        selected.forEach((r) => {
+          this.api.reject(r.id).subscribe({
+            next: () => {
+              completed++;
+              if (completed + errors === selected.length) {
+                this.snack.open(
+                  `${completed} solicitud(es) rechazada(s)`,
+                  'Cerrar',
+                  { duration: 1500 },
+                );
+                this.load();
+              }
+            },
+            error: () => {
+              errors++;
+              if (completed + errors === selected.length) {
+                this.snack.open(
+                  `${completed} rechazada(s), ${errors} error(es)`,
+                  'Cerrar',
+                  { duration: 2500 },
+                );
+                this.load();
+              }
+            },
+          });
         });
       });
+  }
+
+  openBillDetail(item: RequestItem): void {
+    if (item.bills && item.bills.length > 0) {
+      const bill = item.bills[0];
+      const dialogRef = this.dialog.open(BillDialogComponent, {
+        data: bill,
+        width: '600px',
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.load();
+        }
+      });
+    }
   }
 }

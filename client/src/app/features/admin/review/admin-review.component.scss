@@ -15,14 +15,27 @@ h2 {
   align-items: center;
   gap: 12px;
   margin: 6px 0 12px;
+  flex-wrap: wrap;
 }
+
 .spacer {
   flex: 1 1 auto;
+}
+
+.selection-info {
+  color: #d32f2f;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 12px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 .list-card {
   padding: 0;
 }
+
 .table-wrap {
   overflow-x: auto;
 }
@@ -60,12 +73,15 @@ h2 {
 .col-expand {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
+
 .col-expand button {
   width: 28px;
   height: 28px;
   padding: 0;
 }
+
 .col-expand mat-icon {
   font-size: 20px;
   color: rgba(0, 0, 0, 0.62);
@@ -255,8 +271,15 @@ mat-chip {
       130px
       180px;
   }
+
   .client-badge {
     display: none;
+  }
+
+  .selection-info {
+    order: -1;
+    width: 100%;
+    margin-bottom: 8px;
   }
 }
 
@@ -272,7 +295,14 @@ mat-chip {
       120px
       160px;
   }
+
   .col-status {
     display: none;
+  }
+
+  .selection-info {
+    order: -1;
+    width: 100%;
+    margin-bottom: 8px;
   }
 }
