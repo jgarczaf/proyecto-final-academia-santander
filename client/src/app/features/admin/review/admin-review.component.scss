@@ -6,8 +6,26 @@ h2 {
   margin: 8px 0 6px;
 }
 
-::ng-deep .mat-mdc-tab-list {
+.filter-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .status-select {
+    flex: 1;
+    min-width: 150px;
+  }
 }
 
 .toolbar {
@@ -57,24 +75,11 @@ h2 {
   }
 }
 
-.list-footer ::ng-deep .mat-mdc-paginator {
-  flex: 1;
-  justify-content: flex-end;
-}
-
 .header-row,
 .data-row {
   display: grid;
   width: 100%;
-  grid-template-columns:
-    50px
-    1fr
-    1fr
-    1fr
-    1fr
-    1fr
-    1fr
-    120px;
+  grid-template-columns: 50px 1fr 1fr 1fr 1fr 1fr 1fr 120px;
   align-items: center;
   min-height: 44px;
   border-bottom: 1px solid #e0e0e0;
@@ -102,15 +107,17 @@ h2 {
   min-height: 44px;
 }
 
-.col-expand button {
-  width: 28px;
-  height: 28px;
-  padding: 0;
-}
-
-.col-expand mat-icon {
-  font-size: 20px;
-  color: rgba(0, 0, 0, 0.62);
+.col-status,
+.col-debtor,
+.col-invoice,
+.col-amount,
+.col-issue-date,
+.col-due-date,
+.col-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
 }
 
 .cell {
@@ -196,11 +203,6 @@ mat-chip {
     color: rgba(0, 0, 0, 0.8);
   }
 
-  &.st-review {
-    background-color: #bbdefb;
-    color: rgba(0, 0, 0, 0.8);
-  }
-
   &.st-approved {
     background-color: #c8e6c9;
     color: rgba(0, 0, 0, 0.8);
@@ -220,30 +222,14 @@ mat-chip {
 @media (max-width: 1200px) {
   .header-row,
   .data-row {
-    grid-template-columns:
-      45px
-      1fr
-      1fr
-      1fr
-      1fr
-      1fr
-      1fr
-      100px;
+    grid-template-columns: 45px 1fr 1fr 1fr 1fr 1fr 1fr 100px;
   }
 }
 
 @media (max-width: 1000px) {
   .header-row,
   .data-row {
-    grid-template-columns:
-      40px
-      1fr
-      1fr
-      1fr
-      1fr
-      1fr
-      1fr
-      90px;
+    grid-template-columns: 40px 1fr 1fr 1fr 1fr 1fr 1fr 90px;
   }
 
   .list-footer {
@@ -265,31 +251,12 @@ mat-chip {
 @media (max-width: 768px) {
   .header-row,
   .data-row {
-    grid-template-columns:
-      35px
-      1fr
-      1fr
-      1fr
-      1fr
-      1fr
-      1fr
-      80px;
+    grid-template-columns: 35px 1fr 1fr 1fr 1fr 80px;
   }
 
   .col-issue-date,
   .col-due-date {
     display: none;
-  }
-
-  .header-row,
-  .data-row {
-    grid-template-columns:
-      35px
-      1fr
-      1fr
-      1fr
-      1fr
-      80px;
   }
 
   .list-footer {
@@ -305,5 +272,16 @@ mat-chip {
   .list-footer ::ng-deep .mat-mdc-paginator {
     flex: 1 1 100%;
     justify-content: center;
+  }
+
+  .filter-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+
+    .search-input,
+    .status-select {
+      width: 100%;
+      min-width: auto;
+    }
   }
 }

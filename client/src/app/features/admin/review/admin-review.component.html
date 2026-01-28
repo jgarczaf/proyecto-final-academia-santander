@@ -1,10 +1,26 @@
 <h2>Solicitudes</h2>
 
-<!-- ===== TABS DE FILTRADO ===== -->
-<mat-tab-group (selectedIndexChange)="onTabChange(statusTabs[$event].value)">
-  <mat-tab *ngFor="let tab of statusTabs; let i = index" [label]="tab.label">
-  </mat-tab>
-</mat-tab-group>
+<div class="filter-toolbar">
+  <input
+    type="text"
+    placeholder="Buscar por empresa"
+    [(ngModel)]="searchQuery"
+    class="search-input"
+  />
+  <mat-select
+    [(ngModel)]="selectedStatus"
+    placeholder="Filtrar por estado"
+    class="status-select"
+  >
+    <mat-option [value]="null">Todos</mat-option>
+    <mat-option value="REVIEW">Pendiente</mat-option>
+    <mat-option value="APPROVED">Validadas</mat-option>
+    <mat-option value="REJECTED">Rechazadas</mat-option>
+  </mat-select>
+  <ath-button color="primary" size="md" fill="solid" (click)="applyFilters()">
+    Buscar
+  </ath-button>
+</div>
 
 <div class="toolbar">
   <span class="spacer"></span>
@@ -30,7 +46,6 @@
 
 <mat-card class="list-card" *ngIf="!loading; else loadingTpl">
   <div class="table-wrap">
-    <!-- ===== HEADER (grid) CON ORDENACIÓN ===== -->
     <div class="header-row">
       <div class="col-expand">
         <mat-checkbox
@@ -89,11 +104,8 @@
       </div>
     </div>
 
-    <!-- ===== FILAS ===== -->
     <ng-container *ngFor="let r of paginatedRows">
-      <!-- Fila principal -->
       <div class="data-row">
-        <!-- Checkbox -->
         <div class="col-expand">
           <mat-checkbox
             [(ngModel)]="r.selected"
@@ -102,8 +114,6 @@
             (change)="onCheckboxChange(r)"
           ></mat-checkbox>
         </div>
-
-        <!-- Estado -->
         <div class="col-status">
           <div class="cell cell-status">
             <mat-chip [ngClass]="statusClass(r.status)">{{
@@ -111,43 +121,21 @@
             }}</mat-chip>
           </div>
         </div>
-
-        <!-- Deudor -->
         <div class="col-debtor">
-          <div class="cell cell-debtor">
-            {{ getFirstBillDebtor(r) }}
-          </div>
+          <div class="cell cell-debtor">{{ getFirstBillDebtor(r) }}</div>
         </div>
-
-        <!-- Ref. Factura -->
         <div class="col-invoice">
-          <div class="cell cell-invoice">
-            {{ getFirstInvoiceNumber(r) }}
-          </div>
+          <div class="cell cell-invoice">{{ getFirstInvoiceNumber(r) }}</div>
         </div>
-
-        <!-- Importe -->
         <div class="col-amount">
-          <div class="cell cell-amount">
-            {{ getFirstBillAmount(r) }}
-          </div>
+          <div class="cell cell-amount">{{ getFirstBillAmount(r) }}</div>
         </div>
-
-        <!-- Fecha expedición -->
         <div class="col-issue-date">
-          <div class="cell cell-issue-date">
-            {{ getFirstIssueDate(r) }}
-          </div>
+          <div class="cell cell-issue-date">{{ getFirstIssueDate(r) }}</div>
         </div>
-
-        <!-- Fecha vencimiento -->
         <div class="col-due-date">
-          <div class="cell cell-due-date">
-            {{ getFirstDueDate(r) }}
-          </div>
+          <div class="cell cell-due-date">{{ getFirstDueDate(r) }}</div>
         </div>
-
-        <!-- Acciones -->
         <div class="col-actions">
           <div class="cell cell-actions">
             <ath-button
@@ -164,7 +152,6 @@
     </ng-container>
   </div>
 
-  <!-- ===== FOOTER CON PAGINADOR E INFO DE SELECCIÓN ===== -->
   <div class="list-footer">
     <div class="selection-info" *ngIf="getTotalSelectedCount() > 0">
       <strong

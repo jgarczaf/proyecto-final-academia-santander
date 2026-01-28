@@ -7,7 +7,6 @@ import { BillDialogComponent } from '../../client/bills/bill-dialog/bill-dialog.
 import { RequestsService } from '../../../core/services/requests.service';
 import { SocketService } from '../../../core/services/socket.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 
@@ -55,15 +54,6 @@ type SortDirection = 'asc' | 'desc';
   providers: [DatePipe, CurrencyPipe],
 })
 export class AdminReviewComponent implements OnInit, OnDestroy {
-  // Tabs de estado
-  statusTabs: { label: string; value: RequestStatus | null }[] = [
-    { label: 'Todas', value: null },
-    { label: 'Validadas', value: 'APPROVED' },
-    { label: 'Pendientes de revisión', value: 'REVIEW' },
-    { label: 'Rechazadas', value: 'REJECTED' },
-  ];
-  selectedStatus: RequestStatus | null = null;
-
   // Datos y vista
   allRows: RequestItem[] = [];
   rows: RequestItem[] = [];
@@ -80,15 +70,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   pageIndex = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  cols = [
-    'status',
-    'debtor',
-    'invoice',
-    'amount',
-    'issueDate',
-    'dueDate',
-    'actions',
-  ];
+  // Filtros
+  searchQuery: string = '';
+  selectedStatus: RequestStatus | null = null;
 
   private subSocketNew?: Subscription;
   private subSocketChanged?: Subscription;
@@ -128,7 +112,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.api.list().subscribe({
       next: (res) => {
-        // CARGAR TODAS, sin filtrar por status
         this.allRows = res || [];
         this.applyFiltersAndSort();
         this.loading = false;
@@ -142,16 +125,25 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* ========= Filtrado y Ordenación ========= */
-
-  onTabChange(status: RequestStatus | null): void {
-    this.selectedStatus = status;
-    this.applyFiltersAndSort();
-  }
-
   applyFiltersAndSort(): void {
-    // Aplicar filtro de estado
     let filtered = this.allRows;
+
+    // Aplicar filtro de búsqueda por nombre de empresa/deudor
+    if (this.searchQuery) {
+      const query = this.searchQuery.toLowerCase();
+      filtered = filtered.filter((r) => {
+        const debtorName = this.getFirstBillDebtor(r).toLowerCase();
+        const userName = r.user?.name?.toLowerCase() || '';
+        const companyName = r.user?.companyName?.toLowerCase() || '';
+        return (
+          debtorName.includes(query) ||
+          userName.includes(query) ||
+          companyName.includes(query)
+        );
+      });
+    }
+
+    // Aplicar filtro de estado
     if (this.selectedStatus) {
       filtered = filtered.filter((r) => r.status === this.selectedStatus);
     }
@@ -184,8 +176,8 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
           bVal = this.getFirstInvoiceNumber(b);
           break;
         case 'amount':
-          aVal = this.getFirstBillAmountValue(a);
-          bVal = this.getFirstBillAmountValue(b);
+          aVal = this.toNumber(this.getFirstBillAmountValue(a));
+          bVal = this.toNumber(this.getFirstBillAmountValue(b));
           break;
         case 'issueDate':
           aVal = this.getFirstIssueDateValue(a);
@@ -211,10 +203,8 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   onSort(column: SortColumn): void {
     if (this.sortColumn === column) {
-      // Toggle dirección
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      // Nueva columna
       this.sortColumn = column;
       this.sortDirection = 'asc';
     }
@@ -238,32 +228,49 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.paginatedRows = this.rows.slice(start, end);
   }
 
-  statusLabel(status?: string): string {
-    const s = (status || '').toUpperCase();
-    if (s === 'REVIEW') return 'Pendiente';
-    if (s === 'APPROVED') return 'Validada';
-    if (s === 'REJECTED') return 'Rechazada';
-    if (s === 'PENDING') return 'Pendiente';
-    return status || '';
+  /* ========= Display Methods ========= */
+
+  getFirstIssueDateValue(item: RequestItem): string {
+    return item.bills[0]?.issueDate
+      ? this.date.transform(item.bills[0].issueDate, 'dd/MM/yyyy') || ''
+      : '';
   }
 
-  hasRows(): boolean {
-    return this.rows.length > 0;
+  getFirstDueDateValue(item: RequestItem): string {
+    return item.bills[0]?.dueDate
+      ? this.date.transform(item.bills[0].dueDate, 'dd/MM/yyyy') || ''
+      : '';
   }
 
-  isExpanded(id: number): boolean {
-    return this.expanded.has(id);
+  getFirstBillDebtor(item: RequestItem): string {
+    return item.bills[0]?.debtor?.companyName || 'Desconocido';
   }
 
-  toggleRow(r: RequestItem): void {
-    this.isExpanded(r.id)
-      ? this.expanded.delete(r.id)
-      : this.expanded.add(r.id);
+  getFirstInvoiceNumber(item: RequestItem): string {
+    return item.bills[0]?.invoiceNumber || 'Sin número';
   }
 
-  fmtDate(v: string | Date | null | undefined): string {
-    if (!v) return '';
-    return this.date.transform(v, 'dd/MM/yyyy') ?? '';
+  getFirstBillAmount(item: RequestItem): string {
+    return item.bills[0]?.amount
+      ? this.currency.transform(
+          item.bills[0].amount,
+          'EUR',
+          'symbol',
+          '1.2-2',
+        ) || '0 €'
+      : '0 €';
+  }
+
+  getFirstIssueDate(item: RequestItem): string {
+    return this.getFirstIssueDateValue(item);
+  }
+
+  getFirstDueDate(item: RequestItem): string {
+    return this.getFirstDueDateValue(item);
+  }
+
+  getFirstBillAmountValue(item: RequestItem): string {
+    return item.bills[0]?.amount ? String(item.bills[0].amount) : '0';
   }
 
   toNumber(v: any): number {
@@ -275,59 +282,21 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return 0;
   }
 
-  fmtAmount(v: any): string {
-    return (
-      this.currency.transform(this.toNumber(v), 'EUR', 'symbol', '1.2-2') ?? ''
-    );
+  statusLabel(status?: string): string {
+    const s = (status || '').toUpperCase();
+    if (s === 'PENDING') return 'Pendiente';
+    if (s === 'REVIEW') return 'Pendiente';
+    if (s === 'APPROVED') return 'Validada';
+    if (s === 'REJECTED') return 'Rechazada';
+    return status || '';
   }
 
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
-    if (s === 'PENDING') return 'st-pending';
-    if (s === 'REVIEW') return 'st-pending';
+    if (s === 'PENDING' || s === 'REVIEW') return 'st-pending';
     if (s === 'APPROVED') return 'st-approved';
     if (s === 'REJECTED') return 'st-rejected';
     return 'st-unknown';
-  }
-
-  getFirstBillDebtor(r: RequestItem): string {
-    if (!r.bills || r.bills.length === 0) return '—';
-    return r.bills[0].debtor?.companyName || '—';
-  }
-
-  getFirstInvoiceNumber(r: RequestItem): string {
-    if (!r.bills || r.bills.length === 0) return '—';
-    return r.bills[0].invoiceNumber || '—';
-  }
-
-  getFirstBillAmount(r: RequestItem): string {
-    if (!r.bills || r.bills.length === 0) return '—';
-    return this.fmtAmount(r.bills[0].amount);
-  }
-
-  getFirstBillAmountValue(r: RequestItem): number {
-    if (!r.bills || r.bills.length === 0) return 0;
-    return this.toNumber(r.bills[0].amount);
-  }
-
-  getFirstIssueDate(r: RequestItem): string {
-    if (!r.bills || r.bills.length === 0) return '—';
-    return this.fmtDate(r.bills[0].issueDate);
-  }
-
-  getFirstIssueDateValue(r: RequestItem): number {
-    if (!r.bills || r.bills.length === 0) return 0;
-    return new Date(r.bills[0].issueDate).getTime();
-  }
-
-  getFirstDueDate(r: RequestItem): string {
-    if (!r.bills || r.bills.length === 0) return '—';
-    return this.fmtDate(r.bills[0].dueDate);
-  }
-
-  getFirstDueDateValue(r: RequestItem): number {
-    if (!r.bills || r.bills.length === 0) return 0;
-    return new Date(r.bills[0].dueDate).getTime();
   }
 
   canSelectRow(r: RequestItem): boolean {
@@ -342,12 +311,12 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   /* ========= Selección de filas ========= */
 
-  hasSelectedRows(): boolean {
-    return this.allRows.some((r) => r.selected);
+  getTotalSelectedCount(): number {
+    return this.allRows.filter((row) => row.selected).length;
   }
 
-  getTotalSelectedCount(): number {
-    return this.allRows.filter((r) => r.selected).length;
+  hasSelectedRows(): boolean {
+    return this.getTotalSelectedCount() > 0;
   }
 
   isAllCurrentPageSelected(): boolean {
@@ -381,6 +350,12 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   onCheckboxChange(r: RequestItem): void {
     // Método para manejar cambios en los checkboxes
+  }
+
+  /* ========= Filtros ========= */
+
+  applyFilters(): void {
+    this.applyFiltersAndSort();
   }
 
   /* ========= Acciones ========= */
