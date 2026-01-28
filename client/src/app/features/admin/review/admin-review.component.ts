@@ -18,6 +18,8 @@ interface BillRow {
   id: number;
   invoiceNumber: string;
   amount: any;
+  issueDate: string | Date;
+  dueDate: string | Date;
   debtor?: DebtorLite;
 }
 interface UserLite {
@@ -36,7 +38,14 @@ interface RequestItem {
   selected?: boolean;
 }
 
-type SortColumn = 'id' | 'client' | 'bills' | 'total' | 'status' | 'createdAt';
+type SortColumn =
+  | 'status'
+  | 'debtor'
+  | 'invoice'
+  | 'amount'
+  | 'issueDate'
+  | 'dueDate'
+  | 'createdAt';
 type SortDirection = 'asc' | 'desc';
 
 @Component({
@@ -71,7 +80,15 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   pageIndex = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  cols = ['id', 'client', 'bills', 'total', 'status', 'actions'];
+  cols = [
+    'status',
+    'debtor',
+    'invoice',
+    'amount',
+    'issueDate',
+    'dueDate',
+    'actions',
+  ];
 
   private subSocketNew?: Subscription;
   private subSocketChanged?: Subscription;
@@ -154,25 +171,29 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       let aVal: any, bVal: any;
 
       switch (this.sortColumn) {
-        case 'id':
-          aVal = a.id;
-          bVal = b.id;
-          break;
-        case 'client':
-          aVal = this.clientLabel(a);
-          bVal = this.clientLabel(b);
-          break;
-        case 'bills':
-          aVal = a.bills?.length ?? 0;
-          bVal = b.bills?.length ?? 0;
-          break;
-        case 'total':
-          aVal = this.totalAmount(a);
-          bVal = this.totalAmount(b);
-          break;
         case 'status':
           aVal = a.status;
           bVal = b.status;
+          break;
+        case 'debtor':
+          aVal = this.getFirstBillDebtor(a);
+          bVal = this.getFirstBillDebtor(b);
+          break;
+        case 'invoice':
+          aVal = this.getFirstInvoiceNumber(a);
+          bVal = this.getFirstInvoiceNumber(b);
+          break;
+        case 'amount':
+          aVal = this.getFirstBillAmountValue(a);
+          bVal = this.getFirstBillAmountValue(b);
+          break;
+        case 'issueDate':
+          aVal = this.getFirstIssueDateValue(a);
+          bVal = this.getFirstIssueDateValue(b);
+          break;
+        case 'dueDate':
+          aVal = this.getFirstDueDateValue(a);
+          bVal = this.getFirstDueDateValue(b);
           break;
         case 'createdAt':
           aVal = new Date(a.createdAt).getTime();
@@ -242,7 +263,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   fmtDate(v: string | Date | null | undefined): string {
     if (!v) return '';
-    return this.date.transform(v, 'dd/MM/yyyy, HH:mm') ?? '';
+    return this.date.transform(v, 'dd/MM/yyyy') ?? '';
   }
 
   toNumber(v: any): number {
@@ -260,14 +281,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     );
   }
 
-  fmtBillAmount(v: any): string {
-    return this.fmtAmount(v);
-  }
-
-  totalAmount(r: RequestItem): number {
-    return (r.bills ?? []).reduce((sum, b) => sum + this.toNumber(b.amount), 0);
-  }
-
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
     if (s === 'PENDING') return 'st-pending';
@@ -277,13 +290,54 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return 'st-unknown';
   }
 
-  clientLabel(r: RequestItem): string {
-    return r.user?.companyName || r.user?.name || r.user?.email || '—';
+  getFirstBillDebtor(r: RequestItem): string {
+    if (!r.bills || r.bills.length === 0) return '—';
+    return r.bills[0].debtor?.companyName || '—';
   }
 
-  canAction(status?: string): boolean {
-    const s = (status || '').toUpperCase();
-    return s === 'REVIEW' || s === 'PENDING';
+  getFirstInvoiceNumber(r: RequestItem): string {
+    if (!r.bills || r.bills.length === 0) return '—';
+    return r.bills[0].invoiceNumber || '—';
+  }
+
+  getFirstBillAmount(r: RequestItem): string {
+    if (!r.bills || r.bills.length === 0) return '—';
+    return this.fmtAmount(r.bills[0].amount);
+  }
+
+  getFirstBillAmountValue(r: RequestItem): number {
+    if (!r.bills || r.bills.length === 0) return 0;
+    return this.toNumber(r.bills[0].amount);
+  }
+
+  getFirstIssueDate(r: RequestItem): string {
+    if (!r.bills || r.bills.length === 0) return '—';
+    return this.fmtDate(r.bills[0].issueDate);
+  }
+
+  getFirstIssueDateValue(r: RequestItem): number {
+    if (!r.bills || r.bills.length === 0) return 0;
+    return new Date(r.bills[0].issueDate).getTime();
+  }
+
+  getFirstDueDate(r: RequestItem): string {
+    if (!r.bills || r.bills.length === 0) return '—';
+    return this.fmtDate(r.bills[0].dueDate);
+  }
+
+  getFirstDueDateValue(r: RequestItem): number {
+    if (!r.bills || r.bills.length === 0) return 0;
+    return new Date(r.bills[0].dueDate).getTime();
+  }
+
+  canSelectRow(r: RequestItem): boolean {
+    const s = (r.status || '').toUpperCase();
+    const canSelect = s === 'REVIEW' || s === 'PENDING';
+    // Si no puede seleccionarse y está seleccionada, deseleccionar
+    if (!canSelect && r.selected) {
+      r.selected = false;
+    }
+    return canSelect;
   }
 
   /* ========= Selección de filas ========= */
@@ -298,18 +352,29 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   isAllCurrentPageSelected(): boolean {
     if (this.paginatedRows.length === 0) return false;
-    return this.paginatedRows.every((r) => r.selected);
+    const selectableRows = this.paginatedRows.filter((r) =>
+      this.canSelectRow(r),
+    );
+    if (selectableRows.length === 0) return false;
+    return selectableRows.every((r) => r.selected);
   }
 
   isCurrentPageIndeterminate(): boolean {
     if (this.paginatedRows.length === 0) return false;
-    const selectedCount = this.paginatedRows.filter((r) => r.selected).length;
-    return selectedCount > 0 && selectedCount < this.paginatedRows.length;
+    const selectableRows = this.paginatedRows.filter((r) =>
+      this.canSelectRow(r),
+    );
+    if (selectableRows.length === 0) return false;
+    const selectedCount = selectableRows.filter((r) => r.selected).length;
+    return selectedCount > 0 && selectedCount < selectableRows.length;
   }
 
   toggleSelectAllCurrentPage(event: MatCheckboxChange): void {
     const checked = event.checked;
-    this.paginatedRows.forEach((r) => {
+    const selectableRows = this.paginatedRows.filter((r) =>
+      this.canSelectRow(r),
+    );
+    selectableRows.forEach((r) => {
       r.selected = checked;
     });
   }

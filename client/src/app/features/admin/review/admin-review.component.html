@@ -39,34 +39,49 @@
           (change)="toggleSelectAllCurrentPage($event)"
         ></mat-checkbox>
       </div>
-      <div class="col-id">
-        <div class="cell cell-id cell-sortable" (click)="onSort('id')">
-          ID solicitud
-          <mat-icon class="sort-icon">{{ getSortIcon("id") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-client">
-        <div class="cell cell-client cell-sortable" (click)="onSort('client')">
-          Cliente
-          <mat-icon class="sort-icon">{{ getSortIcon("client") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-count">
-        <div class="cell cell-count cell-sortable" (click)="onSort('bills')">
-          Nº facturas
-          <mat-icon class="sort-icon">{{ getSortIcon("bills") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-total">
-        <div class="cell cell-total cell-sortable" (click)="onSort('total')">
-          Total adeudado
-          <mat-icon class="sort-icon">{{ getSortIcon("total") }}</mat-icon>
-        </div>
-      </div>
       <div class="col-status">
         <div class="cell cell-status cell-sortable" (click)="onSort('status')">
-          Estado
+          <span>Estado</span>
           <mat-icon class="sort-icon">{{ getSortIcon("status") }}</mat-icon>
+        </div>
+      </div>
+      <div class="col-debtor">
+        <div class="cell cell-debtor cell-sortable" (click)="onSort('debtor')">
+          <span>Deudor</span>
+          <mat-icon class="sort-icon">{{ getSortIcon("debtor") }}</mat-icon>
+        </div>
+      </div>
+      <div class="col-invoice">
+        <div
+          class="cell cell-invoice cell-sortable"
+          (click)="onSort('invoice')"
+        >
+          <span>Ref. Factura</span>
+          <mat-icon class="sort-icon">{{ getSortIcon("invoice") }}</mat-icon>
+        </div>
+      </div>
+      <div class="col-amount">
+        <div class="cell cell-amount cell-sortable" (click)="onSort('amount')">
+          <span>Importe</span>
+          <mat-icon class="sort-icon">{{ getSortIcon("amount") }}</mat-icon>
+        </div>
+      </div>
+      <div class="col-issue-date">
+        <div
+          class="cell cell-issue-date cell-sortable"
+          (click)="onSort('issueDate')"
+        >
+          <span>Fecha expedición</span>
+          <mat-icon class="sort-icon">{{ getSortIcon("issueDate") }}</mat-icon>
+        </div>
+      </div>
+      <div class="col-due-date">
+        <div
+          class="cell cell-due-date cell-sortable"
+          (click)="onSort('dueDate')"
+        >
+          <span>Fecha vencimiento</span>
+          <mat-icon class="sort-icon">{{ getSortIcon("dueDate") }}</mat-icon>
         </div>
       </div>
       <div class="col-actions">
@@ -82,30 +97,10 @@
         <div class="col-expand">
           <mat-checkbox
             [(ngModel)]="r.selected"
+            [disabled]="!canSelectRow(r)"
+            [checked]="r.selected || !canSelectRow(r)"
             (change)="onCheckboxChange(r)"
           ></mat-checkbox>
-        </div>
-
-        <!-- ID -->
-        <div class="col-id">
-          <div class="cell cell-id">{{ r.id }}</div>
-        </div>
-
-        <!-- Cliente -->
-        <div class="col-client">
-          <div class="cell cell-client">
-            {{ clientLabel(r) }}
-          </div>
-        </div>
-
-        <!-- Nº facturas -->
-        <div class="col-count">
-          <div class="cell cell-count">{{ r.bills.length }}</div>
-        </div>
-
-        <!-- Total adeudado -->
-        <div class="col-total">
-          <div class="cell cell-total">{{ fmtAmount(totalAmount(r)) }}</div>
         </div>
 
         <!-- Estado -->
@@ -114,6 +109,41 @@
             <mat-chip [ngClass]="statusClass(r.status)">{{
               statusLabel(r.status)
             }}</mat-chip>
+          </div>
+        </div>
+
+        <!-- Deudor -->
+        <div class="col-debtor">
+          <div class="cell cell-debtor">
+            {{ getFirstBillDebtor(r) }}
+          </div>
+        </div>
+
+        <!-- Ref. Factura -->
+        <div class="col-invoice">
+          <div class="cell cell-invoice">
+            {{ getFirstInvoiceNumber(r) }}
+          </div>
+        </div>
+
+        <!-- Importe -->
+        <div class="col-amount">
+          <div class="cell cell-amount">
+            {{ getFirstBillAmount(r) }}
+          </div>
+        </div>
+
+        <!-- Fecha expedición -->
+        <div class="col-issue-date">
+          <div class="cell cell-issue-date">
+            {{ getFirstIssueDate(r) }}
+          </div>
+        </div>
+
+        <!-- Fecha vencimiento -->
+        <div class="col-due-date">
+          <div class="cell cell-due-date">
+            {{ getFirstDueDate(r) }}
           </div>
         </div>
 
@@ -146,7 +176,7 @@
     <mat-paginator
       [length]="rows.length"
       [pageSize]="pageSize"
-      [pageSizeOptions]="[10, 25, 50]"
+      [pageSizeOptions]="[5, 10]"
       [pageIndex]="pageIndex"
       (page)="onPageChange($event)"
       showFirstLastButtons
