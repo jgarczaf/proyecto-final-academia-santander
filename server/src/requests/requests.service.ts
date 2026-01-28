@@ -63,55 +63,63 @@ export class RequestsService {
         throw new ForbiddenException(`La factura ${b.id} no está en estado PENDING`);
     }
 
-    const saved = await this.requestRepo.manager.transaction(async (mgr) => {
-      const billsForUpdate = await mgr
-        .createQueryBuilder(Bill, 'b')
-        .setLock('pessimistic_write')
-        .where('b.id IN (:...ids)', { ids: uniqueIds })
-        .andWhere('b.userId = :userId', { userId: user.id })
-        .andWhere('b.status = :status', { status: BillStatus.PENDING })
-        .getMany();
+    // Crear una solicitud individual por cada factura
+    const createdRequests: Request[] = [];
 
-      if (billsForUpdate.length !== uniqueIds.length) {
-        throw new ForbiddenException('Alguna factura ya no cumple los requisitos');
-      }
+    for (const billId of uniqueIds) {
+      const saved = await this.requestRepo.manager.transaction(async (mgr) => {
+        const billForUpdate = await mgr
+          .createQueryBuilder(Bill, 'b')
+          .setLock('pessimistic_write')
+          .where('b.id = :id', { id: billId })
+          .andWhere('b.userId = :userId', { userId: user.id })
+          .andWhere('b.status = :status', { status: BillStatus.PENDING })
+          .getOne();
 
-      const req = mgr.create(Request, {
-        user: { id: user.id },
-        status: RequestStatus.REVIEW,
-        bills: billsForUpdate,
+        if (!billForUpdate) {
+          throw new ForbiddenException('La factura ya no cumple los requisitos');
+        }
+
+        // Crear solicitud con una sola factura
+        const req = mgr.create(Request, {
+          user: { id: user.id },
+          status: RequestStatus.REVIEW,
+          bills: [billForUpdate],
+        });
+        const created = await mgr.save(req);
+
+        // Actualizar estado de la factura
+        await mgr.update(Bill, billId, { status: BillStatus.IN_REQUEST });
+
+        return mgr.getRepository(Request).findOne({
+          where: { id: created.id },
+          relations: ['user', 'bills', 'bills.debtor'],
+        }) as Promise<Request>;
       });
-      const created = await mgr.save(req);
 
-      for (const b of billsForUpdate) {
-        await mgr.update(Bill, b.id, { status: BillStatus.IN_REQUEST });
-      }
+      createdRequests.push(saved);
 
-      return mgr.getRepository(Request).findOne({
-        where: { id: created.id },
-        relations: ['user', 'bills', 'bills.debtor'],
-      }) as Promise<Request>;
-    });
+      this.notifier.emitToUser(user.id, 'request.updated', {
+        requestId: saved.id,
+        status: saved.status,
+        billIds: saved.bills.map((b) => b.id),
+      });
 
-    this.notifier.emitToUser(user.id, 'request.updated', {
-      requestId: saved.id,
-      status: saved.status,
-      billIds: saved.bills.map((b) => b.id),
-    });
+      this.notifier.emitToRole('ADMIN', 'request.created', {
+        requestId: saved.id,
+        clientId: user.id,
+        bills: saved.bills.map((b) => ({
+          id: b.id,
+          amount: b.amount,
+          invoiceNumber: b.invoiceNumber,
+        })),
+        createdAt: saved.createdAt,
+        status: saved.status,
+      });
+    }
 
-    this.notifier.emitToRole('ADMIN', 'request.created', {
-      requestId: saved.id,
-      clientId: user.id,
-      bills: saved.bills.map((b) => ({
-        id: b.id,
-        amount: b.amount,
-        invoiceNumber: b.invoiceNumber,
-      })),
-      createdAt: saved.createdAt,
-      status: saved.status,
-    });
-
-    return saved;
+    // Retornar la primera solicitud creada (o podrías retornar un array)
+    return createdRequests[0];
   }
 
   async approve(id: number, admin: User): Promise<Request> {
