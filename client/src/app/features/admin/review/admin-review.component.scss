@@ -22,6 +22,26 @@ h2 {
   flex: 1 1 auto;
 }
 
+.list-card {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  flex: 1;
+}
+
+.list-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-top: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
 .selection-info {
   color: #d32f2f;
   font-size: 14px;
@@ -30,14 +50,12 @@ h2 {
   background-color: #ffebee;
   border-radius: 4px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.list-card {
-  padding: 0;
-}
-
-.table-wrap {
-  overflow-x: auto;
+.list-footer ::ng-deep .mat-mdc-paginator {
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .header-row,
@@ -61,6 +79,9 @@ h2 {
   background: #fafafa;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.7);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .header-row > div,
@@ -147,10 +168,6 @@ h2 {
   background: rgba(0, 0, 0, 0.02);
 }
 
-.cell-actions button[mat-raised-button] {
-  min-width: 112px;
-}
-
 mat-chip {
   height: 22px;
   line-height: 22px;
@@ -184,67 +201,6 @@ mat-chip {
   }
 }
 
-.request-detail {
-  background: #fafafa;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 12px 16px 16px;
-}
-
-.detail-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.detail-title {
-  font-weight: 600;
-}
-
-.muted {
-  color: #757575;
-  font-weight: 400;
-}
-
-.client-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #eef4ff;
-  color: #0b5ed7;
-  border-radius: 8px;
-  padding: 6px 10px;
-}
-
-.client-badge mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-.client-badge .name {
-  font-weight: 600;
-}
-
-.client-badge .email {
-  font-size: 12px;
-  color: #5a89d6;
-}
-
-.detail-table {
-  width: 100%;
-}
-
-.detail-table th,
-.detail-table td {
-  padding: 6px 10px;
-}
-
-.detail-table th:last-child,
-.detail-table td:last-child {
-  text-align: right;
-}
-
 @media (max-width: 1050px) {
   .header-row,
   .data-row {
@@ -272,14 +228,19 @@ mat-chip {
       180px;
   }
 
-  .client-badge {
-    display: none;
+  .list-footer {
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .selection-info {
     order: -1;
     width: 100%;
-    margin-bottom: 8px;
+  }
+
+  .list-footer ::ng-deep .mat-mdc-paginator {
+    flex: 1 1 100%;
+    justify-content: center;
   }
 }
 
@@ -300,9 +261,18 @@ mat-chip {
     display: none;
   }
 
+  .list-footer {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
   .selection-info {
     order: -1;
     width: 100%;
-    margin-bottom: 8px;
+  }
+
+  .list-footer ::ng-deep .mat-mdc-paginator {
+    flex: 1 1 100%;
+    justify-content: center;
   }
 }

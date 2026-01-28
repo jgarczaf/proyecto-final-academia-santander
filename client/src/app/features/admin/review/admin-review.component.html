@@ -7,13 +7,6 @@
 </mat-tab-group>
 
 <div class="toolbar">
-  <div class="selection-info" *ngIf="getTotalSelectedCount() > 0">
-    <strong
-      >HAS SELECCIONADO {{ getTotalSelectedCount() }} SOLICITUD{{
-        getTotalSelectedCount() === 1 ? "" : "ES"
-      }}</strong
-    >
-  </div>
   <span class="spacer"></span>
   <ath-button
     color="primary"
@@ -141,15 +134,24 @@
     </ng-container>
   </div>
 
-  <!-- ===== PAGINADOR ===== -->
-  <mat-paginator
-    [length]="rows.length"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [pageIndex]="pageIndex"
-    (page)="onPageChange($event)"
-    showFirstLastButtons
-  ></mat-paginator>
+  <!-- ===== FOOTER CON PAGINADOR E INFO DE SELECCIÓN ===== -->
+  <div class="list-footer">
+    <div class="selection-info" *ngIf="getTotalSelectedCount() > 0">
+      <strong
+        >HAS SELECCIONADO {{ getTotalSelectedCount() }} SOLICITUD{{
+          getTotalSelectedCount() === 1 ? "" : "ES"
+        }}</strong
+      >
+    </div>
+    <mat-paginator
+      [length]="rows.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[10, 25, 50]"
+      [pageIndex]="pageIndex"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
 </mat-card>
 
 <ng-template #loadingTpl>
