@@ -1,0 +1,12 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { TooltipArgs } from './tooltip.types';
+declare const meta: Meta<TooltipArgs>;
+export default meta;
+type Story = StoryObj<TooltipArgs>;
+export declare const Playground: Story;
+export declare const Position: Story;
+export declare const HasArrow: Story;
+export declare const color: Story;
+export declare const trigger: Story;
+export declare const maxWidth: Story;
+export declare const IconTrigger: Story;

@@ -1,0 +1,101 @@
+:host {
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+}
+:host .ath-avatar--xs {
+  height: var(--ath-sizing-avatar-height-xs);
+  width: var(--ath-sizing-avatar-width-xs);
+}
+:host .ath-avatar--xs ::slotted([slot=img]) {
+  height: var(--ath-sizing-avatar-height-xs);
+  width: var(--ath-sizing-avatar-width-xs);
+}
+:host .ath-avatar--xs svg {
+  flex-shrink: 0;
+  height: var(--ath-sizing-avatar-height-xs);
+  width: var(--ath-sizing-avatar-width-xs);
+}
+:host .ath-avatar--xs .ath-avatar--initials {
+  font-size: var(--ath-font-size-heading-6);
+  line-height: var(--ath-font-line-height-heading-6);
+}
+:host .ath-avatar--sm {
+  height: var(--ath-sizing-avatar-height-sm);
+  width: var(--ath-sizing-avatar-width-sm);
+}
+:host .ath-avatar--sm ::slotted([slot=img]) {
+  height: var(--ath-sizing-avatar-height-sm);
+  width: var(--ath-sizing-avatar-width-sm);
+}
+:host .ath-avatar--sm svg {
+  flex-shrink: 0;
+  height: var(--ath-sizing-avatar-height-sm);
+  width: var(--ath-sizing-avatar-width-sm);
+}
+:host .ath-avatar--sm .ath-avatar--initials {
+  font-size: var(--ath-font-size-heading-5);
+  line-height: var(--ath-font-line-height-heading-5);
+}
+:host .ath-avatar--md {
+  height: var(--ath-sizing-avatar-height-md);
+  width: var(--ath-sizing-avatar-width-md);
+}
+:host .ath-avatar--md ::slotted([slot=img]) {
+  height: var(--ath-sizing-avatar-height-md);
+  width: var(--ath-sizing-avatar-width-md);
+}
+:host .ath-avatar--md svg {
+  flex-shrink: 0;
+  height: var(--ath-sizing-avatar-height-md);
+  width: var(--ath-sizing-avatar-width-md);
+}
+:host .ath-avatar--md .ath-avatar--initials {
+  font-size: var(--ath-font-size-heading-2);
+  line-height: var(--ath-font-line-height-heading-2);
+}
+:host .ath-avatar--lg {
+  height: var(--ath-sizing-avatar-height-lg);
+  width: var(--ath-sizing-avatar-width-lg);
+}
+:host .ath-avatar--lg ::slotted([slot=img]) {
+  height: var(--ath-sizing-avatar-height-lg);
+  width: var(--ath-sizing-avatar-width-lg);
+}
+:host .ath-avatar--lg svg {
+  flex-shrink: 0;
+  height: var(--ath-sizing-avatar-height-lg);
+  width: var(--ath-sizing-avatar-width-lg);
+}
+:host .ath-avatar--lg .ath-avatar--initials {
+  font-size: var(--ath-font-size-heading-1);
+  line-height: var(--ath-font-line-height-heading-1);
+}
+:host .ath-avatar--default {
+  background: var(--ath-color-avatar-default-bg);
+}
+:host .ath-avatar svg {
+  fill: var(--ath-color-avatar-default-bg);
+}
+:host .ath-avatar--initials {
+  background: var(--ath-color-avatar-initials-bg);
+}
+:host .ath-avatar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--ath-border-radius-avatar);
+  font-family: var(--ath-font-family-primary);
+  font-weight: var(--ath-font-weight-heading);
+  overflow: hidden;
+}
+:host .ath-avatar--image {
+  background: var(--ath-color-bg-secondary-subtlest-default);
+}
+:host .ath-avatar .ath-avatar--initials {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--ath-color-avatar-initials-fg);
+}

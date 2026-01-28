@@ -1,0 +1,112 @@
+:host .ath-radiobutton {
+  --border: 1px solid var(--ath-color-radiobutton-border-default);
+  --background: var(--ath-color-radiobutton-bg-default);
+  --color: var(--ath-color-fg-default);
+  --font-weight: var(--ath-font-weight-regular);
+  --after-background-color: none;
+}
+:host .ath-radiobutton--checked {
+  --font-weight: var(--ath-font-weight-medium);
+  --background: var(--ath-color-radiobutton-bg-default);
+}
+:host .ath-radiobutton--checked:not(.ath-radiobutton--read-only):not(.ath-radiobutton--disabled) {
+  --border: none;
+  --after-box-shadow: 0px 0px 0px 7px var(--ath-color-radiobutton-bg-checked);
+  --after-background-color: var(--ath-color-radiobutton-bg-default);
+}
+:host .ath-radiobutton--read-only {
+  cursor: not-allowed;
+  --background: var(--ath-color-radiobutton-bg-readonly);
+  --border: 1px solid var(--ath-color-radiobutton-border-readonly);
+  --color: var(--ath-color-fg-default);
+}
+:host .ath-radiobutton--read-only .ath-radiobutton-item {
+  cursor: not-allowed;
+}
+:host .ath-radiobutton--read-only .ath-input__label {
+  cursor: not-allowed;
+}
+:host .ath-radiobutton--read-only.ath-radiobutton--checked {
+  --background: var(--ath-color-radiobutton-bg-readonly);
+  --border: 1px solid var(--ath-color-radiobutton-border-readonly);
+  --after-background-color: var(--ath-color-radiobutton-bg-checked);
+}
+:host .ath-radiobutton--read-only.ath-radiobutton--checked .ath-radiobutton-item {
+  cursor: not-allowed;
+}
+:host .ath-radiobutton--read-only.ath-radiobutton--checked .ath-input__label {
+  cursor: not-allowed;
+}
+:host .ath-radiobutton--disabled {
+  cursor: not-allowed;
+  --background: var(--ath-color-radiobutton-bg-disabled-default);
+  --border: 1px solid var(--ath-color-radiobutton-border-disabled);
+  --color: var(--ath-color-text---disabled, var(--ath-color-fg-disabled));
+}
+:host .ath-radiobutton--disabled .ath-radiobutton-item {
+  cursor: not-allowed;
+}
+:host .ath-radiobutton--disabled .ath-input__label {
+  cursor: not-allowed;
+}
+:host .ath-radiobutton--checked.ath-radiobutton--disabled {
+  --border: none;
+  --after-box-shadow: 0px 0px 0px 7px var(--ath-color-radiobutton-bg-disabled-checked);
+  --after-background-color: var(--ath-color-radiobutton-indicator-disabled);
+}
+:host .ath-radiobutton--checked.ath-radiobutton--disabled .ath-radiobutton-item {
+  cursor: not-allowed;
+}
+
+:host .ath-radiobutton {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ath-spacing-radiobutton-col-gap);
+  align-self: stretch;
+}
+:host .ath-radiobutton:focus-visible {
+  border: none;
+  outline: none;
+}
+:host .ath-radiobutton-item {
+  height: var(--ath-sizing-radiobutton-height);
+  width: var(--ath-sizing-radiobutton-width);
+  max-height: var(--ath-sizing-radiobutton-height);
+  max-width: var(--ath-sizing-radiobutton-width);
+  min-height: var(--ath-sizing-radiobutton-height);
+  min-width: var(--ath-sizing-radiobutton-width);
+  border-radius: var(--ath-border-radius-radiobutton);
+  box-sizing: border-box;
+  cursor: pointer;
+  background: var(--background);
+  border: var(--border);
+}
+:host .ath-radiobutton-item:focus-visible {
+  outline: none;
+  box-shadow: 0px 0px 0px 2px var(--ath-color-drop-shadow-focus), 0px 0px 0px 4px var(--ath-color-border-focus);
+}
+:host .ath-radiobutton {
+  position: relative;
+}
+:host .ath-radiobutton-item::after {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  transform: translate(-50%, -50%);
+  content: "";
+  width: 10px;
+  max-width: 10px;
+  height: 10px;
+  max-height: 10px;
+  border-radius: 100%;
+  background-color: var(--after-background-color);
+  box-shadow: var(--after-box-shadow);
+}
+:host .ath-radiobutton .ath-input__label {
+  color: var(--color);
+  font-family: var(--ath-font-family-primary);
+  font-size: var(--ath-font-size-input-label);
+  font-style: normal;
+  font-weight: var(--font-weight);
+  line-height: var(--ath-font-line-height-input-label);
+}

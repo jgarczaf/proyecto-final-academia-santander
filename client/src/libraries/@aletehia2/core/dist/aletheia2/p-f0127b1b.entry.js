@@ -1,0 +1,2 @@
+import{r as a}from"./p-D2-yfY-d.js";import{T as e}from"./p-CaXjjomC.js";const t=class{constructor(e){a(this,e)}ariaLabel;badgeLabel;badgeMax;badgeValue;disabled=false;icon;name;selected=false;tooltipText;externalLabel="Se abre en una nueva ventana";href;rel;target=e.Self};export{t as ath_menu_lateral_item_link};
+//# sourceMappingURL=p-f0127b1b.entry.js.map

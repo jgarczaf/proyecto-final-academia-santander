@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { DropdownOptionsArgs } from './dropdown.types';
+declare const meta: Meta<DropdownOptionsArgs>;
+export default meta;
+type Story = StoryObj<DropdownOptionsArgs>;
+export declare const Playground: Story;
+export declare const Disabled: Story;
+export declare const OptionGroup: Story;
+export declare const Selected: Story;
+export declare const ConIcono: Story;
+export declare const ConAssetSlots: Story;

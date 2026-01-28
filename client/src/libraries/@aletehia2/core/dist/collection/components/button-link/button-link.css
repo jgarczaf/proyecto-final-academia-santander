@@ -1,0 +1,89 @@
+.ath-button-link__inner:hover {
+  text-decoration-line: underline;
+}
+
+.ath-button-link__inner:active {
+  text-decoration-line: underline;
+  color: var(--ath-color-fg-primary-pressed);
+}
+
+.ath-button-link--disabled .ath-button-link__inner:hover {
+  text-decoration-line: none;
+}
+
+:host {
+  display: inline-flex;
+  user-select: none;
+}
+:host .ath-button-link--container {
+  display: inline-flex;
+  font-family: var(--ath-font-family-primary);
+  font-size: var(--font-size);
+  font-weight: var(--ath-font-weight-medium);
+  line-height: var(--ath-font-line-height-body);
+  border-radius: var(--ath-border-radius-2xs);
+  outline: none;
+  transition: background 0.5s;
+  cursor: pointer;
+}
+:host .ath-button-link--container .ath-button-link__inner {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--ath-spacing-between-100);
+}
+:host .ath-button-link--container.ath-button-link--disabled {
+  box-shadow: none;
+  color: var(--ath-color-fg-disabled);
+  pointer-events: none;
+}
+:host[disabled]:not([disabled=false]), :host[disabled=true] {
+  cursor: not-allowed;
+}
+
+:host(:focus:not(:active)),
+:host(:focus-visible:not(:active)) {
+  outline: none;
+}
+:host(:focus:not(:active)) .ath-button-link--container,
+:host(:focus-visible:not(:active)) .ath-button-link--container {
+  outline: 2px solid var(--ath-color-border-focus);
+  outline-offset: 2px;
+  color: var(--ath-color-fg-primary-default);
+}
+:host(:focus:not(:active)) .ath-button-link--container .ath-button-link__inner,
+:host(:focus-visible:not(:active)) .ath-button-link--container .ath-button-link__inner {
+  text-decoration-line: underline;
+}
+
+.ath-button-link--sm {
+  --font-size: var(--ath-font-size-comp-sm);
+}
+
+.ath-button-link--md {
+  --font-size: var(--ath-font-size-comp-md);
+}
+
+.ath-button-link--lg {
+  --font-size: var(--ath-font-size-comp-lg);
+}
+
+:host .ath-button-link--primary:not(.ath-button-link--disabled) {
+  color: var(--ath-color-fg-primary-default);
+}
+:host .ath-button-link--secondary:not(.ath-button-link--disabled) {
+  color: var(--ath-color-fg-default);
+}
+:host .ath-button-link--primary:not(.ath-button-link--disabled) :hover {
+  color: var(--ath-color-fg-primary-hovered);
+}
+
+:host .ath-button-link--primary:not(.ath-button-link--disabled) {
+  color: var(--ath-color-fg-primary-default);
+}
+:host .ath-button-link--secondary:not(.ath-button-link--disabled) {
+  color: var(--ath-color-fg-default);
+}
+:host .ath-button-link--secondary:not(.ath-button-link--disabled) :hover {
+  color: var(--ath-color-fg-primary-hovered);
+}

@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: var(--flex-direction--container);
+}
+
+:host(.ath-list--horizontal) {
+  --flex-direction--container: row;
+  --flex-direction--items: column;
+}
+
+:host(.ath-list--vertical) {
+  --flex-direction--container: column;
+  --flex-direction--items: row;
+}

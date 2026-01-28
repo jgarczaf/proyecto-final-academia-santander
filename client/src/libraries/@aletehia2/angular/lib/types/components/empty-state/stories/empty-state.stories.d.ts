@@ -1,0 +1,20 @@
+import { Meta, StoryObj } from '@storybook/html';
+type EmptyStateArgs = {
+    'type': string;
+    'hide-image': boolean;
+    'heading-text': string;
+    'heading-size': string;
+    'heading-level': number;
+    'description': string;
+    'bodySlot'?: string;
+    'footerSlot'?: string;
+    'loading-label'?: string;
+};
+declare const meta: Meta<EmptyStateArgs>;
+export default meta;
+type Story = StoryObj<EmptyStateArgs>;
+export declare const Playground: Story;
+export declare const Types: Story;
+export declare const HideImage: Story;
+export declare const ConBodySlot: Story;
+export declare const ConFooterSlot: Story;

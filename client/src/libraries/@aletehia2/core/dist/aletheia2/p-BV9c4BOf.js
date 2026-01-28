@@ -1,0 +1,2 @@
+function e(e,n=true){if(e===undefined||e===null){return undefined}if(e||n){return e.toString()}return undefined}function n(e){if(e!==undefined&&e!==null){return e.toString()}return undefined}function r(e,n=false){if(e?.length>0){return e}if(n&&String(e).trim().length===0){return""}return undefined}const t={Text:"text",Email:"email",Search:"search",Url:"url",Tel:"tel"};const u={Medium:"md"};const f={Left:"left"};const i={Error:"error",None:"none"};export{t as I,i as a,f as b,u as c,e as d,r as e,n as f};
+//# sourceMappingURL=p-BV9c4BOf.js.map

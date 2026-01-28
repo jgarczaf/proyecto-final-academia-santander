@@ -1,0 +1,20 @@
+import { FunctionalComponent } from '../../../stencil-public-runtime';
+export type FcCalendarYearType = {
+    shownYear?: Date;
+    selectedYear?: Date;
+    selectedRangeStart?: Date;
+    selectedRangeEnd?: Date;
+    currentYear?: Date;
+    disabledDates?: Date[];
+    highlightedDates?: Date[];
+    disabledYears?: Date[];
+    highlightedYears?: Date[];
+    color?: string;
+    minYear?: Date;
+    maxYear?: Date;
+    hasFocus?: boolean;
+    onYearSelect: (e: MouseEvent, day: Date) => void;
+    onChangeShownYear?: (day: Date) => void;
+    onExit?: () => void;
+};
+export declare const FcCalendarYear: FunctionalComponent<FcCalendarYearType>;

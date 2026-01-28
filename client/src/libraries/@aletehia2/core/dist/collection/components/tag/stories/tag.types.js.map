@@ -1,0 +1,1 @@
+{"version":3,"file":"tag.types.js","sourceRoot":"","sources":["../../../../src/components/tag/stories/tag.types.ts"],"names":[],"mappings":"","sourcesContent":["export type TagArgs = {\r\n  'color': string;\r\n  'icon'?: string;\r\n  'heading-text'?: string;\r\n  'heading-level'?: number;\r\n  'size': string;\r\n  'defaultSlot': string;\r\n};\r\n"]}

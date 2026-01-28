@@ -1,0 +1,12 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { ButtonLinkArgs } from './button-link.types';
+declare const meta: Meta<ButtonLinkArgs>;
+export default meta;
+type Story = StoryObj<ButtonLinkArgs>;
+export declare const Playground: Story;
+export declare const Color: Story;
+export declare const Size: Story;
+export declare const Icon: Story;
+export declare const IconPosition: Story;
+export declare const Disabled: Story;
+export declare const Autofocus: Story;

@@ -1,0 +1,2 @@
+const s={Small:"sm"};const n={Primary:"primary"};const o={None:"none",First:"first",Last:"last"};const t={None:"none",Rows:"rows",Columns:"columns"};const a={None:"none",Single:"single",Multiple:"multiple"};export{s as T,n as a,t as b,a as c,o as d};
+//# sourceMappingURL=p-DH9nlGTF.js.map

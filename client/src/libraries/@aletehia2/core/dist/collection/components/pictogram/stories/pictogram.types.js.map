@@ -1,0 +1,1 @@
+{"version":3,"file":"pictogram.types.js","sourceRoot":"","sources":["../../../../src/components/pictogram/stories/pictogram.types.ts"],"names":[],"mappings":"","sourcesContent":["export type PictogramArgs = {\r\n    'name': string;\r\n    'size': string;\r\n    'aria-label': string;\r\n    'aria-labelledby': string;\r\n};"]}

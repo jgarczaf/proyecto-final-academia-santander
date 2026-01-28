@@ -1,0 +1,1 @@
+{"version":3,"file":"divider.types.js","sourceRoot":"","sources":["../../../../src/components/divider/stories/divider.types.ts"],"names":[],"mappings":"","sourcesContent":["export type DividerArgs = {\r\n  orientation: string;\r\n  size: string;\r\n  color: string;\r\n};"]}

@@ -1,0 +1,1 @@
+{"version":3,"file":"icon.types.js","sourceRoot":"","sources":["../../../../src/components/icon/stories/icon.types.ts"],"names":[],"mappings":"","sourcesContent":["export type IconArgs = {\r\n  'color': string;\r\n  'icon': string;\r\n  'aria-label': string;\r\n  'aria-labelledby': string;\r\n  'size': string;\r\n};\r\n"]}

@@ -1,0 +1,94 @@
+:host .ath-switch {
+  display: flex;
+  width: var(--ath-sizing-switch-width);
+  min-width: var(--ath-sizing-switch-width);
+  max-width: var(--ath-sizing-switch-width);
+  height: var(--ath-sizing-switch-height);
+  padding: var(--ath-spacing-switch-padding-around);
+  align-items: center;
+  border-radius: var(--ath-border-radius-300);
+  box-sizing: border-box;
+}
+:host .ath-switch:hover {
+  cursor: pointer;
+}
+:host .ath-switch__selected {
+  border-color: var(--ath-color-switch-bg-selected-default);
+  background: var(--ath-color-switch-bg-selected-default);
+  justify-content: flex-end;
+}
+:host .ath-switch__selected:hover {
+  background: var(--ath-color-switch-bg-selected-hovered);
+}
+:host .ath-switch__selected:active {
+  background: var(--ath-color-switch-bg-selected-pressed);
+}
+:host .ath-switch__unselected {
+  border-radius: var(--ath-border-radius-300);
+  background: var(--ath-color-switch-bg-default);
+}
+:host .ath-switch__unselected:hover {
+  background: var(--ath-color-switch-bg-hovered);
+}
+:host .ath-switch__unselected:active {
+  background: var(--ath-color-switch-bg-pressed);
+}
+:host .ath-switch__readonly {
+  border: var(--ath-border-width-xs) solid var(--ath-color-switch-border-readonly);
+  background: var(--ath-color-switch-bg-readonly);
+}
+:host .ath-switch__readonly:hover {
+  background: var(--ath-color-switch-bg-readonly);
+  cursor: not-allowed;
+}
+:host .ath-switch__disabled {
+  align-items: center;
+  border-radius: var(--ath-border-radius-300);
+  background: var(--ath-color-switch-bg-disabled);
+  cursor: not-allowed;
+}
+:host .ath-switch__disabled:hover {
+  background: var(--ath-color-switch-bg-disabled);
+  cursor: not-allowed;
+}
+:host .ath-switch-controller {
+  display: flex;
+  width: var(--ath-sizing-switch-controller-width);
+  height: var(--ath-sizing-switch-controller-height);
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  aspect-ratio: 1/1;
+}
+:host .ath-switch-controller__selected {
+  border-radius: var(--ath-border-radius-controller);
+  background: var(--ath-color-switch-controller-bg-selected);
+  color: var(--ath-color-switch-icon-selected);
+}
+:host .ath-switch-controller__unselected {
+  border-radius: var(--ath-border-radius-controller);
+  background: var(--ath-color-switch-controller-bg-default);
+  color: var(--ath-color-icon-inverse-default);
+}
+:host .ath-switch-controller__readonly {
+  border-radius: var(--ath-border-radius-controller);
+  background: var(--ath-color-switch-controller-bg-readonly);
+  color: var(--ath-color-switch-icon-readonly);
+}
+:host .ath-switch-controller__readonly:focus-visible {
+  box-shadow: 0 0 0 2px var(--ath-color-drop-shadow-focus), 0 0 0 4px var(--ath-color-border-focus);
+}
+:host .ath-switch-controller__disabled {
+  border-radius: var(--ath-border-radius-controller);
+  background: var(--ath-color-switch-controller-bg-disabled);
+  cursor: not-allowed;
+  color: var(--ath-color-icon-disabled);
+}
+
+:host(:focus-visible) {
+  outline: none;
+}
+:host(:focus-visible) .ath-switch {
+  box-shadow: 0px 0px 0px 2px var(--ath-color-drop-shadow-focus), 0px 0px 0px 4px var(--ath-color-border-focus);
+  border-radius: var(--ath-border-radius-300);
+}

@@ -1,0 +1,76 @@
+:host .ath-badge--accent {
+  background-color: var(--ath-color-bg-accent-default);
+  color: var(--ath-color-badge-fg-accent);
+}
+:host .ath-badge--danger {
+  background-color: var(--ath-color-bg-danger-default);
+  color: var(--ath-color-badge-fg-danger);
+}
+:host .ath-badge--success {
+  background-color: var(--ath-color-bg-success-default);
+  color: var(--ath-color-badge-fg-success);
+}
+:host .ath-badge--warning {
+  background-color: var(--ath-color-bg-warning-default);
+  color: var(--ath-color-badge-fg-warning);
+}
+:host .ath-badge--info {
+  background-color: var(--ath-color-bg-info-default);
+  color: var(--ath-color-badge-fg-info);
+}
+:host .ath-badge--disabled {
+  background-color: var(--ath-color-bg-alpha-disabled);
+  color: var(--ath-color-fg-disabled);
+}
+
+.ath-visibility-hidden, .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:host {
+  display: inline-block;
+}
+:host .ath-badge {
+  outline: 1px solid var(--ath-color-badge-border);
+}
+:host .ath-badge--container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--ath-spacing-badge-item-right-gap);
+}
+:host .ath-badge--dot {
+  width: var(--ath-sizing-badge-dot-width);
+  height: var(--ath-sizing-badge-dot-height);
+  border-radius: var(--ath-border-radius-circle);
+  display: block;
+}
+:host .ath-badge--numeric {
+  padding: var(--ath-spacing-badge-padding-y) var(--ath-spacing-badge-padding-x);
+  border-radius: var(--ath-border-radius-circle);
+  text-align: center;
+  font-family: var(--ath-font-family-body);
+  font-size: var(--ath-font-size-comp-sm);
+  font-style: normal;
+  font-weight: var(--ath-font-weight-body-regular);
+  line-height: var(--ath-font-line-height-comp-sm);
+}
+:host .ath-badge--top-right {
+  position: absolute;
+  top: -4px;
+  left: calc(100% - 10px);
+}
+:host .ath-badge--top-right.ath-badge--dot {
+  left: calc(100% - 5px);
+}
+:host .ath-badge--right {
+  position: static;
+}

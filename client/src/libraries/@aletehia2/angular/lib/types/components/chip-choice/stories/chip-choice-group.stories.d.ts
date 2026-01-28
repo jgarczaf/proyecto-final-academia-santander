@@ -1,0 +1,11 @@
+import { Meta, StoryObj } from '@storybook/html';
+import { ChipChoiceGroupArgs } from './chip-choice-group.types';
+declare const meta: Meta<ChipChoiceGroupArgs>;
+export default meta;
+type Story = StoryObj<ChipChoiceGroupArgs>;
+export declare const Playground: Story;
+export declare const Multiple: Story;
+export declare const Disabled: Story;
+export declare const Sizes: Story;
+export declare const Width: Story;
+export declare const Accesibilidad: Story;

@@ -1,0 +1,13 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { ButtonArgs } from './button.types';
+declare const meta: Meta<ButtonArgs>;
+export default meta;
+type Story = StoryObj<ButtonArgs>;
+export declare const Playground: Story;
+export declare const Color: Story;
+export declare const Size: Story;
+export declare const Clear: Story;
+export declare const WithIcon: Story;
+export declare const Disabled: Story;
+export declare const Autofocus: Story;
+export declare const FullWidth: Story;

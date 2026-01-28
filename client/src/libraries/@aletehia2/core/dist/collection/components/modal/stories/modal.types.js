@@ -1,0 +1,20 @@
+export const orderedArgs = {
+    'appearance': undefined,
+    'autofocus': undefined,
+    'click-outside-close': undefined,
+    'defaultBodySlot': '',
+    'defaultFooterSlot': '',
+    'full-screen': undefined,
+    'has-close': undefined,
+    'has-divider': undefined,
+    'heading-text': undefined,
+    'is-alert': undefined,
+    'max-height': undefined,
+    'max-width': undefined,
+    'open': undefined,
+    'size': undefined,
+    'subtitle-text': undefined,
+    'close-aria-label': undefined,
+    'heading-level': undefined,
+};
+//# sourceMappingURL=modal.types.js.map

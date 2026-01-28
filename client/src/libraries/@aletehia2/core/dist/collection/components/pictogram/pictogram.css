@@ -1,0 +1,29 @@
+:host {
+  display: inline-flex;
+  height: fit-content;
+  width: fit-content;
+}
+:host .ath-pictogram--xs img {
+  width: var(--ath-size-pictogram-xs);
+  height: auto;
+}
+:host .ath-pictogram--sm img {
+  width: var(--ath-size-pictogram-sm);
+  height: auto;
+}
+:host .ath-pictogram--md img {
+  width: var(--ath-size-pictogram-md);
+  height: auto;
+}
+:host .ath-pictogram--lg img {
+  width: var(--ath-size-pictogram-lg);
+  height: auto;
+}
+:host .ath-pictogram--xl img {
+  width: var(--ath-size-pictogram-xl);
+  height: auto;
+}
+:host .ath-pictogram--2xl img {
+  width: var(--ath-size-pictogram-2xl);
+  height: auto;
+}

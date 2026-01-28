@@ -1,0 +1,1 @@
+{"version":3,"names":["registerInstance","AthMenuVerticalItemAction","constructor","hostRef","this","disabled","icon","open","selected","text","value"],"sources":["0"],"mappings":"YAAcA,MAAwB,kBAEtC,MAAMC,EAA4B,MAC9B,WAAAC,CAAYC,GACRH,EAAiBI,KAAMD,EAC3B,CAIAE,SAAW,MAIXC,KAIAC,KAAO,MAIPC,SAAW,MAIXC,KAIAC,cAGKT","ignoreList":[]}

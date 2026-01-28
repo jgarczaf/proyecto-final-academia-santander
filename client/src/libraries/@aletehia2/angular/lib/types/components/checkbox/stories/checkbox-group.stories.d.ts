@@ -1,0 +1,12 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { CheckboxGroupArgs } from './checkbox.types';
+declare const meta: Meta<CheckboxGroupArgs>;
+export default meta;
+type Story = StoryObj<CheckboxGroupArgs>;
+export declare const Playground: Story;
+export declare const ConFeedback: Story;
+export declare const ConHelperText: Story;
+export declare const ConTooltip: Story;
+export declare const Disabled: Story;
+export declare const Readonly: Story;
+export declare const ShowRequired: Story;

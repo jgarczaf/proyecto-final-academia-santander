@@ -1,0 +1,126 @@
+:host .ath-dropdown-option-header {
+  --background: var(--ath-color-bg-alpha-default);
+  --font-weight: var(--ath-font-weight-regular);
+  --color: var(--ath-color-fg-default);
+  --display-checked-ico: none;
+}
+:host .ath-dropdown-option-header.disabled {
+  --color: var(--ath-color-fg-disabled);
+  pointer-events: none;
+}
+:host .ath-dropdown-option-header:hover {
+  --background: var(--ath-color-bg-alpha-hovered);
+  --font-weight: var(--ath-font-weight-medium);
+}
+:host .ath-dropdown-option-header:active {
+  --background: var(--ath-color-bg-alpha-pressed);
+  --font-weight: var(--ath-font-weight-medium);
+}
+:host .ath-dropdown-option-header.selected {
+  --background: var(--ath-color-input-dropdown-option-bg-selected-default);
+  --color: var(--ath-color-fg-inverse-default);
+  --display-checked-ico: inline-block;
+}
+:host .ath-dropdown-option-header.selected:hover {
+  --background: var(--ath-color-input-dropdown-option-bg-selected-hovered);
+  --font-weight: var(--ath-font-weight-regular);
+}
+:host .ath-dropdown-option-header.selected:active {
+  --background: var(--ath-color-input-dropdown-option-bg-selected-pressed);
+  --font-weight: var(--ath-font-weight-regular);
+}
+:host .ath-dropdown-option-header:focus-visible {
+  outline: none;
+}
+:host .ath-dropdown-option-header.optGroup {
+  --font-weight: var(--ath-font-weight-medium);
+  pointer-events: none;
+}
+:host .ath-dropdown-option-header.active {
+  --box-shadow: 0px 0px 0px 2px var(--ath-color-border-focus) inset;
+}
+:host .ath-dropdown-option-header.active.selected {
+  --background: var(--ath-color-input-dropdown-option-bg-selected-default);
+  --box-shadow: 0px 0px 0px 2px var(--ath-color-border-focus) inset, 0px 0px 0px 4px var(--ath-color-drop-shadow-focus) inset;
+}
+
+:host(.ath-dropdown-option) {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: var(--ath-color-fg-default);
+  font-family: var(--ath-font-family-primary);
+  font-size: var(--ath-font-size-input-dropdown-option);
+  justify-content: center;
+  align-self: stretch;
+  border-radius: var(--ath-border-radius-input-dropdown-option);
+  background: var(--ath-color-bg-alpha-default);
+  align-items: center;
+  font-style: normal;
+  line-height: var(--ath-font-line-height-input-dropdown-option);
+  cursor: pointer;
+}
+
+:host(.ath-dropdown-option--hidden) {
+  display: none;
+}
+
+:host .ath-dropdown-option-header {
+  display: flex;
+  justify-content: center;
+  align-self: stretch;
+  padding: var(--ath-spacing-input-dropdown-option-padding-y) var(--ath-spacing-input-dropdown-option-padding-x);
+  gap: var(--ath-spacing-input-dropdown-option-col-gap);
+  align-items: center;
+  font-weight: var(--font-weight);
+  border-radius: var(--ath-border-radius-input-dropdown-option);
+  background: var(--background);
+  color: var(--color);
+  box-shadow: var(--box-shadow);
+}
+:host .ath-dropdown-option__list {
+  padding: 0;
+  margin: 0;
+  gap: var(--ath-spacing-input-dropdown-option-group-row-gap);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  width: 100%;
+}
+:host span {
+  width: 100%;
+}
+:host .option-checkbox {
+  appearance: none; /*standard*/
+  -webkit-appearance: none; /*chrome*/
+  -moz-appearance: none; /*firefox*/
+  display: flex;
+  min-width: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ath-border-radius-checkbox);
+  border: 1px solid var(--ath-color-checkbox-border-default);
+  background: var(--ath-color-checkbox-bg-default);
+}
+:host .option-checkbox svg {
+  display: none;
+}
+:host .option-checkbox.checked {
+  outline: none;
+  border: none;
+  color: var(--ath-color-input-dropdown-checkbox-icon-selected);
+  border-radius: var(--ath-border-radius-checkbox);
+  border: 1px solid var(--ath-color-input-dropdown-checkbox-border-checked-selected);
+  background: var(--ath-color-input-dropdown-checkbox-bg-checked-selected);
+}
+:host .level {
+  width: 16px;
+}
+:host ::slotted([slot=left-asset]),
+:host ::slotted([slot=right-asset]) {
+  display: flex;
+}

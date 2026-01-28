@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { CardSelectableArgs } from './card-selectable.types';
+declare const meta: Meta<CardSelectableArgs>;
+export default meta;
+type Story = StoryObj<CardSelectableArgs>;
+export declare const Playground: Story;
+export declare const ConTag: Story;
+export declare const Disabled: Story;
+export declare const Size: Story;
+export declare const Type: Story;

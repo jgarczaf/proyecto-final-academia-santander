@@ -1,0 +1,13 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { CalendarArgs } from './calendar.types';
+declare const meta: Meta<CalendarArgs>;
+export default meta;
+type Story = StoryObj<CalendarArgs>;
+export declare const Playground: Story;
+export declare const Color: Story;
+export declare const FechasResaltadas: Story;
+export declare const FinesDeSemanaResaltados: Story;
+export declare const FechasDeshabilitadas: Story;
+export declare const Limites: Story;
+export declare const Selected: Story;
+export declare const Type: Story;

@@ -1,0 +1,16 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { ModalArgs } from './modal.types';
+declare const meta: Meta<ModalArgs>;
+export default meta;
+type Story = StoryObj<ModalArgs>;
+export declare const Playground: Story;
+export declare const AlertAppearance: Story;
+export declare const Size: Story;
+export declare const autofocus: Story;
+export declare const ClickOutsideClose: Story;
+export declare const FullScreen: Story;
+export declare const HasClose: Story;
+export declare const HasDivider: Story;
+export declare const MaxWidth: Story;
+export declare const MaxHeight: Story;
+export declare const ScrollEnBody: Story;

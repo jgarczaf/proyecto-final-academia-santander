@@ -1,0 +1,109 @@
+:host {
+  align-self: stretch;
+}
+:host .ath-accordion-item {
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--ath-spacing-accordion-item-row-gap);
+  align-self: stretch;
+  background: var(--ath-color-bg-alpha-default);
+}
+:host .ath-accordion-item-divider {
+  border-bottom: 1px solid var(--ath-color-border-alpha-bolder-default);
+}
+:host .ath-accordion-item--header {
+  align-self: stretch;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  padding: var(--ath-spacing-accordion-item-header-padding-y) var(--ath-spacing-accordion-item-header-padding-x);
+}
+:host .ath-accordion-item--header:focus-visible {
+  box-shadow: 0px 0px 0px 2px var(--ath-color-border-focus) inset;
+  outline: none;
+}
+:host .ath-accordion-item--header.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+:host .ath-accordion-item--header:hover {
+  border-left: 2px solid var(--ath-color-border-alpha-boldest-default);
+  background: var(--ath-color-bg-alpha-hovered);
+  transition: 0.5s;
+}
+:host .ath-accordion-item--header__button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+:host .ath-accordion-item--header__button:focus-visible {
+  outline: none;
+}
+:host .ath-accordion-item--header__wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--ath-spacing-accordion-item-header-col-gap);
+  align-self: stretch;
+}
+:host .ath-accordion-item--header__content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ath-spacing-accordion-item-header-icon-col-gap);
+  flex: 1 0 0;
+}
+:host .ath-accordion-item--header__text {
+  display: flex;
+  padding-top: var(--ath-spacing-accordion-item-header-text-padding-top);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-accordion-item-header-text-row-gap);
+  flex: 1 0 0;
+}
+:host .ath-accordion-item--header__title {
+  color: var(--ath-color-fg-default);
+  font-family: var(--ath-font-family-heading);
+  font-size: var(--ath-font-size-heading-6);
+  font-style: normal;
+  font-weight: var(--ath-font-weight-heading);
+  line-height: var(--ath-font-line-height-heading-6);
+}
+:host .ath-accordion-item--header__subtitle {
+  color: var(--ath-color-accordion-item-header-text-description);
+  font-family: var(--ath-font-family-body);
+  font-size: var(--ath-font-size-body-md);
+  font-style: normal;
+  font-weight: var(--ath-font-weight-body-regular);
+  line-height: var(--ath-font-line-height-body);
+}
+:host .ath-accordion-item--panel {
+  display: flex;
+  padding: 0;
+  padding-left: var(--ath-spacing-accordion-item-content-padding-y);
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.5s ease, padding 0.5s ease;
+}
+:host .ath-accordion-item--panel.expanded {
+  overflow: visible;
+  max-height: fit-content;
+  padding: var(--ath-spacing-accordion-item-content-padding-y) var(--ath-spacing-accordion-item-content-padding-x);
+}
+:host .ath-accordion-item--chevron ath-icon {
+  color: var(--ath-color-fg-default);
+  transition: transform 0.3s ease-in-out;
+}
+:host .ath-accordion-item--chevron-rotate ath-icon {
+  transform: rotate(180deg);
+}
+:host ::slotted([slot=header-detail]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ath-spacing-accordion-item-header-text-row-gap);
+  color: var(--ath-color-fg-default);
+  padding: 8px;
+  justify-content: center;
+  align-self: stretch;
+}

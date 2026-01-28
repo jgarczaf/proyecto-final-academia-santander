@@ -1,0 +1,1 @@
+{"version":3,"names":["registerInstance","AthTab","constructor","hostRef","this","label","disabled","icon","iconAriaLabel","navigationData","selected","render"],"sources":["0"],"mappings":"YAAcA,MAAwB,kBAEtC,MAAMC,EAAS,MACX,WAAAC,CAAYC,GACRH,EAAiBI,KAAMD,EAC3B,CAIAE,MAIAC,SAIAC,KAIAC,cAIAC,eAIAC,SACA,MAAAC,GACI,OAAO,IACX,UAGKV","ignoreList":[]}

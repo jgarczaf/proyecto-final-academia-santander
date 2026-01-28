@@ -1,0 +1,2 @@
+import{r as a}from"./p-D2-yfY-d.js";const e=class{constructor(e){a(this,e)}ariaLabel;badgeMax;badgeLabel;badgeValue;disabled=false;icon;name;selected=false;tooltipText};export{e as ath_menu_lateral_item_action};
+//# sourceMappingURL=p-0a5ce72d.entry.js.map

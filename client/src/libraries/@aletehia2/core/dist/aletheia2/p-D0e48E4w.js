@@ -1,0 +1,2 @@
+const t={Primary:"primary"};const n={Medium:"md"};const o={Submit:"submit",Button:"button",Reset:"reset"};var s;(function(t){t["None"]="none";t["Left"]="left";t["Right"]="right";t["IconOnly"]="icon-only"})(s||(s={}));export{s as B,t as a,n as b,o as c};
+//# sourceMappingURL=p-D0e48E4w.js.map

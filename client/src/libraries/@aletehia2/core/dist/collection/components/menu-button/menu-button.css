@@ -1,0 +1,77 @@
+.ath-scroll {
+  overflow: auto;
+}
+
+.ath-overflow-hidden {
+  overflow: hidden;
+}
+
+.ath-overflow-x-hidden {
+  overflow-x: hidden;
+}
+
+.ath-overflow-y-hidden {
+  overflow-y: hidden;
+}
+
+@supports (-moz-appearance: none) {
+  .ath-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ath-color-bg-alpha-bolder-default) var(--ath-color-scroll-track-bg);
+  }
+  .ath-scroll:hover {
+    scrollbar-color: var(--ath-color-bg-alpha-bolder-hovered) var(--ath-color-scroll-track-bg);
+  }
+}
+.ath-scroll::-webkit-scrollbar {
+  width: var(--ath-sizing-scroll);
+  height: var(--ath-sizing-scroll);
+}
+.ath-scroll::-webkit-scrollbar-track {
+  background-color: var(--ath-color-scroll-track-bg);
+}
+.ath-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--ath-color-bg-alpha-bolder-default);
+  border-radius: var(--ath-border-radius-scroll);
+}
+.ath-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ath-color-bg-alpha-bolder-hovered);
+}
+.ath-scroll::-webkit-scrollbar-button {
+  display: none;
+}
+
+:host {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+:host .ath-menu-button-container {
+  position: relative;
+}
+:host .ath-menu-button-container .ath-menu-button-disabled {
+  pointer-events: none;
+}
+:host .ath-menu-button-container .ath-menu-button-overlay {
+  position: absolute;
+  display: inline-flex;
+  padding: var(--ath-spacing-menu-button-overlay-padding);
+  padding-right: calc(var(--ath-spacing-menu-button-overlay-padding) / 2);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-menu-button-overlay-row-gap);
+  border-radius: var(--ath-border-radius-3xl);
+  border: var(--ath-border-width-xs) solid var(--ath-color-border-alpha-bolder-default);
+  background: var(--ath-color-menu-button-overlay-bg);
+  margin-top: 4px;
+  z-index: 1000;
+}
+:host .ath-menu-button-container .ath-menu-button-overlay-wrapper {
+  padding-right: calc(var(--ath-spacing-menu-button-overlay-padding) / 2);
+}
+:host .ath-menu-button-container .position--right {
+  right: 0px;
+}
+:host .ath-menu-button-container .position--left {
+  left: 0px;
+}

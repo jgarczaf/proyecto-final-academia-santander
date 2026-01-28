@@ -1,0 +1,236 @@
+:host {
+  display: flex;
+  flex-direction: var(--flex-direction--container);
+}
+:host .clickable {
+  text-decoration: none;
+  cursor: pointer;
+}
+:host .clickable:focus-visible:not(:active) {
+  outline: none;
+}
+:host .clickable:focus-visible:not(:active) .ath-list-item {
+  background: linear-gradient(0deg), var(--ath-color-bg-alpha-default);
+  box-shadow: 0 0 0 2px var(--ath-color-border-focus) inset;
+}
+:host .clickable:hover {
+  background: var(--ath-color-bg-alpha-hovered);
+}
+:host .clickable:active {
+  box-shadow: none;
+  background: var(--ath-color-bg-alpha-pressed);
+}
+:host .clickable.disabled {
+  cursor: not-allowed;
+  background: var(--ath-color-bg-alpha-default);
+}
+:host .clickable.disabled .ath-list-item--title,
+:host .clickable.disabled .ath-list-item--subtitle,
+:host .clickable.disabled .ath-list-item--subtitle-wrapper,
+:host .clickable.disabled .ath-list-item--subtitle-tooltip,
+:host .clickable.disabled .ath-list-item--description {
+  color: var(--ath-color-fg-disabled);
+  cursor: not-allowed;
+  background: var(--ath-color-bg-alpha-default);
+}
+:host .clickable.disabled .tooltip-trigger {
+  pointer-events: none;
+  user-select: none;
+}
+:host .clickable.disabled:hover, :host .clickable.disabled:focus, :host .clickable.disabled:active {
+  background: var(--ath-color-bg-alpha-default);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+:host .ath-list-item {
+  display: flex;
+  flex-direction: var(--flex-direction--items);
+  padding: var(--padding);
+  gap: var(--gap--list);
+  text-decoration: none;
+}
+:host .ath-list-item--center-detail {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--gap--center-detail);
+}
+:host .ath-list-item--right-detail {
+  text-align: right;
+  font-style: normal;
+}
+:host .ath-list-item--title {
+  color: var(--ath-color-fg-default);
+  font-family: var(--ath-font-family-heading);
+  font-size: var(--ath-font-size-heading-4);
+  font-weight: var(--ath-font-weight-heading);
+  line-height: var(--ath-font-line-height-heading-4);
+  margin: 0;
+}
+:host .ath-list-item--subtitle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ath-spacing-list-item-col-gap-sm);
+  position: relative;
+  color: var(--ath-color-fg-subtle);
+  font-family: var(--ath-font-family-body);
+  font-size: var(--ath-font-size-body-lg);
+  font-weight: var(--ath-font-weight-body-regular);
+  line-height: var(--ath-font-line-height-body);
+}
+:host .ath-list-item--subtitle-wrapper {
+  display: flex;
+  align-items: center;
+}
+:host .ath-list-item--subtitle-tooltip {
+  padding-top: 4px;
+}
+:host .ath-list-item--description {
+  overflow: hidden;
+  color: var(--ath-color-fg-default);
+  text-overflow: ellipsis;
+  font-family: var(--ath-font-family-body);
+  font-size: var(--ath-font-size-body-md);
+  font-weight: var(--ath-font-weight-body-regular);
+  line-height: var(--ath-font-line-height-body);
+}
+:host .empty {
+  display: none;
+}
+
+:host(.clickable.disabled) ::slotted([slot=right-detail]),
+:host(.clickable.disabled) ::slotted([slot=left-detail]) {
+  color: var(--ath-color-fg-disabled);
+  cursor: not-allowed;
+  user-select: none;
+  pointer-events: none;
+  text-decoration: none;
+}
+
+::slotted([slot=right-detail]) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-decoration: none;
+}
+
+:host(.ath-list-item--horizontal) .ath-list-item--divider {
+  border-right: var(--ath-border-width-divider-md) solid var(--ath-color-border-alpha-bold-default);
+}
+:host(.ath-list-item--horizontal) ::slotted([slot=right-detail]) {
+  align-items: flex-start;
+}
+
+:host(.ath-list-item--vertical) {
+  --gap--list: var(--ath-spacing-list-item-col-gap-md);
+}
+:host(.ath-list-item--vertical) ::slotted([slot=right-detail]) {
+  align-items: flex-end;
+}
+:host(.ath-list-item--vertical) .ath-list-item--divider {
+  border-bottom: var(--ath-border-width-divider-md) solid var(--ath-color-border-alpha-bold-default);
+}
+
+:host(.ath-list-item--xs-vertical) {
+  --gap--right-detail: var(--ath-spacing-list-item-right-slot-xs);
+  --padding: var(--ath-spacing-list-item-padding-vertical-xs);
+  --gap--center-detail: var(--ath-spacing-list-item-row-gap-vertical-xs);
+}
+:host(.ath-list-item--xs-vertical) ::slotted([slot=right-detail]) {
+  gap: var(--ath-spacing-list-item-right-slot-xs);
+}
+
+:host(.ath-list-item--xs-horizontal) {
+  --gap--list: var(--ath-spacing-list-item-row-gap-horizontal-xs);
+}
+
+:host(.ath-list-item--sm-vertical) {
+  --gap--right-detail: var(--ath-spacing-list-item-right-slot-sm);
+  --padding: var(--ath-spacing-list-item-padding-vertical-sm);
+  --gap--center-detail: var(--ath-spacing-list-item-row-gap-vertical-sm);
+}
+:host(.ath-list-item--sm-vertical) ::slotted([slot=right-detail]) {
+  gap: var(--ath-spacing-list-item-right-slot-sm);
+}
+
+:host(.ath-list-item--sm-horizontal) {
+  --gap--list: var(--ath-spacing-list-item-row-gap-horizontal-sm);
+}
+
+:host(.ath-list-item--md-vertical) {
+  --gap--right-detail: var(--ath-spacing-list-item-right-slot-md);
+  --padding: var(--ath-spacing-list-item-padding-vertical-md);
+  --gap--center-detail: var(--ath-spacing-list-item-row-gap-vertical-md);
+}
+:host(.ath-list-item--md-vertical) ::slotted([slot=right-detail]) {
+  gap: var(--ath-spacing-list-item-right-slot-md);
+}
+
+:host(.ath-list-item--md-horizontal) {
+  --gap--list: var(--ath-spacing-list-item-row-gap-horizontal-md);
+}
+
+:host(.ath-list-item--lg-vertical) {
+  --gap--right-detail: var(--ath-spacing-list-item-right-slot-lg);
+  --padding: var(--ath-spacing-list-item-padding-vertical-lg);
+  --gap--center-detail: var(--ath-spacing-list-item-row-gap-vertical-lg);
+}
+:host(.ath-list-item--lg-vertical) ::slotted([slot=right-detail]) {
+  gap: var(--ath-spacing-list-item-right-slot-lg);
+}
+
+:host(.ath-list-item--lg-horizontal) {
+  --gap--list: var(--ath-spacing-list-item-row-gap-horizontal-lg);
+}
+
+:host(.ath-list-item--xs-horizontal) {
+  --gap--right-detail: var(--ath-spacing-list-item-right-slot-xs);
+  --padding: var(--ath-spacing-list-item-padding-horizontal-xs);
+  --gap--center-detail: var(--ath-spacing-list-item-row-gap-horizontal-xs);
+}
+:host(.ath-list-item--xs-horizontal) ::slotted([slot=right-detail]) {
+  gap: var(--ath-spacing-list-item-right-slot-xs);
+}
+
+:host(.ath-list-item--xs-horizontal) {
+  --gap--list: var(--ath-spacing-list-item-row-gap-horizontal-xs);
+}
+
+:host(.ath-list-item--sm-horizontal) {
+  --gap--right-detail: var(--ath-spacing-list-item-right-slot-sm);
+  --padding: var(--ath-spacing-list-item-padding-horizontal-sm);
+  --gap--center-detail: var(--ath-spacing-list-item-row-gap-horizontal-sm);
+}
+:host(.ath-list-item--sm-horizontal) ::slotted([slot=right-detail]) {
+  gap: var(--ath-spacing-list-item-right-slot-sm);
+}
+
+:host(.ath-list-item--sm-horizontal) {
+  --gap--list: var(--ath-spacing-list-item-row-gap-horizontal-sm);
+}
+
+:host(.ath-list-item--md-horizontal) {
+  --gap--right-detail: var(--ath-spacing-list-item-right-slot-md);
+  --padding: var(--ath-spacing-list-item-padding-horizontal-md);
+  --gap--center-detail: var(--ath-spacing-list-item-row-gap-horizontal-md);
+}
+:host(.ath-list-item--md-horizontal) ::slotted([slot=right-detail]) {
+  gap: var(--ath-spacing-list-item-right-slot-md);
+}
+
+:host(.ath-list-item--md-horizontal) {
+  --gap--list: var(--ath-spacing-list-item-row-gap-horizontal-md);
+}
+
+:host(.ath-list-item--lg-horizontal) {
+  --gap--right-detail: var(--ath-spacing-list-item-right-slot-lg);
+  --padding: var(--ath-spacing-list-item-padding-horizontal-lg);
+  --gap--center-detail: var(--ath-spacing-list-item-row-gap-horizontal-lg);
+}
+:host(.ath-list-item--lg-horizontal) ::slotted([slot=right-detail]) {
+  gap: var(--ath-spacing-list-item-right-slot-lg);
+}
+
+:host(.ath-list-item--lg-horizontal) {
+  --gap--list: var(--ath-spacing-list-item-row-gap-horizontal-lg);
+}

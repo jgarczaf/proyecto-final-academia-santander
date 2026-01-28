@@ -1,0 +1,63 @@
+:host {
+  display: flex;
+  width: 100%;
+  cursor: pointer;
+}
+:host ._ath-menu-button-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level {
+  align-items: flex-start;
+  border-radius: var(--ath-border-radius-menu-button-option);
+  background: var(--ath-color-bg-alpha-default);
+  width: 100%;
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level :hover {
+  border-radius: var(--ath-border-radius-menu-button-option);
+  background: var(--ath-color-bg-alpha-hovered);
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level :active {
+  background: var(--ath-color-bg-alpha-pressed);
+  border: none;
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level {
+  color: var(--ath-color-fg-default);
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level--disabled {
+  background: var(--ath-color-bg-alpha-default);
+  color: var(--ath-color-fg-disabled);
+  cursor: default;
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level--disabled :hover {
+  background: unset;
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level .menu-button-option {
+  display: flex;
+  padding: var(--ath-spacing-menu-button-option-padding-y) var(--ath-spacing-menu-button-option-padding-x);
+  align-items: flex-start;
+  gap: var(--ath-spacing-menu-button-option-col-gap);
+  justify-content: space-between;
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level .menu-button-option .text {
+  font-family: var(--ath-font-family-primary);
+  font-size: var(--ath-font-size-menu-button-option);
+  font-style: normal;
+  font-weight: var(--ath-font-weight-regular);
+  line-height: var(--ath-font-line-height-menu-button-option);
+  white-space: nowrap;
+  flex-grow: 1;
+}
+:host ._ath-menu-button-option .ath-menu-button-option__level .menu-button-option :hover {
+  background: unset;
+}
+
+:host(:focus-visible) {
+  outline: none;
+  border-radius: var(--ath-border-radius-menu-button-option);
+  box-shadow: 0px 0px 0px 2px var(--ath-color-border-focus) inset;
+  background: unset;
+}

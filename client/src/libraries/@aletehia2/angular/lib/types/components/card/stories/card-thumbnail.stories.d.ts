@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { CardThumbnailArgs } from './card.types';
+declare const meta: Meta<CardThumbnailArgs>;
+export default meta;
+type Story = StoryObj<CardThumbnailArgs>;
+export declare const Playground: Story;
+export declare const Tags: Story;
+export declare const Types: Story;
+export declare const TypeHighligth: Story;
+export declare const TypeAvatar: Story;
+export declare const ConHeaderYBody: Story;

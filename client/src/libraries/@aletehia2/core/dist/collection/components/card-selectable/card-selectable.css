@@ -1,0 +1,146 @@
+:host .ath-card-selectable {
+  --overline-color: var(--ath-color-fg-subtle);
+  --headline-color: var(--ath-color-fg-primary-heading);
+  --subheadline-color: var(--ath-color-fg-default);
+  --icon-color: var(--ath-color-icon-primary-default);
+  --card-border: var(--ath-border-width-card) solid var(--ath-color-border-alpha-bolder-default);
+  --card-shadow: none;
+}
+:host .ath-card-selectable--multiselect {
+  --icon-border: 1px solid var(--ath-color-checkbox-border-default);
+  --icon-background: var(--ath-color-checkbox-bg-default);
+  --icon-color: var(--ath-color-checkbox-icon-default);
+}
+:host .ath-card-selectable--multiselect.ath-card-selectable--selected:not(.ath-card-selectable--disabled) {
+  --icon-border: 1px solid var(--ath-color-checkbox-border-checked);
+  --icon-background: var(--ath-color-checkbox-bg-checked);
+}
+:host .ath-card-selectable--multiselect.ath-card-selectable--disabled:not(.ath-card-selectable--selected) {
+  --icon-border: 1px solid var(--ath-color-checkbox-border-default);
+}
+:host .ath-card-selectable--multiselect.ath-card-selectable--selected.ath-card-selectable--disabled {
+  --icon-background: var(--ath-color-bg-alpha-boldest-disabled);
+}
+:host .ath-card-selectable--disabled {
+  --overline-color: var(--ath-color-fg-disabled);
+  --headline-color: var(--ath-color-fg-disabled);
+  --subheadline-color: var(--ath-color-fg-disabled);
+  --icon-border: none;
+  cursor: not-allowed;
+}
+:host .ath-card-selectable--disabled:not(.ath-card-selectable--multiselect) {
+  --icon-color: var(--ath-color-icon-disabled);
+}
+:host .ath-card-selectable--selected {
+  --card-border: var(--ath-border-width-card) solid var(--ath-color-card-selectable-border-selected);
+}
+
+:host(:hover) .ath-card-selectable:not(.ath-card-selectable--disabled):not(.ath-card-selectable--selected) {
+  --card-border: var(--ath-border-width-card) solid var(--ath-color-card-border-hovered);
+  --card-shadow: var(--ath-box-shadow-position-x-0) var(--ath-box-shadow-position-y-4) var(--ath-box-shadow-blur-8) var(--ath-box-shadow-spread-0)
+    var(--ath-color-card-drop-shadow-hovered);
+}
+:host(:hover) .ath-card-selectable--selected {
+  --card-border: var(--ath-border-width-card) solid var(--ath-color-card-selectable-border-selected);
+  --card-shadow: var(--ath-box-shadow-position-x-0) var(--ath-box-shadow-position-y-4) var(--ath-box-shadow-blur-8) var(--ath-box-shadow-spread-0)
+    var(--ath-color-card-drop-shadow-hovered);
+}
+
+:host(:active) .ath-card-selectable:not(.ath-card-selectable--disabled) {
+  --card-border: var(--ath-border-width-card) solid var(--ath-color-card-border-pressed);
+  --card-shadow: var(--ath-box-shadow-position-x-0) var(--ath-box-shadow-position-y-4) var(--ath-box-shadow-blur-8) var(--ath-box-shadow-spread-0)
+    var(--ath-color-card-drop-shadow-pressed);
+}
+
+:host(:focus-visible) {
+  outline: none;
+}
+:host(:focus-visible) .ath-card-selectable {
+  outline: none;
+  --card-shadow: 0px 0px 0px 2px var(--ath-color-drop-shadow-focus), 0px 0px 0px 4px var(--ath-color-border-focus);
+}
+
+:host {
+  display: inline-grid;
+  width: 100%;
+  cursor: pointer;
+}
+:host .ath-card-selectable {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-card-gap);
+  border-radius: var(--ath-border-radius-card);
+  border: var(--card-border);
+  background: var(--ath-color-card-content-bg);
+  box-shadow: var(--card-shadow);
+}
+:host .ath-card-selectable--sm {
+  padding: var(--ath-spacing-card-content-padding-around-sm);
+}
+:host .ath-card-selectable--md {
+  padding: var(--ath-spacing-card-content-padding-around-md);
+}
+:host .ath-card-selectable_content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-card-content-header-body-row-gap);
+  align-self: stretch;
+}
+:host .ath-card-selectable_header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: var(--ath-spacing-card-selectable-indicator-col-gap);
+  align-self: stretch;
+}
+:host .ath-card-selectable_headlines {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-card-header-row-gap);
+  flex: 1 0 0;
+}
+:host .ath-card-selectable_overline {
+  color: var(--overline-color);
+  font-family: var(--ath-font-family-overline);
+  font-size: var(--ath-font-size-overline);
+  font-style: normal;
+  font-weight: var(--ath-font-weight-overline);
+  line-height: var(--ath-font-line-height-overline);
+}
+:host .ath-card-selectable_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-card-header-titles-row-gap);
+  align-self: stretch;
+}
+:host .ath-card-selectable_headline {
+  color: var(--headline-color);
+  font-family: var(--ath-font-family-heading);
+  font-size: var(--ath-font-size-card-title);
+  font-style: normal;
+  font-weight: var(--ath-font-weight-heading);
+  line-height: var(--ath-font-line-height-card-title);
+}
+:host .ath-card-selectable_subheadline {
+  color: var(--subheadline-color);
+  font-family: var(--ath-font-family-heading);
+  font-size: var(--ath-font-size-card-subtitle);
+  font-style: normal;
+  font-weight: var(--ath-font-weight-heading);
+  line-height: var(--ath-font-line-height-card-subtitle);
+}
+:host .ath-card-selectable_check {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--ath-sizing-checkbox-box-width);
+  height: var(--ath-sizing-checkbox-box-width);
+  border-radius: var(--ath-border-radius-checkbox);
+  border: var(--icon-border);
+  background: var(--icon-background);
+  color: var(--icon-color);
+}

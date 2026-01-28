@@ -1,0 +1,14 @@
+import { ModuleWithProviders } from '@angular/core';
+import * as i0 from "@angular/core";
+import * as i1 from "./stencil-generated/components";
+import * as i2 from "./stencil-generated/radio-value-accessor";
+import * as i3 from "./stencil-generated/select-value-accessor";
+import * as i4 from "./stencil-generated/text-value-accessor";
+import * as i5 from "@angular/common";
+import * as i6 from "@angular/forms";
+export declare class AletheiaComponentLibraryModule {
+    static forRoot(): ModuleWithProviders<AletheiaComponentLibraryModule>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<AletheiaComponentLibraryModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<AletheiaComponentLibraryModule, [typeof i1.AthAccordion, typeof i1.AthAccordionItem, typeof i1.AthActionBar, typeof i1.AthAlert, typeof i1.AthAvatar, typeof i1.AthBadge, typeof i1.AthBreadcrumb, typeof i1.AthButton, typeof i1.AthButtonExpandable, typeof i1.AthButtonLink, typeof i1.AthCalendar, typeof i1.AthCard, typeof i1.AthCardHeader, typeof i1.AthCardSelectable, typeof i1.AthCardSelectableGroup, typeof i1.AthCardThumbnail, typeof i1.AthCheckbox, typeof i1.AthCheckboxGroup, typeof i1.AthChipChoice, typeof i1.AthChipChoiceGroup, typeof i1.AthChipDismiss, typeof i1.AthChipDismissGroup, typeof i1.AthCollapse, typeof i1.AthCollapseIcon, typeof i1.AthDatepicker, typeof i1.AthDatepickerRange, typeof i1.AthDivider, typeof i1.AthDropdown, typeof i1.AthDropdownOption, typeof i1.AthEmptyState, typeof i1.AthIcon, typeof i1.AthInputCounter, typeof i1.AthInputPassword, typeof i1.AthInputText, typeof i1.AthInputTextarea, typeof i1.AthLink, typeof i1.AthList, typeof i1.AthListItem, typeof i1.AthMenuButton, typeof i1.AthMenuButtonItem, typeof i1.AthMenuHorizontal, typeof i1.AthMenuHorizontalItem, typeof i1.AthMenuLateral, typeof i1.AthMenuLateralItemAction, typeof i1.AthMenuLateralItemLink, typeof i1.AthMenuVertical, typeof i1.AthMenuVerticalItemAction, typeof i1.AthMenuVerticalItemLink, typeof i1.AthModal, typeof i1.AthPagination, typeof i1.AthPanel, typeof i1.AthPictogram, typeof i1.AthProgressBar, typeof i1.AthRadioButton, typeof i1.AthRadioButtonGroup, typeof i1.AthSectionTitle, typeof i1.AthSegmentedControl, typeof i1.AthSegmentedControlItem, typeof i1.AthSlider, typeof i1.AthStep, typeof i1.AthStepper, typeof i1.AthSwitch, typeof i1.AthTab, typeof i1.AthTable, typeof i1.AthTableBody, typeof i1.AthTableHeader, typeof i1.AthTableHeaderItem, typeof i1.AthTableRow, typeof i1.AthTableRowItem, typeof i1.AthTabs, typeof i1.AthTag, typeof i1.AthText, typeof i1.AthTooltip, typeof i1.AthTooltipTrigger, typeof i1.AthUserDetail, typeof i1.AthUserMenu, typeof i2.RadioValueAccessor, typeof i3.SelectValueAccessor, typeof i4.TextValueAccessor], [typeof i5.CommonModule, typeof i6.FormsModule], [typeof i2.RadioValueAccessor, typeof i3.SelectValueAccessor, typeof i4.TextValueAccessor]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<AletheiaComponentLibraryModule>;
+}

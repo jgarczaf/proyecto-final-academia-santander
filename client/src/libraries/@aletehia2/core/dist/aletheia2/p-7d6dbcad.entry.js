@@ -1,0 +1,2 @@
+import{r as o,h as c,H as e}from"./p-D2-yfY-d.js";const r=":host{display:flex;flex-direction:column;flex:1}";const s=class{constructor(c){o(this,c)}render(){return c(e,{key:"44f8ddbf66cf50619778b84a80046808199ccc12",slot:"body",role:"rowgroup"},c("slot",{key:"ab979e99fb3f2c7cc90884360e4a409b2ce70a89"}))}};s.style=r;export{s as ath_table_body};
+//# sourceMappingURL=p-7d6dbcad.entry.js.map

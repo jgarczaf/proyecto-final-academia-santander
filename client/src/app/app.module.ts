@@ -1,12 +1,13 @@
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule, LOCALE_ID, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { defineCustomElements } from '../libraries/@aletehia2/core/loader';
+import { AletheiaComponentLibraryModule } from '../libraries/@aletehia2/angular';
 
-registerLocaleData(localeEs);
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { RouterModule } from '@angular/router';
@@ -37,7 +38,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
-
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './features/auth/login/login.component';
@@ -53,6 +53,9 @@ import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confi
 import { BillDialogComponent } from './features/client/bills/bill-dialog/bill-dialog.component';
 import { HomeRedirectComponent } from './shared/components/home-redirect/home-redirect.component';
 import { SignInComponent } from './features/auth/sign-in/sign-in.component';
+
+registerLocaleData(localeEs);
+defineCustomElements(window);
 
 @NgModule({
   declarations: [
@@ -106,12 +109,14 @@ import { SignInComponent } from './features/auth/sign-in/sign-in.component';
     MatTooltipModule,
     MatChipsModule,
     MatTabsModule,
+    AletheiaComponentLibraryModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: LOCALE_ID, useValue: 'es-ES' },
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

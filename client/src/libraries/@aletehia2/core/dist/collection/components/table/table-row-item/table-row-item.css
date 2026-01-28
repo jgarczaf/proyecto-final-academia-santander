@@ -1,0 +1,142 @@
+:host(.ath-table-row-item--left) {
+  text-align: left;
+  justify-content: flex-start;
+}
+
+:host(.ath-table-row-item--center) {
+  text-align: center;
+  justify-content: center;
+}
+
+:host(.ath-table-row-item--right) {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+:host(.ath-table-row-item--primary) {
+  background: var(--ath-box-shadow-table-row-item-primary-color);
+}
+
+:host(.ath-table-row-item--secondary) {
+  background: var(--ath-box-shadow-table-row-item-secondary-color);
+}
+
+:host(.ath-table-row-item--sm) {
+  --padding-y: var(--ath-spacing-table-row-item-padding-y-sm);
+}
+
+:host(.ath-table-row-item--md) {
+  --padding-y: var(--ath-spacing-table-row-item-padding-y-md);
+}
+
+:host(.ath-table-row-item--lg) {
+  --padding-y: var(--ath-spacing-table-row-item-padding-y-lg);
+}
+
+:host(.ath-table-row-item--frozen-first) {
+  position: sticky;
+  left: 0;
+}
+
+:host(.ath-table-row-item--frozen-last) {
+  position: sticky;
+  right: 0;
+}
+
+:host(.ath-table-row-item--frozen-first--shadow)::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  width: 8px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  background: linear-gradient(270deg, var(--ath-color-table-row-item-gradient-default-2) 0%, var(--ath-color-table-row-item-gradient-default-1) 100%);
+  border-left: 1px solid var(--ath-color-table-row-item-border-x);
+}
+
+:host(.ath-table-row-item--striped--frozen-first--shadow)::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  width: 8px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  background: linear-gradient(270deg, var(--ath-color-table-row-item-gradient-striped-2) 0%, var(--ath-color-table-row-item-gradient-striped-1) 100%);
+  border-left: 1px solid var(--ath-color-table-row-item-border-x);
+}
+
+:host(.ath-table-row-item--frozen-last--shadow)::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  width: 8px;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(270deg, var(--ath-color-table-row-item-gradient-default-1) 0%, var(--ath-color-table-row-item-gradient-default-2) 100%);
+  border-right: 1px solid var(--ath-color-table-row-item-border-x);
+}
+
+:host(.ath-table-row-item--striped--frozen-last--shadow)::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  width: 8px;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(270deg, var(--ath-color-table-row-item-gradient-striped-1) 0%, var(--ath-color-table-row-item-gradient-striped-2) 100%);
+  border-right: 1px solid var(--ath-color-table-row-item-border-x);
+}
+
+:host {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  box-sizing: border-box;
+  padding: var(--padding-y) var(--ath-spacing-table-row-item-padding-x);
+  gap: var(--ath-spacing-table-row-item-col-gap);
+  font-family: var(--ath-font-family-body);
+  color: var(--ath-color-table-row-item-fg-default);
+  font-size: var(--ath-font-size-comp-md);
+  font-weight: var(--ath-font-weight-body-regular);
+  line-height: var(--ath-font-line-height-comp-md);
+}
+
+:host(.ath-table-row-item--striped) {
+  box-shadow: inset 0 0 0 99999px var(--ath-color-table-row-item-bg-striped);
+}
+
+.ath-table-row-item__child-spacing {
+  padding-left: calc(var(--ath-spacing-table-row-item-padding-y-lg) - var(--ath-spacing-table-row-item-col-gap));
+}
+
+.ath-button_comp {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--ath-border-radius-button);
+  border: none;
+  background: none;
+  padding: var(--button-padding);
+  outline: none;
+  transition: background 0.5s;
+  cursor: pointer;
+}
+.ath-button_comp:focus {
+  background: var(--ath-color-bg-alpha-focus);
+  box-shadow: 0px 0px 0px 2px var(--ath-color-border-focus);
+}
+.ath-button_comp:hover {
+  background: var(--ath-color-bg-alpha-hovered);
+}
+.ath-button_comp:active {
+  background: var(--ath-color-bg-alpha-pressed);
+  box-shadow: none;
+}
+.ath-button_comp--disabled {
+  pointer-events: none;
+  color: var(--ath-color-button-icon-disabled);
+}

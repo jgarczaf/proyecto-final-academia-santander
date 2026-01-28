@@ -1,0 +1,50 @@
+:host div {
+  display: inline;
+}
+:host .ath-breadcrumb__container-link {
+  display: inline;
+}
+:host .ath-breadcrumb__container-link.hidden--true {
+  display: none;
+}
+:host .ath-breadcrumb__container-link a {
+  text-decoration: none;
+}
+:host .ath-breadcrumb__container-link a:hover, :host .ath-breadcrumb__container-link a:focus {
+  cursor: pointer;
+  text-decoration: underline;
+}
+:host .ath-breadcrumb__separator {
+  margin: 0 6px;
+  user-select: none;
+}
+:host .ath-breadcrumb__icon {
+  margin-right: 5px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+:host .ath-breadcrumb__button.hidden--true {
+  display: none;
+}
+:host .ath-breadcrumb__button button {
+  background-color: var(--ath-color-fg-primary);
+  border: none;
+  padding: 0 8px;
+  cursor: pointer;
+  font: inherit;
+  border-radius: 10px;
+}
+:host .ath-breadcrumb__button button:hover {
+  filter: brightness(0.95);
+}
+:host .ath-breadcrumb__button button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+:host .ath-breadcrumb__container-link a {
+  color: var(--ath-color-fg-primary);
+}
+:host .ath-breadcrumb__icon ath-icon {
+  color: var(--ath-color-fg-primary);
+}

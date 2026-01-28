@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { ListArgs } from './list.types';
+declare const meta: Meta<ListArgs>;
+export default meta;
+type Story = StoryObj<ListArgs>;
+export declare const Playground: Story;
+export declare const Orientation: Story;
+export declare const Size: Story;
+export declare const HasDivider: Story;
+export declare const AllTypesItems: Story;

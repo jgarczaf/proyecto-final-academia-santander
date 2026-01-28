@@ -1,0 +1,48 @@
+:host .ath-icon--xs {
+  --font-size: var(--ath-font-size-icon-xs);
+}
+:host .ath-icon--sm {
+  --font-size: var(--ath-font-size-icon-sm);
+}
+:host .ath-icon--md {
+  --font-size: var(--ath-font-size-icon-md);
+}
+:host .ath-icon--lg {
+  --font-size: var(--ath-font-size-icon-lg);
+}
+:host .ath-icon--default {
+  color: var(--ath-color-icon-default);
+}
+:host .ath-icon--primary {
+  color: var(--ath-color-icon-primary-default);
+}
+:host .ath-icon--info {
+  color: var(--ath-color-icon-feedback-info);
+}
+:host .ath-icon--accent {
+  color: var(--ath-color-icon-accent-default);
+}
+:host .ath-icon--error {
+  color: var(--ath-color-icon-feedback-danger);
+}
+:host .ath-icon--warning {
+  color: var(--ath-color-icon-feedback-warning);
+}
+:host .ath-icon--success {
+  color: var(--ath-color-icon-feedback-success);
+}
+:host .ath-icon--inverse {
+  color: var(--ath-color-icon-inverse-default);
+}
+:host .ath-icon--disabled {
+  color: var(--ath-color-icon-disabled);
+}
+
+:host {
+  display: inline-flex;
+  height: fit-content;
+  width: fit-content;
+}
+:host svg {
+  font-size: var(--font-size);
+}

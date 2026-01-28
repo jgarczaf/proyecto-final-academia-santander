@@ -1,0 +1,67 @@
+:host {
+  --border-radius: var(--ath-border-radius-2xs);
+  --color: var(--ath-color-fg-default);
+  --font-family: var(--ath-font-family-primary);
+  --font-weight: var(--ath-font-weight-medium);
+  --line-height: var(--ath-font-line-height-body);
+  --col-gap: var(--ath-spacing-between-100);
+}
+:host .ath-button-expandable--sm {
+  --font-size: var(--ath-font-size-body-sm);
+}
+:host .ath-button-expandable--md {
+  --font-size: var(--ath-font-size-body-md);
+}
+:host .ath-button-expandable--lg {
+  --font-size: var(--ath-font-size-body-lg);
+}
+
+:host {
+  display: inline-flex;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  user-select: none;
+}
+:host:focus-visible:not(:active), :host:focus:not(:active) {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ath-color-border-focus);
+}
+:host:hover:not([disabled]), :host:hover:not([disabled=true]), :host:active {
+  outline: none;
+}
+:host:hover:not([disabled]) .ath-button-expandable--text, :host:hover:not([disabled=true]) .ath-button-expandable--text, :host:active .ath-button-expandable--text {
+  text-decoration: underline;
+}
+:host[disabled]:not([disabled=false]), :host[disabled=true] {
+  cursor: not-allowed;
+}
+:host[disabled]:not([disabled=false]):hover .ath-button-expandable--text, :host[disabled=true]:hover .ath-button-expandable--text {
+  text-decoration: none;
+}
+:host .ath-button-expandable--container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color);
+  font-family: var(--font-family);
+  font-style: normal;
+  gap: var(--col-gap);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+}
+:host .ath-button-expandable--text {
+  font-weight: var(--font-weight);
+  white-space: nowrap;
+}
+:host .ath-button-expandable--disabled {
+  color: var(--ath-color-fg-disabled);
+}
+:host .ath-button-expandable--chevron {
+  display: flex;
+}
+:host .ath-button-expandable--chevron ath-icon {
+  transition: transform 0.3s ease-in-out;
+}
+:host .ath-button-expandable--chevron-rotate ath-icon {
+  transform: rotate(180deg);
+}

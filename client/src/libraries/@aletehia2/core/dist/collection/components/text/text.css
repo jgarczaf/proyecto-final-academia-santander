@@ -1,0 +1,106 @@
+:host :host(.ath-text--default) {
+  --color: var(--ath-color-text--default);
+}
+:host :host(.ath-text--inverse) {
+  --color: var(--ath-color-text--inverse);
+}
+:host :host(.ath-text--primary) {
+  --color: var(--ath-color-text--primary);
+}
+:host :host(.ath-text--accent) {
+  --color: var(--ath-color-text--accent);
+}
+:host :host(.ath-text--subtle) {
+  --color: var(--ath-color-text--subtle);
+}
+:host :host(.ath-text--disabled) {
+  --color: var(--ath-color-text--disabled);
+}
+:host {
+  --ath-text-line-height: 1.4;
+  --ath-text-font-size: 12px;
+  --ath-text-font-size-p: 12px;
+  --ath-text-font-size-h1: 24px;
+  --ath-text-font-size-h2: 22px;
+  --ath-text-font-size-h3: 20px;
+  --ath-text-font-size-h4: 18px;
+  --ath-text-font-size-h5: 16px;
+  --ath-text-font-size-h6: 14px;
+  --ath-text-font-weight-p: 400;
+  --ath-text-font-weight-h1: 700;
+  --ath-text-font-weight-h2: 650;
+  --ath-text-font-weight-h3: 600;
+}
+
+:host {
+  display: inline-block;
+  width: 100%;
+}
+:host .ath-text-container {
+  display: block;
+  width: 100%;
+}
+:host .ath-text-container .ath-text {
+  margin: 0;
+  padding: 0;
+  font-size: var(--ath-text-font-size, 12px);
+  line-height: var(--ath-text-line-height, 1.4);
+  word-break: break-word;
+}
+:host .ath-text-container .ath-text--clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: var(--text-lines, 2);
+  line-clamp: var(--text-lines, 2);
+}
+:host .ath-text-container .ath-text--columns {
+  column-count: var(--ath-text-columns, 1);
+  column-gap: var(--ath-text-column-gap, 1.5rem);
+  column-fill: balance;
+  gap: var(--ath-text-column-gap, 1rem);
+  -webkit-box-orient: initial;
+  overflow: visible;
+}
+:host .ath-text-container .story__row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+:host([hierarchy=p]) .ath-text {
+  font-size: var(--ath-text-font-size-p);
+  font-weight: var(--ath-text-font-weight-p);
+}
+
+:host([hierarchy=h1]) .ath-text {
+  font-size: var(--ath-text-font-size-h1);
+  font-weight: var(--ath-text-font-weight-h1);
+}
+
+:host([hierarchy=h2]) .ath-text {
+  font-size: var(--ath-text-font-size-h2);
+  font-weight: var(--ath-text-font-weight-h2);
+}
+
+:host([hierarchy=h3]) .ath-text {
+  font-size: var(--ath-text-font-size-h3);
+  font-weight: var(--ath-text-font-weight-h3);
+}
+
+:host([hierarchy=h4]) .ath-text {
+  font-size: var(--ath-text-font-size-h4);
+  font-weight: var(--ath-text-font-weight-h4);
+}
+
+:host([hierarchy=h5]) .ath-text {
+  font-size: var(--ath-text-font-size-h5);
+  font-weight: var(--ath-text-font-weight-h5);
+}
+
+:host([hierarchy=h6]) .ath-text {
+  font-size: var(--ath-text-font-size-h6);
+  font-weight: var(--ath-text-font-weight-h6);
+}

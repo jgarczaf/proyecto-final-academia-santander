@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { AvatarArgs } from './avatar.types';
+declare const meta: Meta<AvatarArgs>;
+export default meta;
+type Story = StoryObj<AvatarArgs>;
+export declare const Playground: Story;
+export declare const ConImagen: Story;
+export declare const ConAvatarName: Story;
+export declare const ConIniciales: Story;
+export declare const Size: Story;
+export declare const Type: Story;

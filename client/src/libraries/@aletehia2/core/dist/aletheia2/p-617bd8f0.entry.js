@@ -1,0 +1,2 @@
+import{r as e}from"./p-D2-yfY-d.js";const a={Blank:"blank"};const t=class{constructor(a){e(this,a)}selected=false;disabled=false;icon;text;value;href;target=a.Blank;rel;externalLabel="Se abre en una nueva ventana"};export{t as ath_menu_vertical_item_link};
+//# sourceMappingURL=p-617bd8f0.entry.js.map

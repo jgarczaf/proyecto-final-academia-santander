@@ -1,0 +1,24 @@
+import { Meta, StoryObj } from '@storybook/html';
+type PaginationArgs = {
+    'no-end-buttons': boolean;
+    'no-jump-buttons': boolean;
+    'no-items-count': boolean;
+    'no-items-selector': boolean;
+    'items-selector': string;
+    'items-per-page': number;
+    'current-page': number;
+    'total-items': number;
+    'disabled': boolean;
+    'ath-aria-label': string;
+    'athPaginate'?: (event: CustomEvent<void>) => void;
+    'athItemsPerPageChange'?: (event: CustomEvent<void>) => void;
+};
+declare const meta: Meta<PaginationArgs>;
+export default meta;
+type Story = StoryObj<PaginationArgs>;
+export declare const Playground: Story;
+export declare const NoEndButtons: Story;
+export declare const NoJumpButtons: Story;
+export declare const NoItemsCount: Story;
+export declare const NoItemsSelector: Story;
+export declare const Disabled: Story;

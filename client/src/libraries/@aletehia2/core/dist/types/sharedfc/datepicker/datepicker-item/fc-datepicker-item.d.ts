@@ -1,0 +1,20 @@
+import { FunctionalComponent } from '../../../stencil-public-runtime';
+export type FcDatepickerItemType = {
+    value?: Date;
+    onSelect: (e: MouseEvent, day: Date) => void;
+    onKeyDown?: (e: KeyboardEvent) => void;
+    text: string;
+    isOtherMonth?: boolean;
+    isSelected?: boolean;
+    isStart?: boolean;
+    isMiddle?: boolean;
+    isEnd?: boolean;
+    type?: 'day' | 'month' | 'year';
+    isCurrent?: boolean;
+    isDisabled?: boolean;
+    isHighlighted?: boolean;
+    isFocusable?: boolean;
+    color?: string;
+    onDatepickerItemRef: (el: HTMLDivElement) => void;
+};
+export declare const FcDatepickerItem: FunctionalComponent<FcDatepickerItemType>;

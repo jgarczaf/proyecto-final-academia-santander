@@ -1,0 +1,22 @@
+'use strict';
+
+var index = require('./index--hWT2F8k.js');
+
+const accesibleCounterLabel = (accesibleLabel, value, maxlength) => {
+    let label = accesibleLabel;
+    label = label.replace(/\[length\]/g, String(value.length));
+    label = label.replace(/\[max\]/g, String(maxlength));
+    label = label.replace(/\[rest\]/g, String(maxlength - value.length));
+    return label;
+};
+const FcInputCounter = props => {
+    return [
+        index.h("div", { class: "ath-input__counter", "aria-hidden": "true" }, !!props.value ? props.value.length : 0, props.maxlength && index.h("span", null, "/", props.maxlength)),
+        index.h("div", { class: "ath-visibility-hidden", "aria-live": "polite" }, accesibleCounterLabel(props.accesibleLabel, (props.value = ''), props.maxlength)),
+    ];
+};
+
+exports.FcInputCounter = FcInputCounter;
+//# sourceMappingURL=fc-counter-Dk7raJZK.js.map
+
+//# sourceMappingURL=fc-counter-Dk7raJZK.js.map

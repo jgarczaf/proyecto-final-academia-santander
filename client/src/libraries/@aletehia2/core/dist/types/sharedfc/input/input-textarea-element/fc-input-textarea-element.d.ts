@@ -1,0 +1,26 @@
+import { FunctionalComponent } from '../../../stencil-public-runtime';
+export type FcInputTextareaElementType = {
+    autocomplete: string;
+    disabled: boolean;
+    feedback?: string;
+    feedbackText?: string;
+    helperText?: string;
+    inputAriaLabel?: string;
+    inputId: string;
+    maxlength?: number;
+    name: string;
+    placeholder: string;
+    readonly: boolean;
+    required: boolean;
+    size?: string;
+    tabindex?: string;
+    value: string;
+    cols?: number;
+    rows?: number;
+    onInput: () => void;
+    onFocus: () => void;
+    onBlur: () => void;
+    onChange: () => void;
+    onInputRef: (el: HTMLTextAreaElement) => void;
+};
+export declare const FcInputTextareaElement: FunctionalComponent<FcInputTextareaElementType>;

@@ -1,0 +1,16 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { SegmentedControlArgs } from './segmented-control.types';
+declare const meta: Meta<SegmentedControlArgs>;
+export default meta;
+type Story = StoryObj<SegmentedControlArgs>;
+export declare const Playground: Story;
+export declare const Sizes: Story;
+export declare const Types: Story;
+export declare const Colors: Story;
+export declare const Icons: Story;
+export declare const Disabled: Story;
+export declare const DisabledItems: Story;
+export declare const HelperText: Story;
+export declare const Feedback: Story;
+export declare const Required: Story;
+export declare const Tooltip: Story;

@@ -1,0 +1,30 @@
+:host .ath-divider.ath-divider--color-bold {
+  border-color: var(--ath-color-border-alpha-bold-default);
+}
+:host .ath-divider.ath-divider--color-bolder {
+  border-color: var(--ath-color-border-alpha-bolder-default);
+}
+:host .ath-divider.ath-divider--color-boldest {
+  border-color: var(--ath-color-border-alpha-boldest-default);
+}
+
+:host {
+  display: block;
+}
+:host .ath-divider {
+  width: fit-content;
+}
+:host .ath-divider--orientation-horizontal {
+  width: 100%;
+  border-bottom-style: solid;
+}
+:host .ath-divider--orientation-vertical {
+  height: 100%;
+  border-left-style: solid;
+}
+:host .ath-divider--size-md {
+  border-width: 2px;
+}
+:host .ath-divider--size-sm {
+  border-width: 1px;
+}

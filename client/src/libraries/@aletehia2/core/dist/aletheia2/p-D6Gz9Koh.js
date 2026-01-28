@@ -1,0 +1,2 @@
+import{h as s}from"./p-D2-yfY-d.js";const t=t=>{const o=document.body.dataset.theme||"core";const r=`assets/images/pictograms/${o}/`;return!!t.name&&s("img",{src:`${r}${t.name}.svg`,alt:""})};export{t as F};
+//# sourceMappingURL=p-D6Gz9Koh.js.map

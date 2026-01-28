@@ -1,0 +1,21 @@
+import { FunctionalComponent } from '../../../stencil-public-runtime';
+import { WeekDays } from "../../../utils/date-utils";
+export type FcCalendarType = {
+    shownDate?: Date;
+    selectedDate?: Date;
+    selectedRangeStart?: Date;
+    selectedRangeEnd?: Date;
+    currentDate?: Date;
+    disabledDate?: Date[];
+    highlightedDate?: Date[];
+    highlightedWeekends: boolean;
+    firstDayOfTheWeek?: WeekDays;
+    color?: string;
+    minDate?: Date;
+    maxDate?: Date;
+    hasFocus?: boolean;
+    onDateSelect: (e: MouseEvent, day: Date) => void;
+    onChangeShownDate?: (day: Date) => void;
+    onExit?: () => void;
+};
+export declare const FcCalendar: FunctionalComponent<FcCalendarType>;

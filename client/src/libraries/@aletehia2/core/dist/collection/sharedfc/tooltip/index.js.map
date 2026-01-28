@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/sharedfc/tooltip/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,iBAAiB,EAAyB,MAAM,wCAAwC,CAAC","sourcesContent":["export { FcHelpDescription, FcHelpDescriptionType } from './help-description/fc-help-description';\r\n"]}

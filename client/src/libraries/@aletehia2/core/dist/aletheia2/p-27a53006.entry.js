@@ -1,0 +1,2 @@
+import{r as e}from"./p-D2-yfY-d.js";const s=class{constructor(s){e(this,s)}disabled=false;icon;open=false;selected=false;text;value};export{s as ath_menu_vertical_item_action};
+//# sourceMappingURL=p-27a53006.entry.js.map

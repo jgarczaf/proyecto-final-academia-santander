@@ -1,0 +1,2 @@
+import{h as t}from"./p-D2-yfY-d.js";const s=(t="right",s=false)=>({"_ath-help-description":true,[`_ath-help-description--${t}`]:!!t,"_ath-help-description--has-arrow":s});const i=i=>[t("div",{class:s(i.position,i.hasArrow),id:i.id},t("div",{class:"content"},t("div",{class:"text"},i.text)))];export{i as F};
+//# sourceMappingURL=p-CFbZMjBY.js.map

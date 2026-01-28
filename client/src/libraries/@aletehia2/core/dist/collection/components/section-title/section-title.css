@@ -1,0 +1,110 @@
+:host .ath-section-title--primary {
+  border-left: 2px solid var(--ath-color-section-title-bg-primary);
+}
+:host .ath-section-title--primary-overline {
+  color: var(--ath-color-fg-primary-default);
+}
+:host .ath-section-title--accent {
+  border-left: 2px solid var(--ath-color-section-title-bg-accent);
+}
+:host .ath-section-title--accent-overline {
+  color: var(--ath-color-fg-accent-default);
+}
+:host .ath-section-title--label--sm {
+  font-size: var(--ath-font-size-heading-4);
+  font-weight: var(--ath-font-weight-section-title-heading);
+  line-height: var(--ath-font-line-height-heading-4);
+}
+:host .ath-section-title--label--md {
+  font-size: var(--ath-font-size-heading-3);
+  font-weight: var(--ath-font-weight-section-title-heading);
+  line-height: var(--ath-font-line-height-heading-3);
+}
+:host .ath-section-title--label--lg {
+  font-size: var(--ath-font-size-display-sm);
+  font-weight: var(--ath-font-weight-display);
+  line-height: var(--ath-font-line-height-display);
+}
+
+:host {
+  display: inline-flex;
+  position: relative;
+}
+:host .ath-section-title {
+  display: inline-flex;
+  align-items: center;
+  padding-left: var(--ath-spacing-section-title-padding-left);
+}
+:host .ath-section-title--hasLabel .ath-section-title--slot {
+  display: none;
+}
+:host .ath-section-title--content {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+:host .ath-section-title--overline {
+  margin: 0;
+  font-family: var(--ath-font-family-overline);
+  font-size: var(--ath-font-size-overline);
+  font-weight: var(--ath-font-weight-overline);
+  line-height: var(--ath-font-line-height-overline);
+}
+:host .ath-section-title--label {
+  margin: 0;
+  color: var(--ath-color-fg-default);
+  font-family: var(--ath-font-family-heading);
+}
+:host .ath-section-title--label-wrapper {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+:host .ath-section-title--tooltip {
+  display: flex;
+  align-items: flex-end;
+  position: absolute;
+  bottom: 2px;
+}
+:host .ath-section-title--tooltip .ath-tooltip-container {
+  right: 0;
+}
+:host .ath-section-title--collapsable {
+  cursor: pointer;
+}
+:host .ath-section-title--collapsable:focus, :host .ath-section-title--collapsable:focus-visible {
+  outline: 2px solid var(--ath-color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--ath-border-radius-2xs);
+}
+:host .ath-section-title--chevron {
+  display: flex;
+}
+:host .ath-section-title--chevron ath-icon {
+  transition: transform 0.3s ease-in-out;
+}
+:host .ath-section-title--chevron-rotate ath-icon {
+  transform: rotate(180deg);
+}
+
+:host[collapsable=true][tooltip] .ath-section-title--tooltip,
+:host[collapsable][tooltip] .ath-section-title--tooltip {
+  right: calc(var(--ath-font-size-icon-md) + var(--ath-spacing-section-title-col-gap));
+}
+:host[collapsable=true][tooltip] .ath-section-title--content,
+:host[collapsable][tooltip] .ath-section-title--content {
+  padding-right: calc(var(--ath-font-size-icon-md) + var(--ath-spacing-section-title-col-gap) + 4px);
+}
+:host[collapsable=true]:not([tooltip]) .ath-section-title,
+:host[collapsable]:not([tooltip]) .ath-section-title {
+  gap: var(--ath-spacing-section-title-col-gap);
+}
+
+:host([collapsable=false])[tooltip] .ath-section-title--tooltip,
+:host:not([collapsable])[tooltip] .ath-section-title--tooltip {
+  right: 0;
+}
+:host([collapsable=false])[tooltip] .ath-section-title--content,
+:host:not([collapsable])[tooltip] .ath-section-title--content {
+  padding-right: calc(var(--ath-font-size-icon-md) + var(--ath-spacing-section-title-tooltip-col-gap));
+}

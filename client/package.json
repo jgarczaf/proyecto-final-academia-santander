@@ -24,7 +24,9 @@
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.3",
     "tslib": "^2.3.0",
-    "zone.js": "~0.13.0"
+    "zone.js": "~0.13.0",
+    "@aletehia2/angular": "file:./src/libraries/@aletehia2/angular",
+    "@aletehia2/core": "file:./src/libraries/@aletehia2/core"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.16",

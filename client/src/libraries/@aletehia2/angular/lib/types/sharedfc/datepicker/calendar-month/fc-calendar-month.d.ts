@@ -1,0 +1,20 @@
+import { FunctionalComponent } from '../../../stencil-public-runtime';
+export type FcCalendarMonthType = {
+    shownMonth?: Date;
+    selectedMonth?: Date;
+    selectedRangeStart?: Date;
+    selectedRangeEnd?: Date;
+    currentMonth?: Date;
+    disabledDates?: Date[];
+    highlightedDates?: Date[];
+    disabledMonths?: Date[];
+    highlightedMonths?: Date[];
+    color?: string;
+    minMonth?: Date;
+    maxMonth?: Date;
+    hasFocus?: boolean;
+    onMonthSelect: (e: MouseEvent, day: Date) => void;
+    onChangeShownMonth?: (day: Date) => void;
+    onExit?: () => void;
+};
+export declare const FcCalendarMonth: FunctionalComponent<FcCalendarMonthType>;

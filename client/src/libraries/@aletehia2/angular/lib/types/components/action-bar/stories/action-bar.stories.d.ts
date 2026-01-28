@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { ActionBarArgs } from './action-bar.types';
+declare const meta: Meta<ActionBarArgs>;
+export default meta;
+type Story = StoryObj<ActionBarArgs>;
+export declare const Playground: Story;
+export declare const Alignment: Story;
+export declare const Size: Story;
+export declare const ConDividers: Story;
+export declare const ComponentesBoton: Story;
+export declare const OtrosComponentes: Story;

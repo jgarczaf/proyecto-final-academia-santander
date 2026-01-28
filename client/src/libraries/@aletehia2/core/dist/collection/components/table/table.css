@@ -1,0 +1,33 @@
+:host(.ath-table) {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: min-content;
+  border-radius: var(--ath-border-radius-table-default);
+}
+:host(.ath-table) .ath-table__header {
+  display: flex;
+  flex: 0 0 auto;
+}
+:host(.ath-table) .ath-table__body {
+  display: flex;
+  flex: 1 1 auto;
+}
+:host(.ath-table) .ath-table__footer {
+  flex: 0 0 auto;
+}
+
+:host(:focus),
+:host(:focus-visible) {
+  box-shadow: 0px 0px 0px 2px var(--ath-color-border-focus);
+  display: block;
+  outline: none;
+}
+
+:host(.ath-table--primary) {
+  background: var(--ath-color-table-bg-primary);
+}
+
+:host(.ath-table--secondary) {
+  background: var(--ath-color-table-bg-secondary);
+}

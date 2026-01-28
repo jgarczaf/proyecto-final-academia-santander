@@ -1,0 +1,13 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { StepArgs } from './step.types';
+declare const meta: Meta<StepArgs>;
+export default meta;
+type Story = StoryObj<StepArgs>;
+export declare const Playground: Story;
+export declare const isCollapsable: Story;
+export declare const IsExpanded: Story;
+export declare const FeedbackError: Story;
+export declare const IsComplete: Story;
+export declare const Disabled: Story;
+export declare const Number: Story;
+export declare const Readonly: Story;

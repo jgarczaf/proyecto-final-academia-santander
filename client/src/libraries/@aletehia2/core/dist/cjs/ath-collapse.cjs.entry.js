@@ -1,0 +1,95 @@
+'use strict';
+
+var index = require('./index--hWT2F8k.js');
+
+const collapseCss = ":host .ath-collapse{transition:height 0.5s;color:var(--ath-color-fg-default)}:host .ath-collapse--overflow-hidden{overflow:hidden}";
+
+const AthCollapse = class {
+    constructor(hostRef) {
+        index.registerInstance(this, hostRef);
+        this.athCollapseState = index.createEvent(this, "athCollapseState");
+    }
+    timeoutHideContent;
+    timeoutChangeOverflow;
+    animationtime = 500;
+    get el() { return index.getElement(this); }
+    /**
+     * If the component is expanded by default
+     */
+    show = false;
+    isExpanded;
+    collapseHeight;
+    overflowHidden = true;
+    /**
+     * Event to emit if the component is expanded or collapsed.
+     */
+    athCollapseState;
+    handleCollapse(event) {
+        const targetId = event.detail;
+        if (!targetId || targetId !== this.el?.id)
+            return;
+        this.isExpanded = !this.isExpanded;
+        this.athCollapseState.emit({ id: this.el.id, isExpanded: this.isExpanded });
+        clearTimeout(this.timeoutHideContent);
+        clearTimeout(this.timeoutChangeOverflow);
+        if (this.isExpanded) {
+            this.show = true;
+            this.timeoutChangeOverflow = setTimeout(() => {
+                this.overflowHidden = false;
+            }, this.animationtime);
+        }
+        else {
+            this.timeoutHideContent = setTimeout(() => (this.show = false), this.animationtime);
+            this.overflowHidden = true;
+        }
+    }
+    handleResize() {
+        this.getCollapseHeight();
+    }
+    async handleExpanded() {
+        await this.getCollapseHeight();
+    }
+    getClassNames = () => ({
+        'ath-collapse': true,
+        'ath-collapse--expanded': this.isExpanded,
+        'ath-collapse--collapsed': !this.isExpanded,
+        'ath-collapse--overflow-hidden': this.overflowHidden,
+    });
+    getCollapseHeight = async () => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        const collapseElement = this.el.shadowRoot?.querySelector('.ath-collapse');
+        if (collapseElement && this.isExpanded) {
+            const prevHeight = collapseElement.style.height;
+            collapseElement.style.height = 'auto';
+            const newHeight = collapseElement.scrollHeight;
+            collapseElement.style.height = prevHeight;
+            await new Promise(resolve => requestAnimationFrame(resolve));
+            this.collapseHeight = `${newHeight}px`;
+        }
+        else {
+            this.collapseHeight = '0px';
+        }
+    };
+    componentWillLoad() {
+        this.isExpanded = this.show;
+        this.athCollapseState.emit({ id: this.el?.id, isExpanded: this.isExpanded });
+    }
+    componentDidLoad() {
+        this.getCollapseHeight();
+    }
+    disconnectedCallback() {
+        clearTimeout(this.timeoutHideContent);
+        clearTimeout(this.timeoutChangeOverflow);
+    }
+    render() {
+        return (index.h(index.Host, { key: '08bc17e50c5fb6c7256b0d1b331b8231cb0bbde1' }, index.h("div", { key: 'bd4ac59b2eca99f5512b8e73d2d7d5b34b5c9476' }, index.h("div", { key: 'f469338b9dbd4f4cb489fec4450929194e574639', class: this.getClassNames(), style: { height: this.collapseHeight } }, this.show && index.h("slot", { key: '80f958764334f5d4cd4ad6d71ef813cae861008b' })))));
+    }
+    static get watchers() { return {
+        "isExpanded": ["handleExpanded"]
+    }; }
+};
+AthCollapse.style = collapseCss;
+
+exports.ath_collapse = AthCollapse;
+//# sourceMappingURL=ath-collapse.entry.cjs.js.map

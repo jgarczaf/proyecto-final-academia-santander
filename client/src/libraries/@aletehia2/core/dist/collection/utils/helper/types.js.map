@@ -1,0 +1,1 @@
+{"version":3,"file":"types.js","sourceRoot":"","sources":["../../../src/utils/helper/types.ts"],"names":[],"mappings":"","sourcesContent":["/**\r\n * Extracts the value types from an object type\r\n * Useful for creating union types from 'as const' objects\r\n */\r\nexport type ValueOf<T> = T[keyof T];\r\n"]}

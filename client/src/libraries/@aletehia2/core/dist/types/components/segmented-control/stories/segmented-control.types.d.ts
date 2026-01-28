@@ -1,0 +1,20 @@
+import { SegmentedControlItemChangeSelect } from '../segmented-control.model';
+export type SegmentedControlArgs = {
+    'color': string;
+    'disabled': boolean;
+    'feedback': string;
+    'feedback-text': string;
+    'helper-text': string;
+    'label': string;
+    'required': boolean;
+    'hide-required': boolean;
+    'required-aria-label': string;
+    'size': string;
+    'tooltip-text': string;
+    'tooltip-width': number;
+    'type': string;
+    'value': string;
+    'aria-label': string;
+    'athChangeValue'?: (event: CustomEvent<SegmentedControlItemChangeSelect>) => void;
+};
+export declare const defaultArgs: Partial<SegmentedControlArgs>;

@@ -1,0 +1,21 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { ButtonExpandableSizesType } from '../button-expandable.model';
+type ButtonExpandableArgs = {
+    'collapse-target'?: string;
+    'icon'?: string;
+    'disabled'?: boolean;
+    'size': ButtonExpandableSizesType;
+    'defaultSlot': string;
+    'aria-label'?: string;
+    'aria-labelledby'?: string;
+    'aria-describedby'?: string;
+    'tabindex'?: number;
+    'athToggleCollapse': (event: CustomEvent<string>) => void;
+};
+declare const meta: Meta<ButtonExpandableArgs>;
+export default meta;
+type Story = StoryObj<ButtonExpandableArgs>;
+export declare const Playground: Story;
+export declare const Icon: Story;
+export declare const Disabled: Story;
+export declare const Size: Story;

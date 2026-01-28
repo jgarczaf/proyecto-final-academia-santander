@@ -1,0 +1,2 @@
+import{r as a}from"./p-D2-yfY-d.js";const t=class{constructor(t){a(this,t)}label;disabled;icon;iconAriaLabel;navigationData;selected;render(){return null}};export{t as ath_tab};
+//# sourceMappingURL=p-3dfeb1f0.entry.js.map

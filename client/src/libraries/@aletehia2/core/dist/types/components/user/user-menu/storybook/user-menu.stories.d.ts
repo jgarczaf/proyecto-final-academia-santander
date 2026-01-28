@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { UserMenuArgs } from './user-menu.types';
+declare const meta: Meta<UserMenuArgs>;
+export default meta;
+type Story = StoryObj<UserMenuArgs>;
+export declare const Playground: Story;
+export declare const Open: Story;
+export declare const ConImagen: Story;
+export declare const ConIniciales: Story;
+export declare const Type: Story;

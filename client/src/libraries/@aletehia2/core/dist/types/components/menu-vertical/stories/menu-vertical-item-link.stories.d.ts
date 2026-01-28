@@ -1,0 +1,12 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { MenuVerticalItemLinkArgs } from './menu-vertical-item-link.types';
+declare const meta: Meta<MenuVerticalItemLinkArgs>;
+export default meta;
+type Story = StoryObj<MenuVerticalItemLinkArgs>;
+export declare const Playground: Story;
+export declare const Disabled: Story;
+export declare const Icon: Story;
+export declare const Nivel1: Story;
+export declare const Nivel2: Story;
+export declare const Nivel3: Story;
+export declare const Selected: Story;

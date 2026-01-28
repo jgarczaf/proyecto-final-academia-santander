@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { TabArgs } from './tabs.types';
+declare const meta: Meta<TabArgs>;
+export default meta;
+type Story = StoryObj<TabArgs>;
+export declare const Playground: Story;
+export declare const Disabled: Story;
+export declare const ConIcon: Story;
+export declare const TypeBox: Story;
+export declare const Selected: Story;

@@ -1,0 +1,54 @@
+:host {
+  display: flex;
+  width: fit-content;
+}
+:host .ath-link {
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--ath-spacing-between-100);
+  font-family: var(--ath-font-family-primary);
+  font-style: normal;
+  line-height: var(--ath-font-line-height-body);
+  font-weight: var(--ath-font-weight-medium);
+  border-radius: var(--ath-border-radius-2xs);
+  text-decoration-style: solid;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+  cursor: pointer;
+}
+:host .ath-link:focus-visible:not(:host .ath-link--disabled) {
+  outline: none;
+  box-shadow: 0px 0px 0px 2px var(--ath-color-border-focus);
+}
+:host .ath-link--disabled {
+  pointer-events: none;
+  color: var(--ath-color-fg-disabled);
+}
+:host .ath-link--underline {
+  text-decoration-line: underline;
+}
+:host .ath-link:not(.ath-link--disabled):not(:visited):not(:hover):not(:active) {
+  color: var(--ath-color-fg-primary-default);
+}
+:host .ath-link:visited:not(.ath-link--disabled) {
+  color: var(--ath-color-fg-primary-pressed);
+}
+:host .ath-link:hover:not(.ath-link--disabled) {
+  color: var(--ath-color-fg-primary-hovered);
+}
+:host .ath-link:active:not(.ath-link--disabled) {
+  color: var(--ath-color-fg-primary-pressed);
+}
+:host .ath-link--sm {
+  font-size: var(--ath-font-size-body-sm);
+}
+:host .ath-link--md {
+  font-size: var(--ath-font-size-body-md);
+}
+:host .ath-link--lg {
+  font-size: var(--ath-font-size-body-lg);
+}

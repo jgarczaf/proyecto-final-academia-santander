@@ -1,0 +1,1 @@
+{"version":3,"file":"breadcrumb.types.js","sourceRoot":"","sources":["../../../../src/components/breadcrumb/stories/breadcrumb.types.ts"],"names":[],"mappings":"","sourcesContent":["import type { BreadcrumbModel } from '../breadcrumb.model';\r\n\r\nexport interface BreadcrumbStoryArgs {\r\n  separator: string;\r\n  collapsed: boolean;\r\n  options: BreadcrumbModel[];\r\n}\r\n"]}

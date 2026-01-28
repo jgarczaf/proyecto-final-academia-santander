@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { AlertArgs } from './alert.types';
+declare const meta: Meta<AlertArgs>;
+export default meta;
+type Story = StoryObj<AlertArgs>;
+export declare const Playground: Story;
+export declare const Color: Story;
+export declare const ContainerSize440: Story;
+export declare const TypeSection: Story;
+export declare const TypePage: Story;
+export declare const OnlySlot: Story;

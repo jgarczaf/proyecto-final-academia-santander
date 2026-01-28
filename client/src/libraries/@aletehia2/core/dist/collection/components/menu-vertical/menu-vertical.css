@@ -1,0 +1,242 @@
+:host .ath-menu-vertical__wrapper-title {
+  cursor: pointer;
+  --color-title: var(--ath-color-fg-default);
+  --font-weight-title: var(--ath-font-weight-regular);
+}
+:host .ath-menu-vertical__wrapper-title:focus-visible {
+  --bg-title: var(--ath-color-drop-shadow-focus);
+}
+:host .ath-menu-vertical__wrapper-title.selected {
+  --bg-title: var(--ath-color-menu-vertical-item-level-bg-selected);
+  --color-title: var(--ath-color-fg-inverse-default);
+  --font-weight-title: var(--ath-font-weight-medium);
+}
+:host .ath-menu-vertical__wrapper-title:hover:not(.selected, .disabled, .open) {
+  --bg-title: var(--ath-color-menu-vertical-item-level-bg-hovered);
+  font-weight: var(--ath-font-weight-medium);
+}
+:host .ath-menu-vertical__wrapper-title:active:not(.disabled, .open) {
+  --bg-title: var(--ath-color-menu-vertical-item-level-bg-pressed);
+  --font-weight-title: var(--ath-font-weight-medium);
+}
+:host .ath-menu-vertical__wrapper-title.disabled {
+  cursor: not-allowed;
+  --color-title: var(--ath-color-fg-disabled);
+}
+:host .ath-menu-vertical__level-1 {
+  cursor: pointer;
+  --color-text: var(--ath-color-fg-default);
+  --font-weight-text: var(--ath-font-weight-regular);
+  --color-icon: var(--ath-color-icon-default);
+}
+:host .ath-menu-vertical__level-1:hover:not(.selected, .disabled, .open) .ath-menu-vertical__level-1__icon {
+  --bg-icon: var(--ath-color-menu-vertical-item-level-1-bg-hovered);
+  --color-icon: var(--ath-color-icon-inverse-default);
+}
+:host .ath-menu-vertical__level-1:hover:not(.selected, .disabled, .open) .ath-menu-vertical__level-1__text {
+  font-weight: var(--ath-font-weight-medium);
+}
+:host .ath-menu-vertical__level-1.selected .ath-menu-vertical__level-1__icon {
+  --bg-icon: var(--ath-color-menu-vertical-item-level-1-bg-selected);
+  --color-icon: var(--ath-color-icon-inverse-default);
+}
+:host .ath-menu-vertical__level-1.selected .ath-menu-vertical__level-1__text {
+  font-weight: var(--ath-font-weight-medium);
+}
+:host .ath-menu-vertical__level-1:active:not(.disabled, .open) .ath-menu-vertical__level-1__icon {
+  --bg-icon: var(--ath-color-menu-vertical-item-level-1-bg-pressed);
+  --color-icon: var(--ath-color-icon-inverse-default);
+}
+:host .ath-menu-vertical__level-1:active:not(.disabled, .open) .ath-menu-vertical__level-1__text {
+  font-weight: var(--ath-font-weight-medium);
+}
+:host .ath-menu-vertical__level-1.disabled {
+  cursor: not-allowed;
+}
+:host .ath-menu-vertical__level-1.disabled .ath-menu-vertical__level-1__icon {
+  --color-icon: var(--ath-color-fg-disabled);
+}
+:host .ath-menu-vertical__level-1.disabled .ath-menu-vertical__level-1__text {
+  --color-text: var(--ath-color-fg-disabled);
+}
+
+.ath-visibility-hidden, .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:host {
+  display: flex;
+}
+:host .ath-menu-vertical-primary {
+  gap: var(--ath-spacing-menu-vertical-row-gap-primary);
+}
+:host .ath-menu-vertical-secondary {
+  gap: var(--ath-spacing-menu-vertical-row-gap-secondary);
+}
+:host .ath-menu-vertical__list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 288px;
+  max-width: 480px;
+  width: 100%;
+}
+:host .ath-menu-vertical__list__group {
+  width: 100%;
+}
+:host .ath-menu-vertical__wrapper-title {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: var(--ath-spacing-menu-vertical-item-padding-y-xs) var(--ath-spacing-menu-vertical-item-padding-x);
+  align-items: center;
+  gap: var(--ath-spacing-menu-vertical-item-level-col-gap-sm);
+  flex: 1 0 0;
+  border-radius: var(--ath-border-radius-menu-vertical-item-level);
+  color: var(--color-title);
+  background: var(--bg-title);
+  text-decoration: none;
+  font-weight: var(--ath-font-weight-title);
+  cursor: pointer;
+}
+:host .ath-menu-vertical__wrapper-title.open {
+  cursor: default;
+}
+:host .ath-menu-vertical__wrapper-title__no-gap {
+  gap: none;
+}
+:host .ath-menu-vertical__wrapper-title__button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.3s ease-in-out;
+}
+:host .ath-menu-vertical__wrapper-title__button.open {
+  transform: rotate(-180deg);
+}
+:host .ath-menu-vertical__wrapper-title:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ath-color-drop-shadow-focus), 0 0 0 4px var(--ath-color-border-focus);
+}
+:host .ath-menu-vertical__level-1 {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--ath-spacing-menu-vertical-item-level-col-gap-md);
+  border-radius: var(--ath-border-radius-menu-vertical-item-level);
+  text-decoration: none;
+  color: inherit;
+}
+:host .ath-menu-vertical__level-1.open {
+  cursor: default;
+}
+:host .ath-menu-vertical__level-1:visited, :host .ath-menu-vertical__level-1:hover, :host .ath-menu-vertical__level-1:active {
+  text-decoration: none;
+  color: inherit;
+}
+:host .ath-menu-vertical__level-1__icon {
+  display: flex;
+  padding: var(--ath-spacing-menu-vertical-item-level-icon-padding-around);
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--ath-border-radius-menu-vertical-item-level-1);
+  background: var(--bg-icon);
+  color: var(--color-icon);
+}
+:host .ath-menu-vertical__level-1__text {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ath-spacing-menu-vertical-item-padding-y-sm) var(--ath-spacing-menu-vertical-item-padding-x) var(--ath-spacing-menu-vertical-item-padding-y-sm) 0;
+  gap: var(--ath-spacing-menu-vertical-item-level-col-gap-sm);
+  font-family: var(--ath-font-family-primary);
+  font-size: var(--ath-font-size-menu-vertical-heading-level-1);
+  font-family: var(--ath-font-family-primary);
+  font-style: normal;
+  line-height: var(--ath-font-line-height-menu-vertical-heading-level);
+  color: var(--color-text);
+  font-weight: var(--ath-font-weight-regular);
+}
+:host .ath-menu-vertical__level-1__text__button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.3s ease-in-out;
+}
+:host .ath-menu-vertical__level-1__text__button.open {
+  transform: rotate(-180deg);
+}
+:host .ath-menu-vertical__level-1:focus-visible {
+  outline: none;
+  background-color: var(--ath-color-drop-shadow-focus);
+  box-shadow: 0 0 0 2px var(--ath-color-border-focus);
+}
+:host .ath-menu-vertical__level-2 {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  font-size: var(--ath-font-size-menu-vertical-heading-level-2);
+  font-family: var(--ath-font-family-primary);
+  font-style: normal;
+  line-height: var(--ath-font-line-height-menu-vertical-heading-level);
+  font-weight: var(--ath-font-weight-regular);
+}
+:host .ath-menu-vertical__level-2.primary {
+  padding-left: var(--ath-spacing-menu-vertical-item-level-padding-left-level-2);
+}
+:host .ath-menu-vertical__level-2.selected {
+  font-weight: var(--ath-font-weight-medium);
+}
+:host .ath-menu-vertical__level-3 {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  font-size: var(--ath-font-size-menu-vertical-heading-level-3);
+  font-family: var(--ath-font-family-primary);
+  font-style: normal;
+  line-height: var(--ath-font-line-height-menu-vertical-heading-level);
+  font-weight: var(--ath-font-weight-regular);
+}
+:host .ath-menu-vertical__level-3.primary {
+  padding-left: var(--ath-spacing-menu-vertical-item-level-padding-left-level-3-primary);
+}
+:host .ath-menu-vertical__level-3.secondary {
+  padding-left: var(--ath-spacing-menu-vertical-item-level-padding-left-level-3-secondary);
+}
+:host .ath-menu-vertical__level-3.selected {
+  font-weight: var(--ath-font-weight-medium);
+}
+
+.ath-section-sublist {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-menu-vertical-item-group-row-gap-xs);
+  align-self: stretch;
+}
+
+.ath-menu-vertical__menu {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.ath-menu-vertical__sublist {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-menu-vertical-item-group-row-gap-xs);
+  align-self: stretch;
+}

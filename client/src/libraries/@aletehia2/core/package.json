@@ -1,0 +1,85 @@
+{
+  "name": "@aletheia2/core",
+  "version": "0.0.2",
+  "description": "Librería de sistema de diseño de componentes de Aletheia",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/aletheia2/aletheia2.esm.js",
+  "exports": {
+    ".": {
+      "import": "./dist/aletheia2/aletheia2.esm.js",
+      "require": "./dist/aletheia2/aletheia2.cjs.js"
+    },
+    "./loader": {
+      "import": "./loader/index.js",
+      "require": "./loader/index.cjs",
+      "types": "./loader/index.d.ts"
+    },
+    "./components": {
+      "import": "./components/index.js",
+      "types": "./components/index.d.ts"
+    },
+    "./components/ath-*.js": {
+      "import": "./components/ath-*.js",
+      "types": "./components/ath-*.d.ts"
+    },
+    "./css/aletheia2.css": "./dist/aletheia2/aletheia2.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stenciljs/component-starter.git"
+  },
+  "files": [
+    "components/",
+    "dist/",
+    "loader/"
+  ],
+  "scripts": {
+    "build": "stencil build",
+    "build.watch": "stencil build --watch",
+    "start": "stencil build --dev --watch --serve",
+    "test": "stencil test --spec --e2e ",
+    "test.c": "stencil test --spec --coverage ",
+    "test:ci": "stencil test --spec --e2e --no-interactive --max-workers=2",
+    "test:ci:e2e": "stencil test --e2e --no-interactive --max-workers=2",
+    "test:ci:spec": "stencil test --spec --no-interactive --max-workers=2",
+    "test.watch": "stencil test --spec --e2e --watch",
+    "test.spec.watch": "stencil test --spec --watch",
+    "test.watchAll": "stencil test --spec --e2e --watchAll",
+    "generate": "stencil generate",
+    "storybook": "storybook dev -p 6006",
+    "storybook.watch": "npm-run-all --parallel build.watch storybook",
+    "build-storybook": "storybook build"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.2",
+    "@stencil-community/eslint-plugin": "^0.10.0",
+    "@stencil/core": "^4.27.1",
+    "@stencil/sass": "^3.2.2",
+    "@storybook/addon-a11y": "^8.4.5",
+    "@storybook/addon-essentials": "^8.4.5",
+    "@storybook/addon-interactions": "^8.4.5",
+    "@storybook/addon-webpack5-compiler-swc": "^1.0.5",
+    "@storybook/blocks": "^8.4.5",
+    "@storybook/html": "^8.4.5",
+    "@storybook/html-webpack5": "^8.4.5",
+    "@storybook/manager-api": "^8.5.3",
+    "@storybook/test": "^8.4.5",
+    "@storybook/theming": "^8.5.3",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.5",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "^29.7.0",
+    "jest-cli": "^29.7.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "3.6.2",
+    "puppeteer": "^24.3.0",
+    "storybook": "^8.4.5",
+    "tsconfig-paths-webpack-plugin": "^4.2.0"
+  },
+  "license": "MIT"
+}

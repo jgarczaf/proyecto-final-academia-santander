@@ -1,0 +1,1 @@
+{"version":3,"file":"card.interface.js","sourceRoot":"","sources":["../../../src/components/card/card.interface.ts"],"names":[],"mappings":"","sourcesContent":["export interface Header {\r\n  headingText: string;\r\n  date: string;\r\n  overline: string;\r\n  subtitle: string;\r\n}\r\n"]}

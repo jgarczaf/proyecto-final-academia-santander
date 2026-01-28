@@ -1,0 +1,12 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { CardArgs } from './card.types';
+declare const meta: Meta<CardArgs>;
+export default meta;
+type Story = StoryObj<CardArgs>;
+export declare const Playground: Story;
+export declare const Clickable: Story;
+export declare const Fluid: Story;
+export declare const Orientation: Story;
+export declare const SinThumbnail: Story;
+export declare const Size: Story;
+export declare const WidthAuto: Story;

@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { LinkArgs } from './link.types';
+declare const meta: Meta<LinkArgs>;
+export default meta;
+type Story = StoryObj<LinkArgs>;
+export declare const Playground: Story;
+export declare const ConIcono: Story;
+export declare const Disabled: Story;
+export declare const SinSubrayado: Story;
+export declare const Size: Story;

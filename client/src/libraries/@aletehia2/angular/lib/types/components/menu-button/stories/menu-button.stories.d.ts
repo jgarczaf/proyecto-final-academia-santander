@@ -1,0 +1,15 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { MenuButtonArgs } from './menu-button.types';
+declare const meta: Meta<MenuButtonArgs>;
+export default meta;
+type Story = StoryObj<MenuButtonArgs>;
+export declare const Playground: Story;
+export declare const Alignment: Story;
+export declare const Autofocus: Story;
+export declare const Clear: Story;
+export declare const Color: Story;
+export declare const Disabled: Story;
+export declare const ConIconoMenu: Story;
+export declare const Open: Story;
+export declare const Size: Story;
+export declare const OverlayMaxHeight: Story;

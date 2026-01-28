@@ -1,0 +1,16 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { InputCounterArgs } from './input-counter.types';
+declare const meta: Meta<InputCounterArgs>;
+export default meta;
+type Story = StoryObj<InputCounterArgs>;
+export declare const Playground: Story;
+export declare const Disabled: Story;
+export declare const ConFeedback: Story;
+export declare const ConHelperText: Story;
+export declare const ConTooltip: Story;
+export declare const ConUnit: Story;
+export declare const Placeholder: Story;
+export declare const ReadOnly: Story;
+export declare const Required: Story;
+export declare const Size: Story;
+export declare const SinControls: Story;

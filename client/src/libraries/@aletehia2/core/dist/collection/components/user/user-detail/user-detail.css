@@ -1,0 +1,24 @@
+:host .ath-user-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ath-spacing-user-detail-col-gap);
+  font-family: var(--ath-font-family-body);
+  font-style: normal;
+  line-height: var(--ath-font-line-height-body);
+}
+:host .ath-user-detail__label {
+  color: var(--ath-color-fg-default);
+  font-size: var(--ath-font-size-body-md);
+  font-weight: var(--ath-font-weight-medium);
+}
+:host .ath-user-detail__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ath-spacing-user-detail-content-row-gap);
+}
+:host .ath-user-detail__content__description {
+  color: var(--ath-color-fg-subtle);
+  font-size: var(--ath-font-size-body-sm);
+  font-weight: var(--ath-font-weight-body-regular);
+}

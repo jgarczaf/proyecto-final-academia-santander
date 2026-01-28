@@ -1,0 +1,2 @@
+import{r as e}from"./p-D2-yfY-d.js";import{T as a}from"./p-CZK1O6EF.js";const t=class{constructor(a){e(this,a)}badgeLabel;badgeValue=undefined;badgeMax;disabled;externalLabel="(Se abre en una nueva ventana)";href;label;selected;rel;target=a.Self;value};export{t as ath_menu_horizontal_item};
+//# sourceMappingURL=p-5c9db2f3.entry.js.map

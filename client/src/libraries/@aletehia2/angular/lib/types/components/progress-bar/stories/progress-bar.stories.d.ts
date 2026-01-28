@@ -1,0 +1,21 @@
+import { Meta, StoryObj } from '@storybook/html';
+type ProgressBarArgs = {
+    'infinite': boolean;
+    'label-alignment': string;
+    'label-left': string;
+    'label-right': string;
+    'max': number;
+    'min': number;
+    'value': number;
+    'value-text': string;
+    'ath-aria-label': string;
+};
+declare const meta: Meta<ProgressBarArgs>;
+export default meta;
+type Story = StoryObj<ProgressBarArgs>;
+export declare const Playground: Story;
+export declare const Infinite: Story;
+export declare const LabelLeft: Story;
+export declare const LabelRight: Story;
+export declare const LabelAlignment: Story;
+export declare const MinMaxAndCurrentValue: Story;

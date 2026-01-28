@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { TextArgs } from './text.types';
+declare const meta: Meta<TextArgs>;
+export default meta;
+type Story = StoryObj<TextArgs>;
+export declare const Playground: Story;
+export declare const Color: Story;
+export declare const Hierarchy: Story;
+export declare const Lines: Story;
+export declare const Columns: Story;
+export declare const Tooltip: Story;

@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { MenuLateralItemArgs } from './menu-lateral-item.types';
+declare const meta: Meta<MenuLateralItemArgs>;
+export default meta;
+type Story = StoryObj<MenuLateralItemArgs>;
+export declare const Playground: Story;
+export declare const ConBadge: Story;
+export declare const Disabled: Story;
+export declare const Selected: Story;
+export declare const ConTooltip: Story;

@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { MenuVerticalArgs } from './menu-vertical.types';
+declare const meta: Meta<MenuVerticalArgs>;
+export default meta;
+type Story = StoryObj<MenuVerticalArgs>;
+export declare const Playground: Story;
+export declare const Appearance: Story;
+export declare const Niveles: Story;
+export declare const ConOpen: Story;
+export declare const ConItemSelected: Story;

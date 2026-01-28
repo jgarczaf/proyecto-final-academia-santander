@@ -1,0 +1,2 @@
+import{h as t}from"./p-D2-yfY-d.js";const i=(t,i,n)=>{let r=t;r=r.replace(/\[length\]/g,String(i.length));r=r.replace(/\[max\]/g,String(n));r=r.replace(/\[rest\]/g,String(n-i.length));return r};const n=n=>[t("div",{class:"ath-input__counter","aria-hidden":"true"},!!n.value?n.value.length:0,n.maxlength&&t("span",null,"/",n.maxlength)),t("div",{class:"ath-visibility-hidden","aria-live":"polite"},i(n.accesibleLabel,n.value="",n.maxlength))];export{n as F};
+//# sourceMappingURL=p-DPr1jGOG.js.map

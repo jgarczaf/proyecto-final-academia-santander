@@ -1,0 +1,15 @@
+import type { Meta, StoryObj } from '@storybook/html';
+import { SliderArgs } from './slider.types';
+declare const meta: Meta<SliderArgs>;
+export default meta;
+type Story = StoryObj<SliderArgs>;
+export declare const Playground: Story;
+export declare const ConDetails: Story;
+export declare const ConTooltip: Story;
+export declare const ConUnit: Story;
+export declare const Disabled: Story;
+export declare const Feedback: Story;
+export declare const ReadOnly: Story;
+export declare const Required: Story;
+export declare const Stepped: Story;
+export declare const Range: Story;
