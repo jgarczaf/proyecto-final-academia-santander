@@ -42,15 +42,28 @@
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>Empresa</mat-label>
       <input matInput type="text" formControlName="companyName" />
-      <mat-hint *ngIf="form.value.role === 'ADMIN'"
-        >Opcional para ADMIN</mat-hint
-      >
       <mat-error *ngIf="f['companyName'].hasError('required')"
         >Obligatorio para CLIENT</mat-error
       >
       <mat-error *ngIf="f['companyName'].hasError('minlength')"
         >Mínimo 2 caracteres</mat-error
       >
+    </mat-form-field>
+
+    <!-- NIF/NIE/CIF (obligatorio solo para CLIENT) -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>NIF / NIE / CIF</mat-label>
+      <input matInput type="text" formControlName="fiscalId" />
+      <mat-error *ngIf="f['fiscalId'].hasError('required')">
+        Obligatorio para CLIENT
+      </mat-error>
+      <mat-error *ngIf="f['fiscalId'].hasError('pattern')">
+        Formato no válido. Ejemplos: 12345678Z (NIF), X1234567L (NIE), B12345678
+        (CIF)
+      </mat-error>
+      <mat-error *ngIf="f['fiscalId'].hasError('minlength')">
+        Mínimo 9 caracteres
+      </mat-error>
     </mat-form-field>
 
     <!-- Passwords -->
@@ -99,9 +112,9 @@
           <mat-error *ngIf="fc['confirm'].hasError('required')"
             >Obligatoria</mat-error
           >
-          <mat-error *ngIf="form.get('credentials')?.hasError('mismatch')"
-            >Las contraseñas no coinciden</mat-error
-          >
+          <mat-error *ngIf="form.get('credentials')?.hasError('mismatch')">
+            Las contraseñas no coinciden
+          </mat-error>
         </mat-form-field>
       </div>
     </div>

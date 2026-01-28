@@ -34,6 +34,10 @@ export class User {
   companyName: string;
 
   @ApiProperty()
+  @Column()
+  fiscalId: string;
+
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 

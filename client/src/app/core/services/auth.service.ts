@@ -66,6 +66,7 @@ export class AuthService {
     role: 'ADMIN' | 'CLIENT';
     name: string;
     companyName?: string | null;
+    fiscalId: string;
   }) {
     return this.http.post(`${this.base}/auth/register`, payload);
   }

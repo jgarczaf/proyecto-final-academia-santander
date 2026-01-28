@@ -1,182 +1,218 @@
-<h2>Solicitudes</h2>
-
-<div class="toolbar">
-  <div class="filter-toolbar">
-    <input
-      type="text"
-      placeholder="Buscar por deudor"
-      [(ngModel)]="searchQuery"
-      class="search-input"
-    />
-    <mat-select
-      [(ngModel)]="selectedStatus"
-      placeholder="Filtrar por estado"
-      class="status-select"
-    >
-      <mat-option [value]="null">Todos</mat-option>
-      <mat-option value="PENDING">Pendiente</mat-option>
-      <mat-option value="APPROVED">Validadas</mat-option>
-      <mat-option value="REJECTED">Rechazadas</mat-option>
-    </mat-select>
-    <ath-button
-      color="primary"
-      size="md"
-      fill="solid"
-      (click)="applyFilters()"
-      class="search-button"
-    >
-      Buscar
-    </ath-button>
+<ng-container *ngFor="let g of groups">
+  <!-- Bloque informativo de empresa cedente -->
+  <div class="cedente-block">
+    <div class="cedente-label">Empresa cedente</div>
+    <div class="cedente-value">
+      {{ g.user?.companyName || "Desconocida" }}
+      <span class="cedente-fiscal" *ngIf="g.user?.fiscalId">
+        — {{ g.user?.fiscalId }}
+      </span>
+    </div>
   </div>
-  <span class="spacer"></span>
-  <div class="buttons-toolbar">
-    <ath-button
-      color="warn"
-      size="md"
-      fill="outlined"
-      (click)="rejectSelected()"
-      [disabled]="!hasSelectedRows()"
-    >
-      Rechazar
-    </ath-button>
-    <ath-button
-      color="primary"
-      size="md"
-      fill="solid"
-      (click)="approveSelected()"
-      [disabled]="!hasSelectedRows()"
-    >
-      Anticipar
-    </ath-button>
-  </div>
-</div>
 
-<mat-card class="list-card" *ngIf="!loading; else loadingTpl">
-  <div class="table-wrap">
-    <div class="header-row">
-      <div class="col-expand">
-        <mat-checkbox
-          [checked]="isAllCurrentPageSelected()"
-          [indeterminate]="isCurrentPageIndeterminate()"
-          (change)="toggleSelectAllCurrentPage($event)"
-        ></mat-checkbox>
-      </div>
-      <div class="col-status">
-        <div class="cell cell-status cell-sortable" (click)="onSort('status')">
-          <span>Estado</span>
-          <mat-icon class="sort-icon">{{ getSortIcon("status") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-debtor">
-        <div class="cell cell-debtor cell-sortable" (click)="onSort('debtor')">
-          <span>Deudor</span>
-          <mat-icon class="sort-icon">{{ getSortIcon("debtor") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-invoice">
-        <div
-          class="cell cell-invoice cell-sortable"
-          (click)="onSort('invoice')"
-        >
-          <span>Ref. Factura</span>
-          <mat-icon class="sort-icon">{{ getSortIcon("invoice") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-amount">
-        <div class="cell cell-amount cell-sortable" (click)="onSort('amount')">
-          <span>Importe</span>
-          <mat-icon class="sort-icon">{{ getSortIcon("amount") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-issue-date">
-        <div
-          class="cell cell-issue-date cell-sortable"
-          (click)="onSort('issueDate')"
-        >
-          <span>Fecha expedición</span>
-          <mat-icon class="sort-icon">{{ getSortIcon("issueDate") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-due-date">
-        <div
-          class="cell cell-due-date cell-sortable"
-          (click)="onSort('dueDate')"
-        >
-          <span>Fecha vencimiento</span>
-          <mat-icon class="sort-icon">{{ getSortIcon("dueDate") }}</mat-icon>
-        </div>
-      </div>
-      <div class="col-actions">
-        <div class="cell cell-actions">Acciones</div>
-      </div>
+  <!-- Toolbar por grupo (filtros + acciones) -->
+  <div class="toolbar">
+    <div class="filter-toolbar">
+      <input
+        type="text"
+        placeholder="Buscar por deudor"
+        [(ngModel)]="g.searchQuery"
+        class="search-input"
+      />
+      <mat-select
+        [(ngModel)]="g.selectedStatus"
+        placeholder="Filtrar por estado"
+        class="status-select"
+      >
+        <mat-option [value]="null">Todos</mat-option>
+        <mat-option value="REVIEW">Pendiente</mat-option>
+        <mat-option value="APPROVED">Validadas</mat-option>
+        <mat-option value="REJECTED">Rechazadas</mat-option>
+      </mat-select>
+      <ath-button
+        color="primary"
+        size="md"
+        fill="solid"
+        (click)="applyFiltersGroup(g)"
+        class="search-button"
+      >
+        Buscar
+      </ath-button>
     </div>
 
-    <ng-container *ngFor="let r of paginatedRows">
-      <div class="data-row">
+    <span class="spacer"></span>
+
+    <div class="buttons-toolbar">
+      <ath-button
+        color="warn"
+        size="md"
+        fill="outlined"
+        (click)="rejectSelectedGroup(g)"
+        [disabled]="!hasSelectedRowsGroup(g)"
+      >
+        Rechazar
+      </ath-button>
+      <ath-button
+        color="primary"
+        size="md"
+        fill="solid"
+        (click)="approveSelectedGroup(g)"
+        [disabled]="!hasSelectedRowsGroup(g)"
+      >
+        Anticipar
+      </ath-button>
+    </div>
+  </div>
+
+  <!-- Tabla por grupo -->
+  <mat-card class="list-card" *ngIf="!loading; else loadingTpl">
+    <div class="table-wrap">
+      <div class="header-row">
         <div class="col-expand">
           <mat-checkbox
-            [(ngModel)]="r.selected"
-            [disabled]="!canSelectRow(r)"
-            [checked]="r.selected || !canSelectRow(r)"
-            (change)="onCheckboxChange(r)"
+            [checked]="isAllCurrentPageSelectedGroup(g)"
+            [indeterminate]="isCurrentPageIndeterminateGroup(g)"
+            (change)="toggleSelectAllCurrentPageGroup(g, $event)"
           ></mat-checkbox>
         </div>
         <div class="col-status">
-          <div class="cell cell-status">
-            <mat-chip [ngClass]="statusClass(r.status)">{{
-              statusLabel(r.status)
-            }}</mat-chip>
+          <div
+            class="cell cell-status cell-sortable"
+            (click)="onSortGroup(g, 'status')"
+          >
+            <span>Estado</span>
+            <mat-icon class="sort-icon">{{
+              getSortIconGroup(g, "status")
+            }}</mat-icon>
           </div>
         </div>
         <div class="col-debtor">
-          <div class="cell cell-debtor">{{ getFirstBillDebtor(r) }}</div>
-        </div>
-        <div class="col-invoice">
-          <div class="cell cell-invoice">{{ getFirstInvoiceNumber(r) }}</div>
-        </div>
-        <div class="col-amount">
-          <div class="cell cell-amount">{{ getFirstBillAmount(r) }}</div>
-        </div>
-        <div class="col-issue-date">
-          <div class="cell cell-issue-date">{{ getFirstIssueDate(r) }}</div>
-        </div>
-        <div class="col-due-date">
-          <div class="cell cell-due-date">{{ getFirstDueDate(r) }}</div>
-        </div>
-        <div class="col-actions">
-          <div class="cell cell-actions">
-            <ath-button
-              color="primary"
-              size="xs"
-              fill="outlined"
-              (click)="openBillDetail(r)"
-            >
-              Ver factura
-            </ath-button>
+          <div
+            class="cell cell-debtor cell-sortable"
+            (click)="onSortGroup(g, 'debtor')"
+          >
+            <span>Deudor</span>
+            <mat-icon class="sort-icon">{{
+              getSortIconGroup(g, "debtor")
+            }}</mat-icon>
           </div>
         </div>
+        <div class="col-invoice">
+          <div
+            class="cell cell-invoice cell-sortable"
+            (click)="onSortGroup(g, 'invoice')"
+          >
+            <span>Ref. Factura</span>
+            <mat-icon class="sort-icon">{{
+              getSortIconGroup(g, "invoice")
+            }}</mat-icon>
+          </div>
+        </div>
+        <div class="col-amount">
+          <div
+            class="cell cell-amount cell-sortable"
+            (click)="onSortGroup(g, 'amount')"
+          >
+            <span>Importe</span>
+            <mat-icon class="sort-icon">{{
+              getSortIconGroup(g, "amount")
+            }}</mat-icon>
+          </div>
+        </div>
+        <div class="col-issue-date">
+          <div
+            class="cell cell-issue-date cell-sortable"
+            (click)="onSortGroup(g, 'issueDate')"
+          >
+            <span>Fecha expedición</span>
+            <mat-icon class="sort-icon">{{
+              getSortIconGroup(g, "issueDate")
+            }}</mat-icon>
+          </div>
+        </div>
+        <div class="col-due-date">
+          <div
+            class="cell cell-due-date cell-sortable"
+            (click)="onSortGroup(g, 'dueDate')"
+          >
+            <span>Fecha vencimiento</span>
+            <mat-icon class="sort-icon">{{
+              getSortIconGroup(g, "dueDate")
+            }}</mat-icon>
+          </div>
+        </div>
+        <div class="col-actions">
+          <div class="cell cell-actions">Acciones</div>
+        </div>
       </div>
-    </ng-container>
-  </div>
 
-  <div class="list-footer">
-    <div class="selection-info" *ngIf="getTotalSelectedCount() > 0">
-      <strong
-        >HAS SELECCIONADO {{ getTotalSelectedCount() }} SOLICITUD{{
-          getTotalSelectedCount() === 1 ? "" : "ES"
-        }}</strong
-      >
+      <ng-container *ngFor="let r of g.paginated">
+        <div class="data-row">
+          <div class="col-expand">
+            <mat-checkbox
+              [(ngModel)]="r.selected"
+              [disabled]="!canSelectRow(r)"
+              [checked]="r.selected || !canSelectRow(r)"
+              (change)="onCheckboxChange(r)"
+            ></mat-checkbox>
+          </div>
+          <div class="col-status">
+            <div class="cell cell-status">
+              <mat-chip [ngClass]="statusClass(r.status)">{{
+                statusLabel(r.status)
+              }}</mat-chip>
+            </div>
+          </div>
+          <div class="col-debtor">
+            <div class="cell cell-debtor">{{ getFirstBillDebtor(r) }}</div>
+          </div>
+          <div class="col-invoice">
+            <div class="cell cell-invoice">{{ getFirstInvoiceNumber(r) }}</div>
+          </div>
+          <div class="col-amount">
+            <div class="cell cell-amount">{{ getFirstBillAmount(r) }}</div>
+          </div>
+          <div class="col-issue-date">
+            <div class="cell cell-issue-date">{{ getFirstIssueDate(r) }}</div>
+          </div>
+          <div class="col-due-date">
+            <div class="cell cell-due-date">{{ getFirstDueDate(r) }}</div>
+          </div>
+          <div class="col-actions">
+            <div class="cell cell-actions">
+              <ath-button
+                color="primary"
+                size="xs"
+                fill="outlined"
+                (click)="openBillDetail(r)"
+              >
+                Ver factura
+              </ath-button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
     </div>
-    <mat-paginator
-      [length]="rows.length"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[5, 10]"
-      [pageIndex]="pageIndex"
-      (page)="onPageChange($event)"
-      showFirstLastButtons
-    ></mat-paginator>
-  </div>
-</mat-card>
+
+    <div class="list-footer">
+      <div class="selection-info">
+        <strong
+          >HAS SELECCIONADO {{ getTotalSelectedCountGroup(g) }} SOLICITUD{{
+            getTotalSelectedCountGroup(g) === 1 ? "" : "ES"
+          }}</strong
+        >
+      </div>
+      <mat-paginator
+        [length]="g.filtered.length"
+        [pageSize]="g.pageSize"
+        [pageSizeOptions]="[5, 10]"
+        [pageIndex]="g.pageIndex"
+        (page)="onPageChangeGroup(g, $event)"
+        showFirstLastButtons
+      ></mat-paginator>
+    </div>
+  </mat-card>
+</ng-container>
 
 <ng-template #loadingTpl>
   <div style="padding: 24px">

@@ -15,7 +15,9 @@ export class CreateUserDto {
   @IsEnum(['ADMIN', 'CLIENT'] as any)
   role: 'ADMIN' | 'CLIENT';
 
-  @IsOptional()
   @MinLength(2)
   companyName?: string;
+
+  @MinLength(9)
+  fiscalId?: string;
 }

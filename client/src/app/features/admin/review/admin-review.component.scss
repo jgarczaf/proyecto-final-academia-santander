@@ -6,11 +6,40 @@ h2 {
   margin: 8px 0 6px;
 }
 
+/* ===== Bloque Empresa Cedente ===== */
+.cedente-block {
+  margin: 12px 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cedente-label {
+  font-weight: 600;
+  color: #42a5f5; /* azul claro (Material light-blue 400) */
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.cedente-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937; /* gris oscuro legible */
+}
+
+.cedente-fiscal {
+  font-weight: 500;
+  color: #455a64; /* azul-gris para el NIF/DNI */
+  margin-left: 4px;
+}
+
+/* ===== Toolbar (por grupo) ===== */
 .toolbar {
   display: flex;
   align-items: stretch;
   gap: 16px;
-  margin: 12px 0;
+  margin: 8px 0 12px;
   flex-wrap: nowrap;
   min-height: 40px;
 }
@@ -25,7 +54,7 @@ h2 {
   min-height: 40px;
 
   .search-input {
-    flex: 0 1 200px;
+    flex: 0 1 240px;
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -35,7 +64,7 @@ h2 {
   }
 
   .status-select {
-    flex: 0 1 150px;
+    flex: 0 1 160px;
     height: 36px;
   }
 
@@ -67,10 +96,12 @@ h2 {
   flex: 1 1 auto;
 }
 
+/* ===== Tarjeta/Tabla ===== */
 .list-card {
   padding: 0;
   display: flex;
   flex-direction: column;
+  margin-bottom: 18px; /* separación entre grupos */
 }
 
 .table-wrap {
@@ -159,34 +190,18 @@ h2 {
   text-overflow: ellipsis;
 }
 
-.cell-status {
-  justify-content: center;
-}
-
-.cell-debtor {
-  justify-content: center;
-}
-
-.cell-invoice {
+.cell-status,
+.cell-debtor,
+.cell-invoice,
+.cell-amount,
+.cell-issue-date,
+.cell-due-date,
+.cell-actions {
   justify-content: center;
 }
 
 .cell-amount {
-  justify-content: center;
   font-variant-numeric: tabular-nums;
-}
-
-.cell-issue-date {
-  justify-content: center;
-}
-
-.cell-due-date {
-  justify-content: center;
-}
-
-.cell-actions {
-  justify-content: center;
-  gap: 8px;
 }
 
 .cell-sortable {
@@ -248,6 +263,7 @@ mat-chip {
   }
 }
 
+/* ===== Responsive ===== */
 @media (max-width: 1200px) {
   .header-row,
   .data-row {
@@ -256,11 +272,11 @@ mat-chip {
 
   .filter-toolbar {
     .search-input {
-      flex: 0 1 180px;
+      flex: 0 1 200px;
     }
 
     .status-select {
-      flex: 0 1 130px;
+      flex: 0 1 140px;
     }
   }
 }

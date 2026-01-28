@@ -27,6 +27,8 @@ export class SignInComponent {
   hide2 = true;
   roles: Array<'CLIENT' | 'ADMIN'> = ['CLIENT', 'ADMIN'];
 
+  readonly fiscalRegex = /^(?:[A-Z][0-9]{8}|[0-9]{8}[A-Z])$/;
+
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
@@ -41,6 +43,15 @@ export class SignInComponent {
 
       companyName: [''],
 
+      fiscalId: [
+        '',
+        [
+          Validators.minLength(9),
+          Validators.maxLength(9),
+          Validators.pattern(this.fiscalRegex),
+        ],
+      ],
+
       credentials: this.fb.group(
         {
           password: ['', [Validators.required, Validators.minLength(6)]],
@@ -51,14 +62,35 @@ export class SignInComponent {
     });
 
     this.form.get('role')!.valueChanges.subscribe((role) => {
-      const ctrl = this.form.get('companyName')!;
+      const companyCtrl = this.form.get('companyName')!;
+      const fiscalCtrl = this.form.get('fiscalId')!;
+
       if (role === 'CLIENT') {
-        ctrl.setValidators([Validators.required, Validators.minLength(2)]);
+        companyCtrl.setValidators([
+          Validators.required,
+          Validators.minLength(2),
+        ]);
+        fiscalCtrl.setValidators([
+          Validators.required,
+          Validators.minLength(9),
+          Validators.maxLength(9),
+          Validators.pattern(this.fiscalRegex),
+        ]);
       } else {
-        ctrl.clearValidators();
+        companyCtrl.setValidators([]);
+        fiscalCtrl.setValidators([
+          Validators.minLength(9),
+          Validators.maxLength(9),
+          Validators.pattern(this.fiscalRegex),
+        ]);
       }
-      ctrl.updateValueAndValidity();
+
+      companyCtrl.updateValueAndValidity();
+      fiscalCtrl.updateValueAndValidity();
     });
+
+    const initialRole = this.form.get('role')!.value;
+    this.form.get('role')!.setValue(initialRole);
   }
 
   get f() {
@@ -72,8 +104,10 @@ export class SignInComponent {
     if (this.form.invalid || this.loading) return;
     this.loading = true;
 
-    const { name, email, role, companyName } = this.form.value;
-    const { password } = this.form.value.credentials;
+    const { name, email, role, companyName, fiscalId } = this.form.value;
+    const { password } = (this.form.value.credentials || {}) as {
+      password: string;
+    };
 
     this.auth
       .register({
@@ -83,6 +117,14 @@ export class SignInComponent {
         role,
         companyName:
           role === 'CLIENT' ? String(companyName || '').trim() : null,
+        fiscalId:
+          role === 'CLIENT'
+            ? String(fiscalId || '')
+                .trim()
+                .toUpperCase()
+            : String(fiscalId || '')
+                .trim()
+                .toUpperCase(),
       })
       .subscribe({
         next: () => {

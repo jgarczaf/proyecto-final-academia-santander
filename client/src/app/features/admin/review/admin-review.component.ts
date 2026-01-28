@@ -26,6 +26,7 @@ interface UserLite {
   name?: string;
   companyName?: string;
   email?: string;
+  fiscalId?: string;
 }
 type RequestStatus = 'PENDING' | 'REVIEW' | 'APPROVED' | 'REJECTED';
 interface RequestItem {
@@ -47,6 +48,24 @@ type SortColumn =
   | 'createdAt';
 type SortDirection = 'asc' | 'desc';
 
+/** Grupo por empresa cedente (cliente) */
+interface ClientGroup {
+  userId: number;
+  user?: UserLite;
+  /** Todas las solicitudes del cliente */
+  requests: RequestItem[];
+  /** Estado de filtros/ordenación por grupo */
+  searchQuery: string;
+  selectedStatus: RequestStatus | null;
+  sortColumn: SortColumn;
+  sortDirection: SortDirection;
+  /** Derivados */
+  filtered: RequestItem[];
+  paginated: RequestItem[];
+  pageSize: number;
+  pageIndex: number;
+}
+
 @Component({
   selector: 'app-admin-review',
   templateUrl: './admin-review.component.html',
@@ -54,25 +73,15 @@ type SortDirection = 'asc' | 'desc';
   providers: [DatePipe, CurrencyPipe],
 })
 export class AdminReviewComponent implements OnInit, OnDestroy {
-  // Datos y vista
+  // Datos crudos
   allRows: RequestItem[] = [];
-  rows: RequestItem[] = [];
-  paginatedRows: RequestItem[] = [];
-  expanded = new Set<number>();
+
+  // Grupos por cliente (empresa cedente)
+  groups: ClientGroup[] = [];
+
+  // Control general
   loading = false;
-
-  // Ordenación
-  sortColumn: SortColumn = 'createdAt';
-  sortDirection: SortDirection = 'desc';
-
-  // Paginación
-  pageSize = 10;
-  pageIndex = 0;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  // Filtros
-  searchQuery: string = '';
-  selectedStatus: RequestStatus | null = null;
+  expanded = new Set<number>();
 
   private subSocketNew?: Subscription;
   private subSocketChanged?: Subscription;
@@ -113,7 +122,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.api.list().subscribe({
       next: (res) => {
         this.allRows = res || [];
-        this.applyFiltersAndSort();
+        this.buildGroups();
         this.loading = false;
       },
       error: () => {
@@ -125,12 +134,45 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  applyFiltersAndSort(): void {
-    let filtered = this.allRows;
+  /** Construye grupos por usuario (empresa cedente) y aplica filtros/orden/paginación por grupo */
+  buildGroups(): void {
+    const map = new Map<number, RequestItem[]>();
 
-    // Aplicar filtro de búsqueda por nombre de empresa/deudor
-    if (this.searchQuery) {
-      const query = this.searchQuery.toLowerCase();
+    // Agrupar por user.id (si no existe, agrupar en -1)
+    for (const r of this.allRows) {
+      const uid = r.user?.id ?? -1;
+      if (!map.has(uid)) map.set(uid, []);
+      map.get(uid)!.push(r);
+    }
+
+    // Crear estructura de grupo con defaults
+    this.groups = Array.from(map.entries()).map(([userId, requests]) => {
+      const user = requests[0]?.user; // todos comparten el mismo user
+      const g: ClientGroup = {
+        userId,
+        user,
+        requests,
+        searchQuery: '',
+        selectedStatus: null,
+        sortColumn: 'createdAt',
+        sortDirection: 'desc',
+        filtered: [],
+        paginated: [],
+        pageSize: 10,
+        pageIndex: 0,
+      };
+      this.applyFiltersAndSortGroup(g);
+      return g;
+    });
+  }
+
+  /** Aplica filtros y ordenación a un grupo */
+  applyFiltersAndSortGroup(g: ClientGroup): void {
+    let filtered = g.requests;
+
+    // Filtro por búsqueda (deudor, nombre de usuario o companyName del usuario)
+    if (g.searchQuery) {
+      const query = g.searchQuery.toLowerCase();
       filtered = filtered.filter((r) => {
         const debtorName = this.getFirstBillDebtor(r).toLowerCase();
         const userName = r.user?.name?.toLowerCase() || '';
@@ -143,26 +185,30 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Aplicar filtro de estado
-    if (this.selectedStatus) {
-      filtered = filtered.filter((r) => r.status === this.selectedStatus);
+    // Filtro por estado
+    if (g.selectedStatus) {
+      filtered = filtered.filter((r) => r.status === g.selectedStatus);
     }
 
-    // Aplicar ordenación
-    filtered = this.sortData(filtered);
-    this.rows = filtered;
+    // Ordenación
+    filtered = this.sortData(filtered, g.sortColumn, g.sortDirection);
 
-    // Reset pagination when filters/sort change
-    this.pageIndex = 0;
-    this.updatePaginatedRows();
-    this.expanded.clear();
+    // Asignar y paginar
+    g.filtered = filtered;
+    g.pageIndex = 0; // reset al cambiar filtros/orden
+    this.updatePaginatedRowsGroup(g);
   }
 
-  sortData(data: RequestItem[]): RequestItem[] {
+  /** Ordena según columna/dirección dadas */
+  sortData(
+    data: RequestItem[],
+    sortColumn: SortColumn,
+    sortDirection: SortDirection,
+  ): RequestItem[] {
     const sorted = [...data].sort((a, b) => {
       let aVal: any, bVal: any;
 
-      switch (this.sortColumn) {
+      switch (sortColumn) {
         case 'status':
           aVal = a.status;
           bVal = b.status;
@@ -193,39 +239,40 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
           break;
       }
 
-      if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
 
     return sorted;
   }
 
-  onSort(column: SortColumn): void {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  /** Cambia la ordenación del grupo */
+  onSortGroup(g: ClientGroup, column: SortColumn): void {
+    if (g.sortColumn === column) {
+      g.sortDirection = g.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      this.sortColumn = column;
-      this.sortDirection = 'asc';
+      g.sortColumn = column;
+      g.sortDirection = 'asc';
     }
-    this.applyFiltersAndSort();
+    this.applyFiltersAndSortGroup(g);
   }
 
-  getSortIcon(column: SortColumn): string {
-    if (this.sortColumn !== column) return 'unfold_more';
-    return this.sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward';
+  getSortIconGroup(g: ClientGroup, column: SortColumn): string {
+    if (g.sortColumn !== column) return 'unfold_more';
+    return g.sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward';
   }
 
-  onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.updatePaginatedRows();
+  onPageChangeGroup(g: ClientGroup, event: PageEvent): void {
+    g.pageIndex = event.pageIndex;
+    g.pageSize = event.pageSize;
+    this.updatePaginatedRowsGroup(g);
   }
 
-  updatePaginatedRows(): void {
-    const start = this.pageIndex * this.pageSize;
-    const end = start + this.pageSize;
-    this.paginatedRows = this.rows.slice(start, end);
+  updatePaginatedRowsGroup(g: ClientGroup): void {
+    const start = g.pageIndex * g.pageSize;
+    const end = start + g.pageSize;
+    g.paginated = g.filtered.slice(start, end);
   }
 
   /* ========= Display Methods ========= */
@@ -302,66 +349,62 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   canSelectRow(r: RequestItem): boolean {
     const s = (r.status || '').toUpperCase();
     const canSelect = s === 'REVIEW' || s === 'PENDING';
-    // Si no puede seleccionarse y está seleccionada, deseleccionar
     if (!canSelect && r.selected) {
       r.selected = false;
     }
     return canSelect;
   }
 
-  /* ========= Selección de filas ========= */
+  /* ========= Selección (por grupo) ========= */
 
-  getTotalSelectedCount(): number {
-    return this.allRows.filter((row) => row.selected).length;
+  getTotalSelectedCountGroup(g: ClientGroup): number {
+    return g.requests.filter((row) => row.selected).length;
   }
 
-  hasSelectedRows(): boolean {
-    return this.getTotalSelectedCount() > 0;
+  hasSelectedRowsGroup(g: ClientGroup): boolean {
+    return this.getTotalSelectedCountGroup(g) > 0;
   }
 
-  isAllCurrentPageSelected(): boolean {
-    if (this.paginatedRows.length === 0) return false;
-    const selectableRows = this.paginatedRows.filter((r) =>
-      this.canSelectRow(r),
-    );
+  isAllCurrentPageSelectedGroup(g: ClientGroup): boolean {
+    if (g.paginated.length === 0) return false;
+    const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
     if (selectableRows.length === 0) return false;
     return selectableRows.every((r) => r.selected);
   }
 
-  isCurrentPageIndeterminate(): boolean {
-    if (this.paginatedRows.length === 0) return false;
-    const selectableRows = this.paginatedRows.filter((r) =>
-      this.canSelectRow(r),
-    );
+  isCurrentPageIndeterminateGroup(g: ClientGroup): boolean {
+    if (g.paginated.length === 0) return false;
+    const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
     if (selectableRows.length === 0) return false;
     const selectedCount = selectableRows.filter((r) => r.selected).length;
     return selectedCount > 0 && selectedCount < selectableRows.length;
   }
 
-  toggleSelectAllCurrentPage(event: MatCheckboxChange): void {
+  toggleSelectAllCurrentPageGroup(
+    g: ClientGroup,
+    event: MatCheckboxChange,
+  ): void {
     const checked = event.checked;
-    const selectableRows = this.paginatedRows.filter((r) =>
-      this.canSelectRow(r),
-    );
+    const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
     selectableRows.forEach((r) => {
       r.selected = checked;
     });
   }
 
   onCheckboxChange(r: RequestItem): void {
-    // Método para manejar cambios en los checkboxes
+    // Manejo de cambios en los checkboxes (si necesitas lógica adicional)
   }
 
-  /* ========= Filtros ========= */
+  /* ========= Filtros (por grupo) ========= */
 
-  applyFilters(): void {
-    this.applyFiltersAndSort();
+  applyFiltersGroup(g: ClientGroup): void {
+    this.applyFiltersAndSortGroup(g);
   }
 
-  /* ========= Acciones ========= */
+  /* ========= Acciones (por grupo) ========= */
 
-  approveSelected(): void {
-    const selected = this.allRows.filter((r) => r.selected);
+  approveSelectedGroup(g: ClientGroup): void {
+    const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) return;
 
     const totalBills = selected.reduce(
@@ -395,7 +438,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
                 this.snack.open(
                   `${completed} solicitud(es) aprobada(s)`,
                   'Cerrar',
-                  { duration: 1500 },
+                  {
+                    duration: 1500,
+                  },
                 );
                 this.load();
               }
@@ -406,7 +451,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
                 this.snack.open(
                   `${completed} aprobada(s), ${errors} error(es)`,
                   'Cerrar',
-                  { duration: 2500 },
+                  {
+                    duration: 2500,
+                  },
                 );
                 this.load();
               }
@@ -416,8 +463,8 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       });
   }
 
-  rejectSelected(): void {
-    const selected = this.allRows.filter((r) => r.selected);
+  rejectSelectedGroup(g: ClientGroup): void {
+    const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) return;
 
     this.dialog
@@ -443,7 +490,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
                 this.snack.open(
                   `${completed} solicitud(es) rechazada(s)`,
                   'Cerrar',
-                  { duration: 1500 },
+                  {
+                    duration: 1500,
+                  },
                 );
                 this.load();
               }
@@ -454,7 +503,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
                 this.snack.open(
                   `${completed} rechazada(s), ${errors} error(es)`,
                   'Cerrar',
-                  { duration: 2500 },
+                  {
+                    duration: 2500,
+                  },
                 );
                 this.load();
               }
