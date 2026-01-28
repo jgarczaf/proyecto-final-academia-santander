@@ -1,47 +1,54 @@
 <h2>Solicitudes</h2>
 
-<div class="filter-toolbar">
-  <input
-    type="text"
-    placeholder="Buscar por empresa"
-    [(ngModel)]="searchQuery"
-    class="search-input"
-  />
-  <mat-select
-    [(ngModel)]="selectedStatus"
-    placeholder="Filtrar por estado"
-    class="status-select"
-  >
-    <mat-option [value]="null">Todos</mat-option>
-    <mat-option value="REVIEW">Pendiente</mat-option>
-    <mat-option value="APPROVED">Validadas</mat-option>
-    <mat-option value="REJECTED">Rechazadas</mat-option>
-  </mat-select>
-  <ath-button color="primary" size="md" fill="solid" (click)="applyFilters()">
-    Buscar
-  </ath-button>
-</div>
-
 <div class="toolbar">
+  <div class="filter-toolbar">
+    <input
+      type="text"
+      placeholder="Buscar por deudor"
+      [(ngModel)]="searchQuery"
+      class="search-input"
+    />
+    <mat-select
+      [(ngModel)]="selectedStatus"
+      placeholder="Filtrar por estado"
+      class="status-select"
+    >
+      <mat-option [value]="null">Todos</mat-option>
+      <mat-option value="PENDING">Pendiente</mat-option>
+      <mat-option value="APPROVED">Validadas</mat-option>
+      <mat-option value="REJECTED">Rechazadas</mat-option>
+    </mat-select>
+    <ath-button
+      color="primary"
+      size="md"
+      fill="solid"
+      (click)="applyFilters()"
+      class="search-button"
+    >
+      Buscar
+    </ath-button>
+  </div>
   <span class="spacer"></span>
-  <ath-button
-    color="warn"
-    size="md"
-    fill="outlined"
-    (click)="rejectSelected()"
-    [disabled]="!hasSelectedRows()"
-  >
-    Rechazar
-  </ath-button>
-  <ath-button
-    color="primary"
-    size="md"
-    fill="solid"
-    (click)="approveSelected()"
-    [disabled]="!hasSelectedRows()"
-  >
-    Anticipar
-  </ath-button>
+  <div class="buttons-toolbar">
+    <ath-button
+      color="warn"
+      size="md"
+      fill="outlined"
+      (click)="rejectSelected()"
+      [disabled]="!hasSelectedRows()"
+    >
+      Rechazar
+    </ath-button>
+    <ath-button
+      color="primary"
+      size="md"
+      fill="solid"
+      (click)="approveSelected()"
+      [disabled]="!hasSelectedRows()"
+    >
+      Anticipar
+    </ath-button>
+  </div>
 </div>
 
 <mat-card class="list-card" *ngIf="!loading; else loadingTpl">
@@ -144,7 +151,7 @@
               fill="outlined"
               (click)="openBillDetail(r)"
             >
-              Ver Detalle
+              Ver factura
             </ath-button>
           </div>
         </div>
@@ -153,7 +160,7 @@
   </div>
 
   <div class="list-footer">
-    <div class="selection-info">
+    <div class="selection-info" *ngIf="getTotalSelectedCount() > 0">
       <strong
         >HAS SELECCIONADO {{ getTotalSelectedCount() }} SOLICITUD{{
           getTotalSelectedCount() === 1 ? "" : "ES"
