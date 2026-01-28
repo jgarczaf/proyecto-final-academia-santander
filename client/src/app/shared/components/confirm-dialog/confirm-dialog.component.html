@@ -1,6 +1,7 @@
 <h2 mat-dialog-title>{{ data?.title || "Confirmación" }}</h2>
 <mat-dialog-content>
-  <p>{{ data?.message || "¿Confirma la operación?" }}</p>
+  <p>{{ data?.message }}</p>
+  <p>{{ data?.subMessage || "¿Confirma la operación?" }}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="ref.close(false)">Cancelar</button>

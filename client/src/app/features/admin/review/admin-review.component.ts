@@ -373,7 +373,11 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .open(ConfirmDialogComponent, {
         data: {
           title: 'Confirmación',
-          message: `¿Está seguro de anticipar ${selected.length} solicitud(es) con ${totalBills} factura(s)?`,
+          message:
+            selected.length > 1
+              ? `La selección de estos ${selected.length} anticipos supera los parámetros de importe o vencimiento permitidos.`
+              : `La selección de este anticipo supera los parámetros de importe o vencimiento permitidos.`,
+          subMessage: `¿Desea confirmar la operación?`,
         },
       })
       .afterClosed()
@@ -420,7 +424,8 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .open(ConfirmDialogComponent, {
         data: {
           title: 'Cancelar',
-          message: `¿Está seguro de cancelar ${selected.length} solicitud(es)?`,
+          message: `Va a rechazar el anticipo de ${selected.length} solicitud(es)`,
+          subMessage: `¿Desea confirmar la operación?`,
         },
       })
       .afterClosed()

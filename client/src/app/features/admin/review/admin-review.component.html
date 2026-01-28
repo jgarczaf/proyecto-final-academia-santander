@@ -25,22 +25,22 @@
 <div class="toolbar">
   <span class="spacer"></span>
   <ath-button
-    color="primary"
-    size="md"
-    fill="solid"
-    (click)="approveSelected()"
-    [disabled]="!hasSelectedRows()"
-  >
-    Anticipar Seleccionadas
-  </ath-button>
-  <ath-button
     color="warn"
     size="md"
     fill="outlined"
     (click)="rejectSelected()"
     [disabled]="!hasSelectedRows()"
   >
-    Cancelar Seleccionadas
+    Rechazar
+  </ath-button>
+  <ath-button
+    color="primary"
+    size="md"
+    fill="solid"
+    (click)="approveSelected()"
+    [disabled]="!hasSelectedRows()"
+  >
+    Anticipar
   </ath-button>
 </div>
 
