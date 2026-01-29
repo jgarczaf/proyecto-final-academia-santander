@@ -13,16 +13,35 @@
   <!-- Toolbar por grupo (filtros + acciones) -->
   <div class="toolbar">
     <div class="filter-toolbar">
-      <input
-        type="text"
+      <!-- USAR ESTE BLOQUE SI SE QUIERE FILTRAR SIN CLICK EN EL BOTÓN BUSCAR -->
+      <!-- <ath-input-text
+        #searchRef
+        name="search-debtor-bar"
+        icon-position="left"
+        type="search"
         placeholder="Buscar por deudor"
-        [(ngModel)]="g.searchQuery"
-        class="search-input"
-      />
+        [value]="g.searchQuery"
+        (athInput)="onSearchChange(searchRef.value, g)"
+        (athClear)="onSearchClear(g)"
+        (athChange)="onSearchChange(searchRef.value, g)"
+      ></ath-input-text> -->
+
+      <ath-input-text
+        #searchRef
+        name="search-debtor-bar"
+        icon-position="left"
+        type="search"
+        placeholder="Buscar por deudor"
+        [value]="g.searchQuery"
+        (athClear)="onSearchClear(g, searchRef)"
+        (keyup.enter)="applySearch(searchRef.value, g)"
+      ></ath-input-text>
+
       <mat-select
         [(ngModel)]="g.selectedStatus"
         placeholder="Filtrar por estado"
         class="status-select"
+        (keyup.enter)="applySearch(searchRef.value, g)"
       >
         <mat-option [value]="null">Todos</mat-option>
         <mat-option value="REVIEW">Pendiente</mat-option>
@@ -33,7 +52,7 @@
         color="primary"
         size="md"
         fill="solid"
-        (click)="applyFiltersGroup(g)"
+        (click)="applySearch(searchRef.value, g)"
         class="search-button"
       >
         Buscar
@@ -153,7 +172,6 @@
               [(ngModel)]="r.selected"
               [disabled]="!canSelectRow(r)"
               [checked]="r.selected || !canSelectRow(r)"
-              (change)="onCheckboxChange(r)"
             ></mat-checkbox>
           </div>
           <div class="col-status">

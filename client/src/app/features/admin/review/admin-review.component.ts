@@ -391,16 +391,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  onCheckboxChange(r: RequestItem): void {
-    // Manejo de cambios en los checkboxes (si necesitas lógica adicional)
-  }
-
-  /* ========= Filtros (por grupo) ========= */
-
-  applyFiltersGroup(g: ClientGroup): void {
-    this.applyFiltersAndSortGroup(g);
-  }
-
   /* ========= Acciones (por grupo) ========= */
 
   approveSelectedGroup(g: ClientGroup): void {
@@ -529,5 +519,21 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  onSearchChange(value: string, g: ClientGroup): void {
+    g.searchQuery = (value || '').trim();
+    this.applyFiltersAndSortGroup(g);
+  }
+
+  applySearch(value: string, g: ClientGroup): void {
+    g.searchQuery = (value || '').trim();
+    this.applyFiltersAndSortGroup(g);
+  }
+
+  onSearchClear(g: ClientGroup, el?: any): void {
+    if (el) el.value = '';
+    g.searchQuery = '';
+    this.applyFiltersAndSortGroup(g);
   }
 }
