@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../core/services/auth.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -19,8 +18,6 @@ interface UserInfo {
   styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent implements OnInit {
-  @ViewChild(MatSidenav) sidenav!: MatSidenav;
-
   user: UserInfo | null = null;
 
   constructor(
@@ -64,8 +61,5 @@ export class LayoutComponent implements OnInit {
 
   navigate(path: string): void {
     this.router.navigate([path]);
-    if (this.sidenav?.mode === 'over') {
-      this.sidenav.close();
-    }
   }
 }

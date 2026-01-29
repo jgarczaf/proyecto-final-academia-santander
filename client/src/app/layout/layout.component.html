@@ -1,14 +1,27 @@
+<!-- TOP BAR (oscura, fija y a TODO el ancho) -->
+<mat-toolbar class="layout-toolbar">
+  <mat-icon matListIcon>spa</mat-icon>
+  <span class="app-title">Santander x NTTData</span>
+  <span class="flex-spacer"></span>
+  <button mat-button class="logout-btn" (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    <span>Salir</span>
+  </button>
+</mat-toolbar>
+
+<!-- CONTENEDOR LATERAL + CONTENIDO -->
 <mat-sidenav-container class="layout-container">
-  <!-- SIDENAV -->
+  <!-- SIDENAV (fijo bajo la top bar) -->
   <mat-sidenav
-    #sidenav
     class="layout-sidenav"
-    fixedInViewport
-    [mode]="sidenav.opened ? 'side' : 'over'"
+    mode="side"
     [opened]="true"
+    [fixedInViewport]="true"
+    [fixedTopGap]="64"
+    [fixedBottomGap]="0"
   >
     <mat-nav-list class="sidenav-menu">
-      <!-- USER CARD -->
+      <!-- USER CARD encima del menú -->
       <div class="user-banner" *ngIf="user as u">
         <div class="user-avatar">
           <mat-icon aria-hidden="true">person</mat-icon>
@@ -24,10 +37,11 @@
           <div class="user-sub" [title]="u.email">{{ u.email }}</div>
         </div>
       </div>
+
       <!-- CLIENT MENU -->
       <ng-container *ngIf="auth.hasRole(['CLIENT'])">
         <a mat-list-item (click)="navigate('/client/dashboard')">
-          <mat-icon matListIcon>dashboard</mat-icon>
+          <mat-icon matListIcon>home</mat-icon>
           <span>Dashboard</span>
         </a>
 
@@ -74,27 +88,6 @@
 
   <!-- MAIN CONTENT -->
   <mat-sidenav-content>
-    <!-- TOOLBAR (oscura y a todo el ancho) -->
-    <mat-toolbar class="layout-toolbar">
-      <button
-        mat-icon-button
-        (click)="sidenav.toggle()"
-        class="menu-btn"
-        aria-label="Abrir menú"
-      >
-        <mat-icon>menu</mat-icon>
-      </button>
-
-      <span class="app-title">Factoring Platform</span>
-      <span class="flex-spacer"></span>
-
-      <button mat-button class="logout-btn" (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        <span>Salir</span>
-      </button>
-    </mat-toolbar>
-
-    <!-- PAGE CONTENT -->
     <div class="layout-content">
       <router-outlet></router-outlet>
     </div>
