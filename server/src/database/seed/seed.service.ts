@@ -46,6 +46,7 @@ export class SeedService {
       password,
       role: 'ADMIN',
       companyName: 'Banco Santander',
+      fiscalId: 'Z65733359',
     });
 
     const client = this.userRepo.create({
@@ -54,6 +55,7 @@ export class SeedService {
       password,
       role: 'CLIENT',
       companyName: 'Empresa Demo SL',
+      fiscalId: 'M54478731',
     });
 
     await this.userRepo.save([admin, client]);

@@ -1,3 +1,9 @@
+/* Contenedor principal */
+.layout-container {
+  height: 100vh;
+}
+
+/* ===== Toolbar superior oscura a todo el ancho ===== */
 .layout-toolbar {
   position: sticky;
   top: 0;
@@ -5,56 +11,99 @@
 
   display: flex;
   align-items: center;
+
+  /* Color uniforme para toda la barra superior */
+  background-color: #263238; /* Blue Grey 800 */
+  color: #fff;
+  width: 100%;
+
+  .menu-btn mat-icon {
+    color: #fff;
+  }
+
+  .app-title {
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .logout-btn {
+    color: #fff;
+    mat-icon {
+      margin-right: 6px;
+    }
+  }
 }
 
 .flex-spacer {
   flex: 1 1 auto;
 }
 
-.user-box {
-  display: inline-flex;
+/* ===== User banner (tarjeta del usuario debajo del toolbar) ===== */
+.user-banner {
+  display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
-  padding: 4px 10px;
-  margin-right: 8px;
+  gap: 12px;
+
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+
+  /* Posición: debajo del toolbar, con margen superior */
+  margin: 12px 16px 8px 16px;
+  padding: 10px 12px;
+
+  max-width: 460px;
 }
 
-.user-icon {
-  margin-right: 8px;
-  color: #fff;
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eceff1; /* fondo avatar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #37474f;
+  flex: 0 0 40px;
+
+  mat-icon {
+    font-size: 22px;
+    line-height: 22px;
+  }
 }
 
-.user-info {
-  line-height: 1.2;
+.user-details {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-.company {
+.user-name {
   font-weight: 600;
-  color: #fff;
-  font-size: 14px;
+  font-size: 15px;
+  color: #212121;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 260px;
+  max-width: 360px;
 }
 
-.email {
-  color: #e0e0e0;
+.user-sub {
   font-size: 12px;
+  color: #616161;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 260px;
+  max-width: 360px;
 }
 
+/* ===== Sidenav ===== */
 .layout-sidenav {
-  width: 240px;
+  padding-inline: 20px;
   box-sizing: border-box;
 }
 
+/* Header del sidenav (marca) */
 .sidenav-header {
   display: flex;
   align-items: center;
@@ -85,6 +134,11 @@
   white-space: nowrap;
 }
 
+/* Menú del sidenav desplazado hacia abajo */
+.sidenav-menu {
+  padding-top: 24px; /* desplaza el bloque de pestañas hacia abajo */
+}
+
 mat-nav-list {
   padding: 0;
 }
@@ -112,4 +166,18 @@ mat-nav-list .mat-mdc-list-item:hover {
 mat-nav-list .mat-mdc-list-item.active {
   background: rgba(63, 81, 181, 0.08);
   font-weight: 600;
+}
+
+/* ===== Contenido ===== */
+.layout-content {
+  padding: 0 16px 16px;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 768px) {
+  .user-banner {
+    margin: 8px 12px;
+    padding: 8px 10px;
+    max-width: 100%;
+  }
 }

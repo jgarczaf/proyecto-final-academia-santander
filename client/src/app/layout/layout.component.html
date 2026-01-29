@@ -1,7 +1,5 @@
-<!-- src/app/layout/layout.component.html -->
 <mat-sidenav-container class="layout-container">
   <!-- SIDENAV -->
-
   <mat-sidenav
     #sidenav
     class="layout-sidenav"
@@ -9,23 +7,23 @@
     [mode]="sidenav.opened ? 'side' : 'over'"
     [opened]="true"
   >
-    <!-- Cabecera del sidenav (brand) -->
-    <div
-      class="sidenav-header"
-      (click)="
-        navigate(
-          auth.hasRole(['ADMIN']) ? '/admin/dashboard' : '/client/dashboard'
-        )
-      "
-      role="button"
-      tabindex="0"
-      aria-label="Ir al dashboard"
-    >
-      <mat-icon class="brand-icon" aria-hidden="true">account_balance</mat-icon>
-      <span class="brand-text">Factoring</span>
-    </div>
-
-    <mat-nav-list>
+    <mat-nav-list class="sidenav-menu">
+      <!-- USER CARD -->
+      <div class="user-banner" *ngIf="user as u">
+        <div class="user-avatar">
+          <mat-icon aria-hidden="true">person</mat-icon>
+        </div>
+        <div class="user-details">
+          <div class="user-name" [title]="u.companyName || u.name || u.email">
+            {{
+              u.companyName ||
+                u.name ||
+                (u.email | slice: 0 : u.email.indexOf("@"))
+            }}
+          </div>
+          <div class="user-sub" [title]="u.email">{{ u.email }}</div>
+        </div>
+      </div>
       <!-- CLIENT MENU -->
       <ng-container *ngIf="auth.hasRole(['CLIENT'])">
         <a mat-list-item (click)="navigate('/client/dashboard')">
@@ -54,13 +52,21 @@
         <mat-divider></mat-divider>
 
         <a mat-list-item (click)="navigate('/admin/dashboard')">
-          <mat-icon matListIcon>dashboard</mat-icon>
+          <mat-icon matListIcon>home</mat-icon>
           <span>Dashboard</span>
         </a>
 
         <a mat-list-item (click)="navigate('/admin/review')">
-          <mat-icon matListIcon>fact_check</mat-icon>
+          <mat-icon matListIcon>work</mat-icon>
           <span>Operaciones</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListIcon>person</mat-icon>
+          <span>Gestión de clientes</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListIcon>notifications</mat-icon>
+          <span>Alertas y notificaciones</span>
         </a>
       </ng-container>
     </mat-nav-list>
@@ -68,30 +74,24 @@
 
   <!-- MAIN CONTENT -->
   <mat-sidenav-content>
-    <!-- TOOLBAR -->
-    <mat-toolbar color="primary" class="layout-toolbar">
-      <button mat-icon-button (click)="sidenav.toggle()" class="menu-btn">
+    <!-- TOOLBAR (oscura y a todo el ancho) -->
+    <mat-toolbar class="layout-toolbar">
+      <button
+        mat-icon-button
+        (click)="sidenav.toggle()"
+        class="menu-btn"
+        aria-label="Abrir menú"
+      >
         <mat-icon>menu</mat-icon>
       </button>
 
       <span class="app-title">Factoring Platform</span>
       <span class="flex-spacer"></span>
 
-      <div class="user-box" *ngIf="user as u">
-        <mat-icon class="user-icon" aria-hidden="true">person</mat-icon>
-        <div class="user-info">
-          <div class="company" [title]="u.companyName || u.name || u.email">
-            {{
-              u.companyName ||
-                u.name ||
-                (u.email | slice: 0 : u.email.indexOf("@"))
-            }}
-          </div>
-          <div class="email" [title]="u.email">{{ u.email }}</div>
-        </div>
-      </div>
-
-      <button mat-button (click)="logout()">Salir</button>
+      <button mat-button class="logout-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Salir</span>
+      </button>
     </mat-toolbar>
 
     <!-- PAGE CONTENT -->
