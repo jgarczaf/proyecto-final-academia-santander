@@ -3,10 +3,6 @@
   <mat-icon matListIcon>spa</mat-icon>
   <span class="app-title">Santander x NTTData</span>
   <span class="flex-spacer"></span>
-  <button mat-button class="logout-btn" (click)="logout()">
-    <mat-icon>logout</mat-icon>
-    <span>Salir</span>
-  </button>
 </mat-toolbar>
 
 <!-- CONTENEDOR LATERAL + CONTENIDO -->
@@ -20,70 +16,96 @@
     [fixedTopGap]="64"
     [fixedBottomGap]="0"
   >
-    <mat-nav-list class="sidenav-menu">
-      <!-- USER CARD encima del menú -->
-      <div class="user-banner" *ngIf="user as u">
-        <div class="user-avatar">
-          <mat-icon aria-hidden="true">person</mat-icon>
-        </div>
-        <div class="user-details">
-          <div class="user-name" [title]="u.companyName || u.name || u.email">
-            {{
-              u.companyName ||
-                u.name ||
-                (u.email | slice: 0 : u.email.indexOf("@"))
-            }}
+    <!-- interior del sidenav como columna -->
+    <div class="sidenav-inner">
+      <!-- Bloque scrollable (user banner + menú) -->
+      <div class="sidenav-body">
+        <mat-nav-list class="sidenav-menu">
+          <!-- USER CARD encima del menú -->
+          <div class="user-banner" *ngIf="user as u">
+            <div class="user-avatar">
+              <mat-icon aria-hidden="true">person</mat-icon>
+            </div>
+            <div class="user-details">
+              <div
+                class="user-name"
+                [title]="u.companyName || u.name || u.email"
+              >
+                {{
+                  u.companyName ||
+                    u.name ||
+                    (u.email | slice: 0 : u.email.indexOf("@"))
+                }}
+              </div>
+              <div class="user-sub" [title]="u.email">{{ u.email }}</div>
+            </div>
           </div>
-          <div class="user-sub" [title]="u.email">{{ u.email }}</div>
-        </div>
+
+          <!-- CLIENT MENU -->
+          <ng-container *ngIf="auth.hasRole(['CLIENT'])">
+            <a mat-list-item (click)="navigate('/client/dashboard')">
+              <mat-icon matListIcon>home</mat-icon>
+              <span>Dashboard</span>
+            </a>
+
+            <a mat-list-item (click)="navigate('/client/debtors')">
+              <mat-icon matListIcon>business</mat-icon>
+              <span>Deudores</span>
+            </a>
+
+            <a mat-list-item (click)="navigate('/client/bills')">
+              <mat-icon matListIcon>receipt_long</mat-icon>
+              <span>Facturas</span>
+            </a>
+
+            <a mat-list-item (click)="navigate('/client/requests')">
+              <mat-icon matListIcon>send</mat-icon>
+              <span>Solicitudes</span>
+            </a>
+          </ng-container>
+
+          <!-- ADMIN MENU -->
+          <ng-container *ngIf="auth.hasRole(['ADMIN'])">
+            <mat-divider></mat-divider>
+
+            <a mat-list-item (click)="navigate('/admin/dashboard')">
+              <mat-icon matListIcon>home</mat-icon>
+              <span>Dashboard</span>
+            </a>
+
+            <a mat-list-item (click)="navigate('/admin/review')">
+              <mat-icon matListIcon>work</mat-icon>
+              <span>Operaciones</span>
+            </a>
+
+            <a mat-list-item>
+              <mat-icon matListIcon>person</mat-icon>
+              <span>Gestión de clientes</span>
+            </a>
+
+            <a mat-list-item>
+              <mat-icon matListIcon>notifications</mat-icon>
+              <span>Alertas y notificaciones</span>
+            </a>
+          </ng-container>
+        </mat-nav-list>
       </div>
 
-      <!-- CLIENT MENU -->
-      <ng-container *ngIf="auth.hasRole(['CLIENT'])">
-        <a mat-list-item (click)="navigate('/client/dashboard')">
-          <mat-icon matListIcon>home</mat-icon>
-          <span>Dashboard</span>
-        </a>
-
-        <a mat-list-item (click)="navigate('/client/debtors')">
-          <mat-icon matListIcon>business</mat-icon>
-          <span>Deudores</span>
-        </a>
-
-        <a mat-list-item (click)="navigate('/client/bills')">
-          <mat-icon matListIcon>receipt_long</mat-icon>
-          <span>Facturas</span>
-        </a>
-
-        <a mat-list-item (click)="navigate('/client/requests')">
-          <mat-icon matListIcon>send</mat-icon>
-          <span>Solicitudes</span>
-        </a>
-      </ng-container>
-
-      <!-- ADMIN MENU -->
-      <ng-container *ngIf="auth.hasRole(['ADMIN'])">
-        <mat-divider></mat-divider>
-
-        <a mat-list-item (click)="navigate('/admin/dashboard')">
-          <mat-icon matListIcon>home</mat-icon>
-          <span>Dashboard</span>
-        </a>
-
-        <a mat-list-item (click)="navigate('/admin/review')">
-          <mat-icon matListIcon>work</mat-icon>
-          <span>Operaciones</span>
-        </a>
-        <a mat-list-item>
-          <mat-icon matListIcon>person</mat-icon>
-          <span>Gestión de clientes</span>
-        </a>
-        <a mat-list-item>
-          <mat-icon matListIcon>notifications</mat-icon>
-          <span>Alertas y notificaciones</span>
-        </a>
-      </ng-container>
-    </mat-nav-list>
+      <!-- FOOTER FIJO al fondo del sidenav -->
+      <div class="sidenav-footer">
+        <ath-button
+          color="secondary"
+          size="md"
+          fill="solid"
+          icon-position="left"
+          icon="exit"
+          (click)="logout()"
+          class="logout-btn"
+        >
+          Cerrar sesión
+        </ath-button>
+      </div>
+    </div>
   </mat-sidenav>
 
   <!-- MAIN CONTENT -->
