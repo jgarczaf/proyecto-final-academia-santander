@@ -27,6 +27,15 @@
         class="search-debtor-bar"
       ></ath-input-text>
 
+      <ath-button
+        color="primary"
+        size="md"
+        fill="solid"
+        (click)="applySearch(searchRef.value, g)"
+        class="search-button"
+      >
+        Buscar
+      </ath-button>
       <mat-select
         [(ngModel)]="g.selectedStatus"
         placeholder="Filtrar por estado"
@@ -38,16 +47,6 @@
         <mat-option value="APPROVED">Validadas</mat-option>
         <mat-option value="REJECTED">Rechazadas</mat-option>
       </mat-select>
-
-      <ath-button
-        color="primary"
-        size="md"
-        fill="solid"
-        (click)="applySearch(searchRef.value, g)"
-        class="search-button"
-      >
-        Buscar
-      </ath-button>
     </div>
 
     <span class="spacer"></span>
@@ -234,8 +233,8 @@
         <div class="story__item">
           <div class="story__item__label"></div>
           <ath-alert type="page" color="info" has-close="false"
-            >HAS SELECCIONADO {{ getTotalSelectedCountGroup(g) }} SOLICITUD{{
-              getTotalSelectedCountGroup(g) === 1 ? "" : "ES"
+            >Has seleccionado {{ getTotalSelectedCountGroup(g) }} solicitud{{
+              getTotalSelectedCountGroup(g) === 1 ? "" : "es"
             }}
           </ath-alert>
         </div>
