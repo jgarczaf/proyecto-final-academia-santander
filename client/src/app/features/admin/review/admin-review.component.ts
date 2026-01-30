@@ -51,14 +51,11 @@ type SortDirection = 'asc' | 'desc';
 interface ClientGroup {
   userId: number;
   user?: UserLite;
-  /** Todas las solicitudes del cliente */
   requests: RequestItem[];
-  /** Estado de filtros/ordenación por grupo */
   searchQuery: string;
   selectedStatus: RequestStatus | null;
   sortColumn: SortColumn;
   sortDirection: SortDirection;
-  /** Derivados */
   filtered: RequestItem[];
   paginated: RequestItem[];
   pageSize: number;
@@ -72,13 +69,8 @@ interface ClientGroup {
   providers: [DatePipe, CurrencyPipe],
 })
 export class AdminReviewComponent implements OnInit, OnDestroy {
-  // Datos crudos
   allRows: RequestItem[] = [];
-
-  // Grupos por cliente (empresa cedente)
   groups: ClientGroup[] = [];
-
-  // Control general
   loading = false;
   expanded = new Set<number>();
 
@@ -133,20 +125,17 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Construye grupos por usuario (empresa cedente) y aplica filtros/orden/paginación por grupo */
   buildGroups(): void {
     const map = new Map<number, RequestItem[]>();
 
-    // Agrupar por user.id (si no existe, agrupar en -1)
     for (const r of this.allRows) {
       const uid = r.user?.id ?? -1;
       if (!map.has(uid)) map.set(uid, []);
       map.get(uid)!.push(r);
     }
 
-    // Crear estructura de grupo con defaults
     this.groups = Array.from(map.entries()).map(([userId, requests]) => {
-      const user = requests[0]?.user; // todos comparten el mismo user
+      const user = requests[0]?.user;
       const g: ClientGroup = {
         userId,
         user,
@@ -165,11 +154,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Aplica filtros y ordenación a un grupo */
   applyFiltersAndSortGroup(g: ClientGroup): void {
     let filtered = g.requests;
 
-    // Filtro por búsqueda (deudor, nombre de usuario o companyName del usuario)
     if (g.searchQuery) {
       const query = g.searchQuery.toLowerCase();
       filtered = filtered.filter((r) => {
@@ -184,21 +171,17 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Filtro por estado
     if (g.selectedStatus) {
       filtered = filtered.filter((r) => r.status === g.selectedStatus);
     }
 
-    // Ordenación
     filtered = this.sortData(filtered, g.sortColumn, g.sortDirection);
 
-    // Asignar y paginar
     g.filtered = filtered;
-    g.pageIndex = 0; // reset al cambiar filtros/orden
+    g.pageIndex = 0;
     this.updatePaginatedRowsGroup(g);
   }
 
-  /** Ordena según columna/dirección dadas */
   sortData(
     data: RequestItem[],
     sortColumn: SortColumn,
@@ -246,7 +229,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return sorted;
   }
 
-  /** Cambia la ordenación del grupo */
   onSortGroup(g: ClientGroup, column: SortColumn): void {
     if (g.sortColumn === column) {
       g.sortDirection = g.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -274,7 +256,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     g.paginated = g.filtered.slice(start, end);
   }
 
-  /* ========= Display Methods ========= */
+  /* ========= GETTERS ========= */
 
   getFirstIssueDateValue(item: RequestItem): string {
     return item.bills[0]?.issueDate
@@ -354,7 +336,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return canSelect;
   }
 
-  /* ========= Selección (por grupo) ========= */
+  /* ========= Selección ========= */
 
   getTotalSelectedCountGroup(g: ClientGroup): number {
     return g.requests.filter((row) => row.selected).length;
@@ -379,17 +361,12 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return selectedCount > 0 && selectedCount < selectableRows.length;
   }
 
-  /** Checkbox maestro nativo → recibe boolean */
   toggleSelectAllCurrentPageGroup(g: ClientGroup, checked: boolean): void {
     const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
     selectableRows.forEach((r) => (r.selected = checked));
   }
 
-  onCheckboxChange(_r: RequestItem): void {
-    // Hook por si quieres lógica adicional al cambiar una fila
-  }
-
-  /* ========= Acciones (por grupo) ========= */
+  onCheckboxChange(_r: RequestItem): void {}
 
   approveSelectedGroup(g: ClientGroup): void {
     const selected = g.requests.filter((r) => r.selected);
@@ -521,6 +498,10 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   onSearchClear(g: ClientGroup, el?: any): void {
     if (el) el.value = '';
     g.searchQuery = '';
+    this.applyFiltersAndSortGroup(g);
+  }
+
+  onStatusChange(g: ClientGroup): void {
     this.applyFiltersAndSortGroup(g);
   }
 }

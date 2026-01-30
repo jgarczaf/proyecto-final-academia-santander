@@ -28,7 +28,7 @@
       ></ath-input-text>
 
       <ath-button
-        color="primary"
+        color="secondary"
         size="md"
         fill="solid"
         (click)="applySearch(searchRef.value, g)"
@@ -36,11 +36,13 @@
       >
         Buscar
       </ath-button>
+
+      <!-- 🔥 FILTRO INSTANTÁNEO AL CAMBIAR ESTADO -->
       <mat-select
         [(ngModel)]="g.selectedStatus"
         placeholder="Filtrar por estado"
         class="status-select"
-        (keyup.enter)="applySearch(searchRef.value, g)"
+        (selectionChange)="onStatusChange(g)"
       >
         <mat-option [value]="null">Todos</mat-option>
         <mat-option value="REVIEW">Pendiente</mat-option>
@@ -78,7 +80,6 @@
     <div class="table-wrap">
       <div class="header-row">
         <div class="col-expand">
-          <!-- Checkbox maestro (nativo) -->
           <input
             type="checkbox"
             class="n-chk"
@@ -97,9 +98,9 @@
             (click)="onSortGroup(g, 'status')"
           >
             <span>Estado</span>
-            <mat-icon class="sort-icon">{{
-              getSortIconGroup(g, "status")
-            }}</mat-icon>
+            <mat-icon class="sort-icon">
+              {{ getSortIconGroup(g, "status") }}
+            </mat-icon>
           </div>
         </div>
 
@@ -109,9 +110,9 @@
             (click)="onSortGroup(g, 'debtor')"
           >
             <span>Deudor</span>
-            <mat-icon class="sort-icon">{{
-              getSortIconGroup(g, "debtor")
-            }}</mat-icon>
+            <mat-icon class="sort-icon">
+              {{ getSortIconGroup(g, "debtor") }}
+            </mat-icon>
           </div>
         </div>
 
@@ -121,9 +122,9 @@
             (click)="onSortGroup(g, 'invoice')"
           >
             <span>Ref. Factura</span>
-            <mat-icon class="sort-icon">{{
-              getSortIconGroup(g, "invoice")
-            }}</mat-icon>
+            <mat-icon class="sort-icon">
+              {{ getSortIconGroup(g, "invoice") }}
+            </mat-icon>
           </div>
         </div>
 
@@ -133,9 +134,9 @@
             (click)="onSortGroup(g, 'amount')"
           >
             <span>Importe</span>
-            <mat-icon class="sort-icon">{{
-              getSortIconGroup(g, "amount")
-            }}</mat-icon>
+            <mat-icon class="sort-icon">
+              {{ getSortIconGroup(g, "amount") }}
+            </mat-icon>
           </div>
         </div>
 
@@ -145,9 +146,9 @@
             (click)="onSortGroup(g, 'issueDate')"
           >
             <span>Fecha expedición</span>
-            <mat-icon class="sort-icon">{{
-              getSortIconGroup(g, "issueDate")
-            }}</mat-icon>
+            <mat-icon class="sort-icon">
+              {{ getSortIconGroup(g, "issueDate") }}
+            </mat-icon>
           </div>
         </div>
 
@@ -157,9 +158,9 @@
             (click)="onSortGroup(g, 'dueDate')"
           >
             <span>Fecha vencimiento</span>
-            <mat-icon class="sort-icon">{{
-              getSortIconGroup(g, "dueDate")
-            }}</mat-icon>
+            <mat-icon class="sort-icon">
+              {{ getSortIconGroup(g, "dueDate") }}
+            </mat-icon>
           </div>
         </div>
 
@@ -171,7 +172,6 @@
       <ng-container *ngFor="let r of g.paginated">
         <div class="data-row">
           <div class="col-expand">
-            <!-- Checkbox de fila (nativo) -->
             <input
               type="checkbox"
               class="n-chk"
@@ -186,9 +186,9 @@
 
           <div class="col-status">
             <div class="cell cell-status">
-              <mat-chip [ngClass]="statusClass(r.status)">{{
-                statusLabel(r.status)
-              }}</mat-chip>
+              <mat-chip [ngClass]="statusClass(r.status)">
+                {{ statusLabel(r.status) }}
+              </mat-chip>
             </div>
           </div>
 
@@ -215,7 +215,7 @@
           <div class="col-actions">
             <div class="cell cell-actions">
               <ath-button
-                color="primary"
+                color="secondary"
                 size="xs"
                 fill="outlined"
                 (click)="openBillDetail(r)"
@@ -228,12 +228,12 @@
       </ng-container>
     </div>
 
+    <!-- FOOTER -->
     <div class="list-footer">
       <div class="selection-info">
         <div class="story__item">
-          <div class="story__item__label"></div>
-          <ath-alert type="page" color="info" has-close="false"
-            >Has seleccionado {{ getTotalSelectedCountGroup(g) }} solicitud{{
+          <ath-alert type="page" color="info" has-close="false">
+            Has seleccionado {{ getTotalSelectedCountGroup(g) }} solicitud{{
               getTotalSelectedCountGroup(g) === 1 ? "" : "es"
             }}
           </ath-alert>
