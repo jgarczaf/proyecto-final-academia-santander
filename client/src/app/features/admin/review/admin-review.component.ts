@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { PageEvent } from '@angular/material/paginator';
 import { BillDialogComponent } from '../../client/bills/bill-dialog/bill-dialog.component';
 import { RequestsService } from '../../../core/services/requests.service';
 import { SocketService } from '../../../core/services/socket.service';
@@ -380,15 +379,14 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return selectedCount > 0 && selectedCount < selectableRows.length;
   }
 
-  toggleSelectAllCurrentPageGroup(
-    g: ClientGroup,
-    event: MatCheckboxChange,
-  ): void {
-    const checked = event.checked;
+  /** Checkbox maestro nativo → recibe boolean */
+  toggleSelectAllCurrentPageGroup(g: ClientGroup, checked: boolean): void {
     const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
-    selectableRows.forEach((r) => {
-      r.selected = checked;
-    });
+    selectableRows.forEach((r) => (r.selected = checked));
+  }
+
+  onCheckboxChange(_r: RequestItem): void {
+    // Hook por si quieres lógica adicional al cambiar una fila
   }
 
   /* ========= Acciones (por grupo) ========= */
@@ -396,11 +394,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   approveSelectedGroup(g: ClientGroup): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) return;
-
-    const totalBills = selected.reduce(
-      (sum, r) => sum + (r.bills?.length ?? 0),
-      0,
-    );
 
     this.dialog
       .open(ConfirmDialogComponent, {
@@ -428,9 +421,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
                 this.snack.open(
                   `${completed} solicitud(es) aprobada(s)`,
                   'Cerrar',
-                  {
-                    duration: 1500,
-                  },
+                  { duration: 1500 },
                 );
                 this.load();
               }
@@ -441,9 +432,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
                 this.snack.open(
                   `${completed} aprobada(s), ${errors} error(es)`,
                   'Cerrar',
-                  {
-                    duration: 2500,
-                  },
+                  { duration: 2500 },
                 );
                 this.load();
               }
@@ -480,9 +469,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
                 this.snack.open(
                   `${completed} solicitud(es) rechazada(s)`,
                   'Cerrar',
-                  {
-                    duration: 1500,
-                  },
+                  { duration: 1500 },
                 );
                 this.load();
               }
@@ -493,9 +480,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
                 this.snack.open(
                   `${completed} rechazada(s), ${errors} error(es)`,
                   'Cerrar',
-                  {
-                    duration: 2500,
-                  },
+                  { duration: 2500 },
                 );
                 this.load();
               }
@@ -520,6 +505,8 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  /* ========= Búsqueda ========= */
 
   onSearchChange(value: string, g: ClientGroup): void {
     g.searchQuery = (value || '').trim();

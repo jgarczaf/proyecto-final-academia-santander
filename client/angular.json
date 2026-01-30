@@ -33,9 +33,9 @@
               }
             ],
             "styles": [
-              "src/styles.scss",
               "node_modules/@aletehia2/core/dist/aletheia2/aletheia2.css",
-              "@angular/material/prebuilt-themes/indigo-pink.css"
+              "@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.scss"
             ],
             "scripts": []
           },

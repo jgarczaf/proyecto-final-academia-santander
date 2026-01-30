@@ -6,6 +6,25 @@ h2 {
   margin: 8px 0 6px;
 }
 
+/* ===== Checkbox nativo (gris oscuro) ===== */
+.n-chk {
+  width: 18px;
+  height: 18px;
+  accent-color: #424242;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.n-chk:disabled {
+  accent-color: #9e9e9e;
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+.n-chk:focus-visible {
+  outline: 2px solid #424242;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
 /* ===== Bloque Empresa Cedente ===== */
 .cedente-block {
   position: relative;
@@ -36,12 +55,12 @@ h2 {
 .cedente-value {
   font-size: 20px;
   font-weight: 600;
-  color: #1f2937; /* gris oscuro legible */
+  color: #1f2937;
 }
 
 .cedente-fiscal {
   font-weight: 500;
-  color: #455a64; /* azul-gris para el NIF/DNI */
+  color: #455a64;
   margin-left: 4px;
 }
 
@@ -72,6 +91,10 @@ h2 {
     font-size: 14px;
     height: 36px;
     box-sizing: border-box;
+  }
+
+  .search-debtor-bar {
+    min-width: 300px;
   }
 
   .status-select,
@@ -126,7 +149,7 @@ h2 {
   padding: 0;
   display: flex;
   flex-direction: column;
-  margin-bottom: 18px; /* separación entre grupos */
+  margin-bottom: 18px;
 }
 
 .table-wrap {
@@ -417,4 +440,13 @@ mat-chip {
     order: -1;
     width: 100%;
   }
+}
+
+.search-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 4px;
+  margin-left: 2px;
+  display: block;
 }
