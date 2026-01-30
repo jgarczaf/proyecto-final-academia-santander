@@ -63,15 +63,58 @@
       >
         Rechazar
       </ath-button>
+
       <ath-button
         color="primary"
         size="md"
         fill="solid"
-        (click)="approveSelectedGroup(g)"
+        (click)="openAthModal(anticiparModal)"
         [disabled]="!hasSelectedRowsGroup(g)"
       >
         Anticipar
       </ath-button>
+
+      <ath-modal
+        #anticiparModal
+        has-close="true"
+        has-divider="true"
+        close-aria-label="Cerrar"
+      >
+        <div slot="body">
+          <ath-pictogram size="2xl" name="picto_illu_info_msg"></ath-pictogram>
+
+          <div
+            class="ath-body--sm ath-color-text--default"
+            style="padding: 4px"
+          >
+            <h2>
+              La selección supera los parámetros de importe o vencimiento
+              permitidos.
+            </h2>
+            <h3>¿Desea continuar?</h3>
+          </div>
+        </div>
+
+        <div
+          slot="footer"
+          style="display: flex; justify-content: center; gap: 8px"
+        >
+          <ath-button
+            (click)="closeAthModal(anticiparModal)"
+            aria-label="cancelar"
+          >
+            Cancelar
+          </ath-button>
+
+          <ath-button
+            color="secondary"
+            (click)="confirmAnticipar(g, anticiparModal)"
+            aria-label="anticipar"
+          >
+            Anticipar
+          </ath-button>
+        </div>
+      </ath-modal>
     </div>
   </div>
 

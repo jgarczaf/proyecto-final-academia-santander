@@ -256,8 +256,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     g.paginated = g.filtered.slice(start, end);
   }
 
-  /* ========= GETTERS ========= */
-
   getFirstIssueDateValue(item: RequestItem): string {
     return item.bills[0]?.issueDate
       ? this.date.transform(item.bills[0].issueDate, 'dd/MM/yyyy') || ''
@@ -368,55 +366,52 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   onCheckboxChange(_r: RequestItem): void {}
 
-  approveSelectedGroup(g: ClientGroup): void {
+  /* ========= Acciones ========= */
+
+  /**
+   * Lógica reutilizable que antes corría tras aceptar el ConfirmDialog.
+   * Ahora la usamos también desde la modal externa al pulsar "Anticipar".
+   */
+  private runApproveSelected(g: ClientGroup, onFinally?: () => void): void {
     const selected = g.requests.filter((r) => r.selected);
-    if (selected.length === 0) return;
+    if (selected.length === 0) {
+      onFinally?.();
+      return;
+    }
 
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Confirmación',
-          message:
-            selected.length > 1
-              ? `La selección de estos ${selected.length} anticipos supera los parámetros de importe o vencimiento permitidos.`
-              : `La selección de este anticipo supera los parámetros de importe o vencimiento permitidos.`,
-          subMessage: `¿Desea confirmar la operación?`,
+    let completed = 0;
+    let errors = 0;
+
+    selected.forEach((r) => {
+      this.api.approve(r.id).subscribe({
+        next: () => {
+          completed++;
+          if (completed + errors === selected.length) {
+            this.snack.open(
+              `${completed} solicitud(es) aprobada(s)`,
+              'Cerrar',
+              {
+                duration: 1500,
+              },
+            );
+            this.load();
+            onFinally?.();
+          }
         },
-      })
-      .afterClosed()
-      .subscribe((ok) => {
-        if (!ok) return;
-
-        let completed = 0;
-        let errors = 0;
-
-        selected.forEach((r) => {
-          this.api.approve(r.id).subscribe({
-            next: () => {
-              completed++;
-              if (completed + errors === selected.length) {
-                this.snack.open(
-                  `${completed} solicitud(es) aprobada(s)`,
-                  'Cerrar',
-                  { duration: 1500 },
-                );
-                this.load();
-              }
-            },
-            error: () => {
-              errors++;
-              if (completed + errors === selected.length) {
-                this.snack.open(
-                  `${completed} aprobada(s), ${errors} error(es)`,
-                  'Cerrar',
-                  { duration: 2500 },
-                );
-                this.load();
-              }
-            },
-          });
-        });
+        error: () => {
+          errors++;
+          if (completed + errors === selected.length) {
+            this.snack.open(
+              `${completed} aprobada(s), ${errors} error(es)`,
+              'Cerrar',
+              { duration: 2500 },
+            );
+            this.load();
+            onFinally?.();
+          }
+        },
       });
+    });
   }
 
   rejectSelectedGroup(g: ClientGroup): void {
@@ -503,5 +498,27 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   onStatusChange(g: ClientGroup): void {
     this.applyFiltersAndSortGroup(g);
+  }
+
+  openAthModal(el: any): void {
+    if (!el) return;
+    if (typeof el.openModal === 'function') {
+      el.openModal();
+    } else {
+      el.setAttribute('open', 'true');
+    }
+  }
+
+  closeAthModal(el: any): void {
+    if (!el) return;
+    if (typeof el.closeModal === 'function') {
+      el.closeModal();
+    } else {
+      el.removeAttribute('open');
+    }
+  }
+
+  confirmAnticipar(g: ClientGroup, el: any): void {
+    this.runApproveSelected(g, () => this.closeAthModal(el));
   }
 }
