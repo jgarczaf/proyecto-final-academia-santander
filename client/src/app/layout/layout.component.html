@@ -69,23 +69,31 @@
             <mat-divider></mat-divider>
 
             <a mat-list-item (click)="navigate('/admin/dashboard')">
-              <mat-icon matListIcon>home</mat-icon>
-              <span>Dashboard</span>
+              <ath-icon
+                icon="home_estrecha"
+                color="default"
+                size="sm"
+              ></ath-icon>
+              <span class="admin-menu-navoption">Dashboard</span>
             </a>
 
             <a mat-list-item (click)="navigate('/admin/review')">
-              <mat-icon matListIcon>work</mat-icon>
-              <span>Operaciones</span>
+              <ath-icon icon="briefcase" color="default" size="sm"></ath-icon>
+              <span class="admin-menu-navoption">Operaciones</span>
             </a>
 
             <a mat-list-item>
-              <mat-icon matListIcon>person</mat-icon>
-              <span>Gestión de clientes</span>
+              <ath-icon icon="account" color="default" size="sm"></ath-icon>
+              <span class="admin-menu-navoption">Gestión de clientes</span>
             </a>
 
             <a mat-list-item>
-              <mat-icon matListIcon>notifications</mat-icon>
-              <span>Alertas y notificaciones</span>
+              <ath-icon
+                icon="notification"
+                color="default"
+                size="sm"
+              ></ath-icon>
+              <span class="admin-menu-navoption">Alertas y notificaciones</span>
             </a>
           </ng-container>
         </mat-nav-list>

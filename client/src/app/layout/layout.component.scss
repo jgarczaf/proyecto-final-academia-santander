@@ -1,15 +1,22 @@
-/* ===== Top bar oscura, fija y a TODO el ancho ===== */
+:host {
+  display: block;
+}
+
+h2 {
+  margin: 8px 0 6px;
+}
+
 .layout-toolbar {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0; /* garantiza ocupar todo el ancho */
+  right: 0;
   z-index: 1100;
 
   display: flex;
   align-items: center;
 
-  background-color: #263238; /* Blue Grey 800 */
+  background-color: #263238;
   color: #fff;
   width: 100%;
 
@@ -24,31 +31,26 @@
   }
 }
 
-/* ===== Contenedor principal ===== */
 .layout-container {
   height: 100vh;
 }
 
-/* ===== Sidenav fijo bajo la toolbar ===== */
 .layout-sidenav {
   width: 280px;
   box-sizing: border-box;
 }
 
-/* ===== Interior del sidenav: columna flex ===== */
 .sidenav-inner {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 64px); /* total - altura toolbar fija */
+  height: calc(100vh - 64px);
 }
 
-/* Cuerpo scrollable (menú + banner) */
 .sidenav-body {
   flex: 1 1 auto;
   overflow: auto;
 }
 
-/* Footer fijo al fondo y centrado */
 .sidenav-footer {
   flex: 0 0 auto;
   padding: 12px 16px 16px;
@@ -60,12 +62,6 @@
   justify-content: center;
 }
 
-/* Botón Cerrar sesión: centrado y con ancho mínimo para look CTA */
-// .logout-btn {
-//   min-width: 180px;
-// }
-
-/* ===== User banner dentro del sidenav, encima del menú ===== */
 .user-banner {
   display: flex;
   align-items: center;
@@ -119,39 +115,62 @@
   text-overflow: ellipsis;
 }
 
-/* ===== Contenido (evitar solaparse bajo la toolbar fija) ===== */
 .layout-content {
-  padding-top: 72px; /* 64px de toolbar + margen */
+  padding-top: 72px;
   padding-left: 16px;
   padding-right: 16px;
   padding-bottom: 16px;
 }
 
-/* ===== Ajustes visuales de la lista del sidenav ===== */
 mat-nav-list {
   padding: 0;
 }
 
-mat-nav-list .mat-mdc-list-item {
+mat-nav-list a.mat-mdc-list-item {
   padding: 0 16px;
   min-height: 48px;
   box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-mat-nav-list .mat-mdc-list-item mat-icon {
-  margin-right: 12px;
+mat-nav-list a.mat-mdc-list-item .admin-menu-navoption {
+  font-size: 18px;
+  line-height: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+mat-nav-list a.mat-mdc-list-item mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0;
   color: rgba(0, 0, 0, 0.7);
 }
 
-mat-nav-list .mat-mdc-list-item span {
-  font-size: 18px;
-  line-height: 1.2;
+mat-nav-list a.mat-mdc-list-item ath-icon {
+  width: 20px;
+  height: 20px;
+
+  --ath-icon-size: 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: translateY(2px);
 }
 
 mat-nav-list .mat-mdc-list-item:hover {
   background: rgba(0, 0, 0, 0.04);
 }
-
 mat-nav-list .mat-mdc-list-item.active {
   background: rgba(63, 81, 181, 0.08);
   font-weight: 600;
@@ -173,4 +192,18 @@ mat-nav-list .mat-mdc-list-item.active {
   .user-banner {
     margin: 8px 8px 16px;
   }
+}
+
+.admin-menu-navoption {
+  margin-left: 8px;
+}
+
+.layout-toolbar mat-icon[matListIcon] {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
