@@ -54,16 +54,18 @@
     <span class="spacer"></span>
 
     <div class="buttons-toolbar">
+      <!-- RECHAZAR: abre modal Athena (Opción A) -->
       <ath-button
         color="warn"
         size="md"
         fill="outlined"
-        (click)="rejectSelectedGroup(g)"
+        (click)="openAthModal(rechazarModal)"
         [disabled]="!hasSelectedRowsGroup(g)"
       >
         Rechazar
       </ath-button>
 
+      <!-- ANTICIPAR: abre modal Athena -->
       <ath-button
         color="primary"
         size="md"
@@ -74,6 +76,7 @@
         Anticipar
       </ath-button>
 
+      <!-- MODAL: ANTICIPAR (una por grupo) -->
       <ath-modal
         #anticiparModal
         has-close="true"
@@ -112,6 +115,53 @@
             aria-label="anticipar"
           >
             Anticipar
+          </ath-button>
+        </div>
+      </ath-modal>
+
+      <!-- MODAL: RECHAZAR (una por grupo) -->
+      <ath-modal
+        #rechazarModal
+        has-close="true"
+        has-divider="true"
+        close-aria-label="Cerrar"
+      >
+        <div slot="body">
+          <ath-pictogram size="2xl" name="picto_illu_info_msg"></ath-pictogram>
+
+          <div
+            class="ath-body--sm ath-color-text--default"
+            style="padding: 4px"
+          >
+            <h2>
+              {{
+                totalSelectedBills(g) === 1
+                  ? "¿Desea rechazar el anticipo de la factura seleccionada?"
+                  : "¿Desea rechazar el anticipo de las " +
+                    totalSelectedBills(g) +
+                    " facturas seleccionadas?"
+              }}
+            </h2>
+          </div>
+        </div>
+
+        <div
+          slot="footer"
+          style="display: flex; justify-content: center; gap: 8px"
+        >
+          <ath-button
+            (click)="closeAthModal(rechazarModal)"
+            aria-label="cancelar"
+          >
+            Cancelar
+          </ath-button>
+
+          <ath-button
+            color="secondary"
+            (click)="confirmRechazar(g, rechazarModal)"
+            aria-label="rechazar-anticipo"
+          >
+            Rechazar anticipo
           </ath-button>
         </div>
       </ath-modal>
