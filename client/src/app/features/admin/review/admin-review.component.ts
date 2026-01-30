@@ -104,8 +104,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.subSocketChanged?.unsubscribe();
   }
 
-  /* ========= Data ========= */
-
   load(): void {
     this.loading = true;
     this.api.list().subscribe({
@@ -249,24 +247,26 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     g.paginated = g.filtered.slice(start, end);
   }
 
-  /* ========= Display Methods ========= */
-
   getFirstIssueDateValue(item: RequestItem): string {
     return item.bills[0]?.issueDate
       ? this.date.transform(item.bills[0].issueDate, 'dd/MM/yyyy') || ''
       : '';
   }
+
   getFirstDueDateValue(item: RequestItem): string {
     return item.bills[0]?.dueDate
       ? this.date.transform(item.bills[0].dueDate, 'dd/MM/yyyy') || ''
       : '';
   }
+
   getFirstBillDebtor(item: RequestItem): string {
     return item.bills[0]?.debtor?.companyName || 'Desconocido';
   }
+
   getFirstInvoiceNumber(item: RequestItem): string {
     return item.bills[0]?.invoiceNumber || 'Sin número';
   }
+
   getFirstBillAmount(item: RequestItem): string {
     return item.bills[0]?.amount
       ? this.currency.transform(
@@ -277,12 +277,15 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
         ) || '0 €'
       : '0 €';
   }
+
   getFirstIssueDate(item: RequestItem): string {
     return this.getFirstIssueDateValue(item);
   }
+
   getFirstDueDate(item: RequestItem): string {
     return this.getFirstDueDateValue(item);
   }
+
   getFirstBillAmountValue(item: RequestItem): string {
     return item.bills[0]?.amount ? String(item.bills[0].amount) : '0';
   }
@@ -304,6 +307,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     if (s === 'REJECTED') return 'Rechazada';
     return status || '';
   }
+
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
     if (s === 'PENDING' || s === 'REVIEW') return 'st-pending';
@@ -319,20 +323,21 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return canSelect;
   }
 
-  /* ========= Selección ========= */
-
   getTotalSelectedCountGroup(g: ClientGroup): number {
     return g.requests.filter((row) => row.selected).length;
   }
+
   hasSelectedRowsGroup(g: ClientGroup): boolean {
     return this.getTotalSelectedCountGroup(g) > 0;
   }
+
   isAllCurrentPageSelectedGroup(g: ClientGroup): boolean {
     if (g.paginated.length === 0) return false;
     const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
     if (selectableRows.length === 0) return false;
     return selectableRows.every((r) => r.selected);
   }
+
   isCurrentPageIndeterminateGroup(g: ClientGroup): boolean {
     if (g.paginated.length === 0) return false;
     const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
@@ -340,22 +345,19 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     const selectedCount = selectableRows.filter((r) => r.selected).length;
     return selectedCount > 0 && selectedCount < selectableRows.length;
   }
+
   toggleSelectAllCurrentPageGroup(g: ClientGroup, checked: boolean): void {
     const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
     selectableRows.forEach((r) => (r.selected = checked));
   }
+
   onCheckboxChange(_r: RequestItem): void {}
 
-  /** Nº total de FACTURAS (sumando bills de las solicitudes seleccionadas) */
   totalSelectedBills(g: ClientGroup): number {
     return g.requests
       .filter((r) => r.selected)
       .reduce((sum, r) => sum + (r.bills?.length ?? 0), 0);
   }
-
-  /* ========= Acciones ========= */
-
-  /** Lógica de aprobar reutilizable (ConfirmDialog y modal Athena) */
   private runApproveSelected(g: ClientGroup, onFinally?: () => void): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) {
@@ -395,7 +397,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Lógica de rechazar reutilizable (ConfirmDialog y modal Athena) */
   private runRejectSelected(g: ClientGroup, onFinally?: () => void): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) {
@@ -435,7 +436,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Flujo clásico con ConfirmDialog: APROBAR */
   approveSelectedGroup(g: ClientGroup): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) return;
@@ -455,7 +455,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .subscribe((ok) => ok && this.runApproveSelected(g));
   }
 
-  /** Flujo clásico con ConfirmDialog: RECHAZAR */
   rejectSelectedGroup(g: ClientGroup): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) return;
@@ -472,48 +471,45 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .subscribe((ok) => ok && this.runRejectSelected(g));
   }
 
-  /* ========= Modal externa (Web Component) ========= */
-
   openAthModal(el: any): void {
     if (!el) return;
     if (typeof el.openModal === 'function') el.openModal();
     else el.setAttribute('open', 'true');
   }
+
   closeAthModal(el: any): void {
     if (!el) return;
     if (typeof el.closeModal === 'function') el.closeModal();
     else el.removeAttribute('open');
   }
 
-  /** Modal externa: confirmar Anticipar */
   confirmAnticipar(g: ClientGroup, el: any): void {
     this.runApproveSelected(g, () => this.closeAthModal(el));
   }
-  /** Modal externa: confirmar Rechazar anticipo */
+
   confirmRechazar(g: ClientGroup, el: any): void {
     this.runRejectSelected(g, () => this.closeAthModal(el));
   }
-
-  /* ========= Búsqueda ========= */
 
   onSearchChange(value: string, g: ClientGroup): void {
     g.searchQuery = (value || '').trim();
     this.applyFiltersAndSortGroup(g);
   }
+
   applySearch(value: string, g: ClientGroup): void {
     g.searchQuery = (value || '').trim();
     this.applyFiltersAndSortGroup(g);
   }
+
   onSearchClear(g: ClientGroup, el?: any): void {
     if (el) el.value = '';
     g.searchQuery = '';
     this.applyFiltersAndSortGroup(g);
   }
+
   onStatusChange(g: ClientGroup): void {
     this.applyFiltersAndSortGroup(g);
   }
-
-  /* ========= Detalle factura ========= */
 
   openBillDetail(item: RequestItem): void {
     if (item.bills && item.bills.length > 0) {
