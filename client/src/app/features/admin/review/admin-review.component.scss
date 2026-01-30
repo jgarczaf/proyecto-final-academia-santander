@@ -439,3 +439,36 @@ mat-chip {
   margin-left: 2px;
   display: block;
 }
+
+.modal-confirm {
+  inline-size: clamp(360px, 52vw, 540px);
+  margin-inline: auto;
+  text-align: center;
+  padding: 8px 8px 0;
+  box-sizing: border-box;
+  max-height: 300px;
+}
+
+.modal-title {
+  margin: 6px 12px 4px;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #111827;
+}
+
+.modal-subtitle {
+  margin: 0 12px 4px;
+  font-size: 18px;
+  color: #4b5563;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  margin: 4px auto 6px;
+  padding-bottom: 6px;
+}

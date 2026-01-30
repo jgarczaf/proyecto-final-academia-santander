@@ -54,7 +54,7 @@
     <span class="spacer"></span>
 
     <div class="buttons-toolbar">
-      <!-- RECHAZAR: abre modal Athena (Opción A) -->
+      <!-- BOTÓN RECHAZAR-->
       <ath-button
         color="warn"
         size="md"
@@ -64,8 +64,45 @@
       >
         Rechazar
       </ath-button>
+      <!-- MODAL RECHAZAR -->
+      <ath-modal
+        #rechazarModal
+        has-close="true"
+        has-divider="false"
+        close-aria-label="Cerrar"
+      >
+        <div slot="body" class="modal-confirm">
+          <div class="modal-icon">
+            <img
+              src="../../../../assets/images/pictogram_notification.svg"
+              alt="Pictograma notificación"
+            />
+          </div>
+          <h2 class="modal-title">Se rechazará el anticipo de la selección.</h2>
+        </div>
 
-      <!-- ANTICIPAR: abre modal Athena -->
+        <div slot="footer" class="modal-actions">
+          <ath-button
+            fill="outlined"
+            color="secondary"
+            class="btn-pill btn-outline"
+            (click)="closeAthModal(rechazarModal)"
+            aria-label="cancelar"
+          >
+            Cancelar
+          </ath-button>
+          <ath-button
+            fill="solid"
+            color="primary"
+            class="btn-pill btn-primary"
+            (click)="confirmRechazar(g, rechazarModal)"
+            aria-label="rechazar-anticipo"
+          >
+            Rechazar
+          </ath-button>
+        </div>
+      </ath-modal>
+      <!-- BOTÓN ANTICIPAR -->
       <ath-button
         color="primary"
         size="md"
@@ -75,93 +112,44 @@
       >
         Anticipar
       </ath-button>
-
-      <!-- MODAL: ANTICIPAR (una por grupo) -->
+      <!-- MODAL ANTICIPAR -->
       <ath-modal
         #anticiparModal
         has-close="true"
-        has-divider="true"
+        has-divider="false"
         close-aria-label="Cerrar"
       >
-        <div slot="body">
-          <ath-pictogram size="2xl" name="picto_illu_info_msg"></ath-pictogram>
-
-          <div
-            class="ath-body--sm ath-color-text--default"
-            style="padding: 4px"
-          >
-            <h2>
-              La selección supera los parámetros de importe o vencimiento
-              permitidos.
-            </h2>
-            <h3>¿Desea continuar?</h3>
+        <div slot="body" class="modal-confirm">
+          <div class="modal-icon">
+            <img
+              src="../../../../assets/images/pictogram_notification.svg"
+              alt="Pictograma notificación"
+            />
           </div>
+          <h2 class="modal-title">
+            La selección supera los parámetros de importe o vencimiento
+            permitidos.
+          </h2>
+          <p class="modal-subtitle">¿Desea continuar?</p>
         </div>
-
-        <div
-          slot="footer"
-          style="display: flex; justify-content: center; gap: 8px"
-        >
+        <div slot="footer" class="modal-actions">
           <ath-button
+            fill="outlined"
+            color="secondary"
+            class="btn-pill btn-outline"
             (click)="closeAthModal(anticiparModal)"
             aria-label="cancelar"
           >
             Cancelar
           </ath-button>
-
           <ath-button
-            color="secondary"
+            fill="solid"
+            color="primary"
+            class="btn-pill btn-primary"
             (click)="confirmAnticipar(g, anticiparModal)"
             aria-label="anticipar"
           >
             Anticipar
-          </ath-button>
-        </div>
-      </ath-modal>
-
-      <!-- MODAL: RECHAZAR (una por grupo) -->
-      <ath-modal
-        #rechazarModal
-        has-close="true"
-        has-divider="true"
-        close-aria-label="Cerrar"
-      >
-        <div slot="body">
-          <ath-pictogram size="2xl" name="picto_illu_info_msg"></ath-pictogram>
-
-          <div
-            class="ath-body--sm ath-color-text--default"
-            style="padding: 4px"
-          >
-            <h2>
-              {{
-                totalSelectedBills(g) === 1
-                  ? "¿Desea rechazar el anticipo de la factura seleccionada?"
-                  : "¿Desea rechazar el anticipo de las " +
-                    totalSelectedBills(g) +
-                    " facturas seleccionadas?"
-              }}
-            </h2>
-          </div>
-        </div>
-
-        <div
-          slot="footer"
-          style="display: flex; justify-content: center; gap: 8px"
-        >
-          <ath-button
-            (click)="closeAthModal(rechazarModal)"
-            aria-label="cancelar"
-          >
-            Cancelar
-          </ath-button>
-
-          <ath-button
-            color="secondary"
-            (click)="confirmRechazar(g, rechazarModal)"
-            aria-label="rechazar-anticipo"
-          >
-            Rechazar anticipo
           </ath-button>
         </div>
       </ath-modal>
