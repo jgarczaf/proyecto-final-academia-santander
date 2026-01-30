@@ -231,12 +231,16 @@
 
     <div class="list-footer">
       <div class="selection-info">
-        <strong
-          >HAS SELECCIONADO {{ getTotalSelectedCountGroup(g) }} SOLICITUD{{
-            getTotalSelectedCountGroup(g) === 1 ? "" : "ES"
-          }}</strong
-        >
+        <div class="story__item" style="">
+          <div class="story__item__label"></div>
+          <ath-alert type="page" color="info" has-close="false"
+            >HAS SELECCIONADO {{ getTotalSelectedCountGroup(g) }} SOLICITUD{{
+              getTotalSelectedCountGroup(g) === 1 ? "" : "ES"
+            }}
+          </ath-alert>
+        </div>
       </div>
+
       <mat-paginator
         [length]="g.filtered.length"
         [pageSize]="g.pageSize"

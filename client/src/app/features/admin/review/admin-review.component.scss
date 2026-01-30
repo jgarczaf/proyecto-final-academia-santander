@@ -169,18 +169,7 @@ h2 {
 }
 
 .selection-info {
-  color: #d32f2f;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 8px 12px;
-  background-color: #ffebee;
-  border-radius: 4px;
-  white-space: nowrap;
-  flex-shrink: 0;
-
-  &:empty {
-    display: none;
-  }
+  width: 318px;
 }
 
 .header-row,
