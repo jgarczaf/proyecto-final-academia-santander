@@ -328,7 +328,6 @@ mat-chip {
   --mdc-chip-container-height: 24px;
   --mdc-chip-label-text-color: #ffffff;
 }
-
 .cell-status mat-chip .mdc-evolution-chip__text-label {
   display: inline-flex;
   justify-content: center;
@@ -341,7 +340,6 @@ mat-chip {
   margin: 0;
   padding: 0;
 }
-
 :host {
   --status-chip-width: 100px;
 }
@@ -375,4 +373,19 @@ mat-chip {
 
 :host ::ng-deep .cell-status .mdc-evolution-chip__action {
   width: 100%;
+}
+
+.modal-state-error {
+  color: #c62828;
+}
+
+.modal-icon.state-error::after {
+  content: "";
+  position: absolute;
+  inline-size: 22px;
+  block-size: 22px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }

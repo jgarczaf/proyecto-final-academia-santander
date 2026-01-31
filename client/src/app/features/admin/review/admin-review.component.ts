@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { BillDialogComponent } from '../../client/bills/bill-dialog/bill-dialog.component';
@@ -46,6 +45,9 @@ type SortColumn =
   | 'createdAt';
 type SortDirection = 'asc' | 'desc';
 
+/** Estados (sin busy) */
+type ModalState = 'confirm' | 'success' | 'error';
+
 interface ClientGroup {
   userId: number;
   user?: UserLite;
@@ -58,6 +60,11 @@ interface ClientGroup {
   paginated: RequestItem[];
   pageSize: number;
   pageIndex: number;
+
+  anticiparState: ModalState;
+  rechazarState: ModalState;
+  anticiparResult?: { completed: number; errors: number };
+  rechazarResult?: { completed: number; errors: number };
 }
 
 @Component({
@@ -75,10 +82,14 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   private subSocketNew?: Subscription;
   private subSocketChanged?: Subscription;
 
+  /** Mientras mostramos success/error, bloqueamos recargas para no cerrar la modal por reconstrucción */
+  private lockReload = false;
+  /** Si llegan sockets durante lock, podríamos usarla; en tu caso recargaremos siempre al cerrar */
+  // private pendingReload = false;
+
   constructor(
     private api: RequestsService,
     private dialog: MatDialog,
-    private snack: MatSnackBar,
     private socket: SocketService,
     private date: DatePipe,
     private currency: CurrencyPipe,
@@ -87,22 +98,25 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.load();
 
-    this.subSocketNew = this.socket.onAdminRequestCreated().subscribe((p) => {
-      this.snack.open(`Nueva solicitud #${p?.requestId} recibida`, 'OK', {
-        duration: 2000,
-      });
-      this.load();
+    this.subSocketNew = this.socket.onAdminRequestCreated().subscribe(() => {
+      if (!this.lockReload) this.load();
+      // else this.pendingReload = true;
     });
 
     this.subSocketChanged = this.socket
       .onAdminRequestsChanged()
-      .subscribe(() => this.load());
+      .subscribe(() => {
+        if (!this.lockReload) this.load();
+        // else this.pendingReload = true;
+      });
   }
 
   ngOnDestroy(): void {
     this.subSocketNew?.unsubscribe();
     this.subSocketChanged?.unsubscribe();
   }
+
+  /* ========= Data ========= */
 
   load(): void {
     this.loading = true;
@@ -113,9 +127,8 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: () => {
-        this.snack.open('No se pudo cargar la lista', 'Cerrar', {
-          duration: 2500,
-        });
+        // Sin snackbar (lo pediste). Podrías loguear si quieres:
+        // console.error('No se pudo cargar la lista');
         this.loading = false;
       },
     });
@@ -143,6 +156,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
         paginated: [],
         pageSize: 10,
         pageIndex: 0,
+
+        anticiparState: 'confirm',
+        rechazarState: 'confirm',
       };
       this.applyFiltersAndSortGroup(g);
       return g;
@@ -153,15 +169,15 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     let filtered = g.requests;
 
     if (g.searchQuery) {
-      const query = g.searchQuery.toLowerCase();
+      const q = g.searchQuery.toLowerCase();
       filtered = filtered.filter((r) => {
         const debtorName = this.getFirstBillDebtor(r).toLowerCase();
         const userName = r.user?.name?.toLowerCase() || '';
         const companyName = r.user?.companyName?.toLowerCase() || '';
         return (
-          debtorName.includes(query) ||
-          userName.includes(query) ||
-          companyName.includes(query)
+          debtorName.includes(q) ||
+          userName.includes(q) ||
+          companyName.includes(q)
         );
       });
     }
@@ -221,9 +237,9 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   }
 
   onSortGroup(g: ClientGroup, column: SortColumn): void {
-    if (g.sortColumn === column) {
+    if (g.sortColumn === column)
       g.sortDirection = g.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
+    else {
       g.sortColumn = column;
       g.sortDirection = 'asc';
     }
@@ -247,26 +263,24 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     g.paginated = g.filtered.slice(start, end);
   }
 
+  /* ========= Display helpers ========= */
+
   getFirstIssueDateValue(item: RequestItem): string {
     return item.bills[0]?.issueDate
       ? this.date.transform(item.bills[0].issueDate, 'dd/MM/yyyy') || ''
       : '';
   }
-
   getFirstDueDateValue(item: RequestItem): string {
     return item.bills[0]?.dueDate
       ? this.date.transform(item.bills[0].dueDate, 'dd/MM/yyyy') || ''
       : '';
   }
-
   getFirstBillDebtor(item: RequestItem): string {
     return item.bills[0]?.debtor?.companyName || 'Desconocido';
   }
-
   getFirstInvoiceNumber(item: RequestItem): string {
     return item.bills[0]?.invoiceNumber || 'Sin número';
   }
-
   getFirstBillAmount(item: RequestItem): string {
     return item.bills[0]?.amount
       ? this.currency.transform(
@@ -277,15 +291,12 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
         ) || '0 €'
       : '0 €';
   }
-
   getFirstIssueDate(item: RequestItem): string {
     return this.getFirstIssueDateValue(item);
   }
-
   getFirstDueDate(item: RequestItem): string {
     return this.getFirstDueDateValue(item);
   }
-
   getFirstBillAmountValue(item: RequestItem): string {
     return item.bills[0]?.amount ? String(item.bills[0].amount) : '0';
   }
@@ -301,13 +312,11 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   statusLabel(status?: string): string {
     const s = (status || '').toUpperCase();
-    if (s === 'PENDING') return 'Pendiente';
-    if (s === 'REVIEW') return 'Pendiente';
+    if (s === 'PENDING' || s === 'REVIEW') return 'Pendiente';
     if (s === 'APPROVED') return 'Validada';
     if (s === 'REJECTED') return 'Rechazada';
     return status || '';
   }
-
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
     if (s === 'PENDING' || s === 'REVIEW') return 'st-pending';
@@ -323,34 +332,31 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return canSelect;
   }
 
+  /* ========= Selección ========= */
+
   getTotalSelectedCountGroup(g: ClientGroup): number {
     return g.requests.filter((row) => row.selected).length;
   }
-
   hasSelectedRowsGroup(g: ClientGroup): boolean {
     return this.getTotalSelectedCountGroup(g) > 0;
   }
-
   isAllCurrentPageSelectedGroup(g: ClientGroup): boolean {
     if (g.paginated.length === 0) return false;
-    const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
-    if (selectableRows.length === 0) return false;
-    return selectableRows.every((r) => r.selected);
+    const selectable = g.paginated.filter((r) => this.canSelectRow(r));
+    if (selectable.length === 0) return false;
+    return selectable.every((r) => r.selected);
   }
-
   isCurrentPageIndeterminateGroup(g: ClientGroup): boolean {
     if (g.paginated.length === 0) return false;
-    const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
-    if (selectableRows.length === 0) return false;
-    const selectedCount = selectableRows.filter((r) => r.selected).length;
-    return selectedCount > 0 && selectedCount < selectableRows.length;
+    const selectable = g.paginated.filter((r) => this.canSelectRow(r));
+    if (selectable.length === 0) return false;
+    const selectedCount = selectable.filter((r) => r.selected).length;
+    return selectedCount > 0 && selectedCount < selectable.length;
   }
-
   toggleSelectAllCurrentPageGroup(g: ClientGroup, checked: boolean): void {
-    const selectableRows = g.paginated.filter((r) => this.canSelectRow(r));
-    selectableRows.forEach((r) => (r.selected = checked));
+    const selectable = g.paginated.filter((r) => this.canSelectRow(r));
+    selectable.forEach((r) => (r.selected = checked));
   }
-
   onCheckboxChange(_r: RequestItem): void {}
 
   totalSelectedBills(g: ClientGroup): number {
@@ -358,10 +364,16 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .filter((r) => r.selected)
       .reduce((sum, r) => sum + (r.bills?.length ?? 0), 0);
   }
-  private runApproveSelected(g: ClientGroup, onFinally?: () => void): void {
+
+  /* ========= Acciones ========= */
+
+  private runApproveSelected(
+    g: ClientGroup,
+    onDone?: (completed: number, errors: number) => void,
+  ): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) {
-      onFinally?.();
+      onDone?.(0, 0);
       return;
     }
 
@@ -371,36 +383,25 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       this.api.approve(r.id).subscribe({
         next: () => {
           completed++;
-          if (completed + errors === selected.length) {
-            this.snack.open(
-              `${completed} solicitud(es) aprobada(s)`,
-              'Cerrar',
-              { duration: 1500 },
-            );
-            this.load();
-            onFinally?.();
-          }
+          if (completed + errors === selected.length)
+            onDone?.(completed, errors);
         },
         error: () => {
           errors++;
-          if (completed + errors === selected.length) {
-            this.snack.open(
-              `${completed} aprobada(s), ${errors} error(es)`,
-              'Cerrar',
-              { duration: 2500 },
-            );
-            this.load();
-            onFinally?.();
-          }
+          if (completed + errors === selected.length)
+            onDone?.(completed, errors);
         },
       });
     });
   }
 
-  private runRejectSelected(g: ClientGroup, onFinally?: () => void): void {
+  private runRejectSelected(
+    g: ClientGroup,
+    onDone?: (completed: number, errors: number) => void,
+  ): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) {
-      onFinally?.();
+      onDone?.(0, 0);
       return;
     }
 
@@ -410,32 +411,19 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       this.api.reject(r.id).subscribe({
         next: () => {
           completed++;
-          if (completed + errors === selected.length) {
-            this.snack.open(
-              `${completed} solicitud(es) rechazada(s)`,
-              'Cerrar',
-              { duration: 1500 },
-            );
-            this.load();
-            onFinally?.();
-          }
+          if (completed + errors === selected.length)
+            onDone?.(completed, errors);
         },
         error: () => {
           errors++;
-          if (completed + errors === selected.length) {
-            this.snack.open(
-              `${completed} rechazada(s), ${errors} error(es)`,
-              'Cerrar',
-              { duration: 2500 },
-            );
-            this.load();
-            onFinally?.();
-          }
+          if (completed + errors === selected.length)
+            onDone?.(completed, errors);
         },
       });
     });
   }
 
+  /** ConfirmDialog (se mantienen, sin snackbars) */
   approveSelectedGroup(g: ClientGroup): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) return;
@@ -471,45 +459,75 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .subscribe((ok) => ok && this.runRejectSelected(g));
   }
 
+  /* ========= Modales (web component) ========= */
+
   openAthModal(el: any): void {
     if (!el) return;
     if (typeof el.openModal === 'function') el.openModal();
     else el.setAttribute('open', 'true');
   }
-
   closeAthModal(el: any): void {
     if (!el) return;
     if (typeof el.closeModal === 'function') el.closeModal();
     else el.removeAttribute('open');
   }
 
-  confirmAnticipar(g: ClientGroup, el: any): void {
-    this.runApproveSelected(g, () => this.closeAthModal(el));
+  /** Aceptar ANTICIPAR → no cerrar; mostrar success/error y bloquear recargas */
+  confirmAnticipar(g: ClientGroup, _el: any): void {
+    this.lockReload = true;
+    this.runApproveSelected(g, (completed, errors) => {
+      g.anticiparResult = { completed, errors };
+      g.anticiparState = errors === 0 ? 'success' : 'error';
+    });
   }
 
-  confirmRechazar(g: ClientGroup, el: any): void {
-    this.runRejectSelected(g, () => this.closeAthModal(el));
+  /** Aceptar RECHAZAR → no cerrar; mostrar success/error y bloquear recargas */
+  confirmRechazar(g: ClientGroup, _el: any): void {
+    this.lockReload = true;
+    this.runRejectSelected(g, (completed, errors) => {
+      g.rechazarResult = { completed, errors };
+      g.rechazarState = errors === 0 ? 'success' : 'error';
+    });
   }
+
+  /**
+   * Handler del aspa/cierre real de la modal (evento nativo `athClosed`)
+   * - Resetea el estado
+   * - Libera el lock
+   * - Recarga el DOM (this.load())
+   */
+  onModalClosed(g: ClientGroup, kind: 'anticipar' | 'rechazar'): void {
+    if (kind === 'anticipar') {
+      g.anticiparState = 'confirm';
+      g.anticiparResult = undefined;
+    } else {
+      g.rechazarState = 'confirm';
+      g.rechazarResult = undefined;
+    }
+    this.lockReload = false;
+    this.load();
+  }
+
+  /* ========= Búsqueda ========= */
 
   onSearchChange(value: string, g: ClientGroup): void {
     g.searchQuery = (value || '').trim();
     this.applyFiltersAndSortGroup(g);
   }
-
   applySearch(value: string, g: ClientGroup): void {
     g.searchQuery = (value || '').trim();
     this.applyFiltersAndSortGroup(g);
   }
-
   onSearchClear(g: ClientGroup, el?: any): void {
     if (el) el.value = '';
     g.searchQuery = '';
     this.applyFiltersAndSortGroup(g);
   }
-
   onStatusChange(g: ClientGroup): void {
     this.applyFiltersAndSortGroup(g);
   }
+
+  /* ========= Detalle factura ========= */
 
   openBillDetail(item: RequestItem): void {
     if (item.bills && item.bills.length > 0) {
@@ -524,11 +542,12 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* ========= Paginación ========= */
+
   onAthPaginateGroup(g: ClientGroup, pageOneBased: number): void {
     g.pageIndex = Math.max(0, (pageOneBased ?? 1) - 1);
     this.updatePaginatedRowsGroup(g);
   }
-
   onAthItemsPerPageChangeGroup(g: ClientGroup, itemsPerPage: number): void {
     const size = Number(itemsPerPage) || 10;
     g.pageSize = size;

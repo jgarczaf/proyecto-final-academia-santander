@@ -37,7 +37,6 @@
         Buscar
       </ath-button>
 
-      <!-- 🔥 FILTRO INSTANTÁNEO AL CAMBIAR ESTADO -->
       <mat-select
         [(ngModel)]="g.selectedStatus"
         placeholder="Filtrar por estado"
@@ -54,7 +53,7 @@
     <span class="spacer"></span>
 
     <div class="buttons-toolbar">
-      <!-- BOTÓN RECHAZAR-->
+      <!-- BOTÓN RECHAZAR -->
       <ath-button
         color="warn"
         size="md"
@@ -64,44 +63,94 @@
       >
         Rechazar
       </ath-button>
+
       <!-- MODAL RECHAZAR -->
       <ath-modal
         #rechazarModal
         has-close="true"
         has-divider="false"
         close-aria-label="Cerrar"
+        (athClosed)="onModalClosed(g, 'rechazar')"
       >
         <div slot="body" class="modal-confirm">
-          <div class="modal-icon">
-            <img
-              src="../../../../assets/images/pictogram_notification.svg"
-              alt="Pictograma notificación"
-            />
-          </div>
-          <h2 class="modal-title">Se rechazará el anticipo de la selección.</h2>
+          <ng-container [ngSwitch]="g.rechazarState">
+            <div *ngSwitchCase="'confirm'">
+              <div class="modal-icon">
+                <img
+                  src="../../../../assets/images/pictogram_notification.svg"
+                  alt="Pictograma notificación"
+                />
+              </div>
+              <h2 class="modal-title">
+                {{
+                  totalSelectedBills(g) === 1
+                    ? "¿Desea cancelar el anticipo de la factura seleccionada?"
+                    : "¿Desea cancelar el anticipo de las " +
+                      totalSelectedBills(g) +
+                      " facturas seleccionadas?"
+                }}
+              </h2>
+            </div>
+
+            <div *ngSwitchCase="'success'">
+              <div class="modal-icon">
+                <img
+                  src="../../../../assets/images/pictogram_notification.svg"
+                  alt="Pictograma notificación"
+                />
+              </div>
+              <h2 class="modal-title modal-state-success">
+                Anticipo rechazado
+              </h2>
+              <p class="modal-subtitle">
+                El anticipo de las facturas seleccionadas se ha rechazado
+                correctamente.
+              </p>
+            </div>
+
+            <div *ngSwitchCase="'error'">
+              <div class="modal-icon state-error"></div>
+              <h2 class="modal-title modal-state-error">
+                No se pudo rechazar el anticipo
+              </h2>
+              <p class="modal-subtitle">
+                {{ g.rechazarResult?.completed || 0 }} rechazadas,
+                {{ g.rechazarResult?.errors || 0 }} con error.
+              </p>
+            </div>
+          </ng-container>
         </div>
 
         <div slot="footer" class="modal-actions">
-          <ath-button
-            fill="outlined"
-            color="secondary"
-            class="btn-pill btn-outline"
-            (click)="closeAthModal(rechazarModal)"
-            aria-label="cancelar"
-          >
-            Cancelar
-          </ath-button>
-          <ath-button
-            fill="solid"
-            color="primary"
-            class="btn-pill btn-primary"
-            (click)="confirmRechazar(g, rechazarModal)"
-            aria-label="rechazar-anticipo"
-          >
-            Rechazar
-          </ath-button>
+          <ng-container [ngSwitch]="g.rechazarState">
+            <!-- Confirm: CTA visibles -->
+            <ng-container *ngSwitchCase="'confirm'">
+              <ath-button
+                fill="outlined"
+                color="secondary"
+                class="btn-pill btn-outline"
+                (click)="rechazarModal.closeModal()"
+                aria-label="cancelar"
+              >
+                Cancelar
+              </ath-button>
+              <ath-button
+                fill="solid"
+                color="primary"
+                class="btn-pill btn-primary"
+                (click)="confirmRechazar(g, rechazarModal)"
+                aria-label="rechazar-anticipo"
+              >
+                Rechazar
+              </ath-button>
+            </ng-container>
+
+            <!-- Success / Error: sin botones (se cierra con el aspa) -->
+            <ng-container *ngSwitchDefault></ng-container>
+          </ng-container>
         </div>
       </ath-modal>
+
       <!-- BOTÓN ANTICIPAR -->
       <ath-button
         color="primary"
@@ -112,45 +161,89 @@
       >
         Anticipar
       </ath-button>
+
       <!-- MODAL ANTICIPAR -->
       <ath-modal
         #anticiparModal
         has-close="true"
         has-divider="false"
         close-aria-label="Cerrar"
+        (athClosed)="onModalClosed(g, 'anticipar')"
       >
         <div slot="body" class="modal-confirm">
-          <div class="modal-icon">
-            <img
-              src="../../../../assets/images/pictogram_notification.svg"
-              alt="Pictograma notificación"
-            />
-          </div>
-          <h2 class="modal-title">
-            La selección supera los parámetros de importe o vencimiento
-            permitidos.
-          </h2>
-          <p class="modal-subtitle">¿Desea continuar?</p>
+          <ng-container [ngSwitch]="g.anticiparState">
+            <div *ngSwitchCase="'confirm'">
+              <div class="modal-icon">
+                <img
+                  src="../../../../assets/images/pictogram_notification.svg"
+                  alt="Pictograma notificación"
+                />
+              </div>
+              <h2 class="modal-title">
+                {{
+                  totalSelectedBills(g) === 1
+                    ? "La selección de la factura seleccionada supera los parámetros de importe o vencimiento permitidos."
+                    : "La selección de las " +
+                      totalSelectedBills(g) +
+                      " facturas seleccionadas supera los parámetros de importe o vencimiento permitidos."
+                }}
+              </h2>
+              <p class="modal-subtitle">¿Desea continuar?</p>
+            </div>
+
+            <div *ngSwitchCase="'success'">
+              <div class="modal-icon">
+                <img
+                  src="../../../../assets/images/pictogram_notification.svg"
+                  alt="Pictograma notificación"
+                />
+              </div>
+              <h2 class="modal-title modal-state-success">
+                Anticipo confirmado
+              </h2>
+              <p class="modal-subtitle">
+                El anticipo de las facturas seleccionadas se ha realizado
+                correctamente.
+              </p>
+            </div>
+
+            <div *ngSwitchCase="'error'">
+              <div class="modal-icon state-error"></div>
+              <h2 class="modal-title modal-state-error">
+                No se pudo completar el anticipo
+              </h2>
+              <p class="modal-subtitle">
+                {{ g.anticiparResult?.completed || 0 }} confirmada(s),
+                {{ g.anticiparResult?.errors || 0 }} con error.
+              </p>
+            </div>
+          </ng-container>
         </div>
+
         <div slot="footer" class="modal-actions">
-          <ath-button
-            fill="outlined"
-            color="secondary"
-            class="btn-pill btn-outline"
-            (click)="closeAthModal(anticiparModal)"
-            aria-label="cancelar"
-          >
-            Cancelar
-          </ath-button>
-          <ath-button
-            fill="solid"
-            color="primary"
-            class="btn-pill btn-primary"
-            (click)="confirmAnticipar(g, anticiparModal)"
-            aria-label="anticipar"
-          >
-            Anticipar
-          </ath-button>
+          <ng-container [ngSwitch]="g.anticiparState">
+            <ng-container *ngSwitchCase="'confirm'">
+              <ath-button
+                fill="outlined"
+                color="secondary"
+                class="btn-pill btn-outline"
+                (click)="anticiparModal.closeModal()"
+                aria-label="cancelar"
+              >
+                Cancelar
+              </ath-button>
+              <ath-button
+                fill="solid"
+                color="primary"
+                class="btn-pill btn-primary"
+                (click)="confirmAnticipar(g, anticiparModal)"
+                aria-label="anticipar"
+              >
+                Anticipar
+              </ath-button>
+            </ng-container>
+            <ng-container *ngSwitchDefault></ng-container>
+          </ng-container>
         </div>
       </ath-modal>
     </div>
@@ -320,14 +413,7 @@
           </ath-alert>
         </div>
       </div>
-      <!-- <mat-paginator
-        [length]="g.filtered.length"
-        [pageSize]="g.pageSize"
-        [pageSizeOptions]="[5, 10]"
-        [pageIndex]="g.pageIndex"
-        (page)="onPageChangeGroup(g, $event)"
-        showFirstLastButtons
-      ></mat-paginator> -->
+
       <ath-pagination
         [totalItems]="g.filtered.length"
         [itemsPerPage]="g.pageSize"
