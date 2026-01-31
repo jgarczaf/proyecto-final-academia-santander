@@ -445,21 +445,16 @@
       <h2 class="bill-detail-title">Detalle de factura</h2>
 
       <div class="bill-detail-grid" *ngIf="billDetail as b">
-        <div class="bd-item">
+        <div class="bd-row">
           <div class="bd-label">Deudor</div>
-          <div class="bd-value">
+          <div class="bd-value bd-strong">
             {{ b.debtor?.companyName || "Desconocido" }}
           </div>
         </div>
 
-        <div class="bd-item">
-          <div class="bd-label">Nº de factura</div>
-          <div class="bd-value">{{ b.invoiceNumber || "—" }}</div>
-        </div>
-
-        <div class="bd-item">
+        <div class="bd-row">
           <div class="bd-label">Importe</div>
-          <div class="bd-value">
+          <div class="bd-value bd-strong">
             {{
               b.amount
                 ? (b.amount | currency: "EUR" : "symbol" : "1.2-2")
@@ -468,17 +463,23 @@
           </div>
         </div>
 
-        <div class="bd-item">
-          <div class="bd-label">Fecha de expedición</div>
-          <div class="bd-value">
-            {{ b.issueDate ? (b.issueDate | date: "dd/MM/yyyy") : "—" }}
+        <div class="bd-row bd-row--last-left">
+          <div class="bd-label">Fecha de vencimiento</div>
+          <div class="bd-value bd-strong">
+            {{ b.dueDate ? (b.dueDate | date: "dd/MM/yyyy") : "—" }}
           </div>
         </div>
 
-        <div class="bd-item">
-          <div class="bd-label">Fecha de vencimiento</div>
-          <div class="bd-value">
-            {{ b.dueDate ? (b.dueDate | date: "dd/MM/yyyy") : "—" }}
+        <!-- Columna derecha -->
+        <div class="bd-row">
+          <div class="bd-label">Nº de factura</div>
+          <div class="bd-value bd-strong">{{ b.invoiceNumber || "—" }}</div>
+        </div>
+
+        <div class="bd-row">
+          <div class="bd-label">Fecha de expedición</div>
+          <div class="bd-value bd-strong">
+            {{ b.issueDate ? (b.issueDate | date: "dd/MM/yyyy") : "—" }}
           </div>
         </div>
       </div>
@@ -487,8 +488,6 @@
         No hay información de factura para mostrar.
       </div>
     </div>
-
-    <!-- Sin footer -->
   </ath-modal>
 </ng-container>
 

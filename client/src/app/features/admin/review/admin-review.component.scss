@@ -391,49 +391,84 @@ mat-chip {
 }
 
 .bill-detail-modal {
-  inline-size: clamp(360px, 54vw, 640px);
+  inline-size: clamp(420px, 56vw, 680px);
   margin-inline: auto;
+  padding: 24px 28px 20px;
   text-align: left;
-  padding: 4px 2px 8px;
+  color: #111827;
+
+  background: #f5f6f8;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .bill-detail-title {
-  margin: 0 0 12px;
-  font-size: 22px;
-  font-weight: 600;
-  color: #111827;
+  margin: 0 0 18px;
   text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+  position: relative;
+}
+
+.bill-detail-title::after {
+  content: "";
+  display: block;
+  inline-size: 64px;
+  height: 3px;
+  background: #42a5f5;
+  margin: 10px auto 0;
+  border-radius: 2px;
+  opacity: 0.9;
 }
 
 .bill-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px 16px;
+  column-gap: 32px;
+  row-gap: 18px;
+  padding: 6px 4px 4px;
 }
 
-.bd-item {
+.bd-row {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 10px 0;
+
+  border-bottom: 1px solid rgba(17, 24, 39, 0.07);
 }
-.bd-item--full {
-  grid-column: 1 / -1;
+
+.bd-row--last-left {
+  border-bottom: none;
 }
 
 .bd-label {
-  font-size: 12px;
-  color: #6b7280;
+  font-size: 14px;
   letter-spacing: 0.2px;
+  color: #374151;
 }
 
 .bd-value {
-  font-size: 14px;
+  font-size: 18px;
   color: #111827;
-  word-break: break-word;
+}
+
+.bd-value.bd-strong {
+  font-weight: 600;
+  color: #0f172a;
 }
 
 .bd-value.mono {
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
+}
+
+.bill-detail-empty {
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+  padding: 12px 6px 4px;
 }
