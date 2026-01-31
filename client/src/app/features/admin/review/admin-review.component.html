@@ -320,15 +320,27 @@
           </ath-alert>
         </div>
       </div>
-
-      <mat-paginator
+      <!-- <mat-paginator
         [length]="g.filtered.length"
         [pageSize]="g.pageSize"
         [pageSizeOptions]="[5, 10]"
         [pageIndex]="g.pageIndex"
         (page)="onPageChangeGroup(g, $event)"
         showFirstLastButtons
-      ></mat-paginator>
+      ></mat-paginator> -->
+      <ath-pagination
+        [totalItems]="g.filtered.length"
+        [itemsPerPage]="g.pageSize"
+        [currentPage]="g.pageIndex + 1"
+        [noEndButtons]="false"
+        [noJumpButtons]="false"
+        [noItemsCount]="false"
+        [noItemsSelector]="false"
+        [itemsSelector]="'[5, 10]'"
+        [athAriaLabel]="'Paginación de resultados'"
+        (athPaginate)="onAthPaginateGroup(g, $event.detail)"
+        (athItemsPerPageChange)="onAthItemsPerPageChangeGroup(g, $event.detail)"
+      ></ath-pagination>
     </div>
   </mat-card>
 </ng-container>

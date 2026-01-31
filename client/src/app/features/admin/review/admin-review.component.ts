@@ -523,4 +523,16 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  onAthPaginateGroup(g: ClientGroup, pageOneBased: number): void {
+    g.pageIndex = Math.max(0, (pageOneBased ?? 1) - 1);
+    this.updatePaginatedRowsGroup(g);
+  }
+
+  onAthItemsPerPageChangeGroup(g: ClientGroup, itemsPerPage: number): void {
+    const size = Number(itemsPerPage) || 10;
+    g.pageSize = size;
+    g.pageIndex = 0;
+    this.updatePaginatedRowsGroup(g);
+  }
 }

@@ -270,165 +270,6 @@ h2 {
   background: rgba(0, 0, 0, 0.02);
 }
 
-mat-chip {
-  height: 22px;
-  line-height: 22px;
-  font-size: 11px;
-  text-transform: uppercase;
-  border-radius: 16px;
-
-  &.st-pending {
-    background-color: #f5e6b8;
-    color: rgba(0, 0, 0, 0.8);
-  }
-
-  &.st-approved {
-    background-color: #c8e6c9;
-    color: rgba(0, 0, 0, 0.8);
-  }
-
-  &.st-rejected {
-    background-color: #e8b4b4;
-    color: rgba(0, 0, 0, 0.8);
-  }
-
-  &.st-unknown {
-    background: #eee;
-    color: #555;
-  }
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 1200px) {
-  .header-row,
-  .data-row {
-    grid-template-columns: 45px 1fr 1fr 1fr 1fr 1fr 1fr 100px;
-  }
-
-  .filter-toolbar {
-    .search-input {
-      flex: 0 1 200px;
-    }
-
-    .status-select {
-      flex: 0 1 140px;
-    }
-  }
-}
-
-@media (max-width: 1000px) {
-  .header-row,
-  .data-row {
-    grid-template-columns: 40px 1fr 1fr 1fr 1fr 1fr 1fr 90px;
-  }
-
-  .toolbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    flex-wrap: wrap;
-    min-height: auto;
-  }
-
-  .filter-toolbar {
-    flex-direction: row;
-    width: 100%;
-    min-height: 36px;
-
-    .search-input {
-      flex: 1;
-      min-width: 150px;
-    }
-
-    .status-select {
-      flex: 1;
-      min-width: 130px;
-    }
-  }
-
-  .buttons-toolbar {
-    width: 100%;
-    justify-content: flex-end;
-    gap: 8px;
-    min-height: 36px;
-
-    ath-button {
-      flex: 0 1 auto;
-    }
-  }
-
-  .list-footer {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 12px;
-  }
-
-  .selection-info {
-    order: -1;
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .header-row,
-  .data-row {
-    grid-template-columns: 35px 1fr 1fr 1fr 1fr 80px;
-  }
-
-  .col-issue-date,
-  .col-due-date {
-    display: none;
-  }
-
-  .toolbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    flex-wrap: wrap;
-    min-height: auto;
-  }
-
-  .filter-toolbar {
-    flex-direction: column;
-    width: 100%;
-    min-height: auto;
-
-    .search-input,
-    .status-select {
-      width: 100%;
-      min-width: auto;
-      height: auto;
-    }
-
-    .search-button {
-      width: 100%;
-      height: auto;
-    }
-  }
-
-  .buttons-toolbar {
-    width: 100%;
-    flex-direction: column;
-    min-height: auto;
-
-    ath-button {
-      width: 100%;
-      height: auto;
-    }
-  }
-
-  .list-footer {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 12px;
-  }
-
-  .selection-info {
-    order: -1;
-    width: 100%;
-  }
-}
-
 .search-label {
   font-size: 15px;
   font-weight: 500;
@@ -468,4 +309,70 @@ mat-chip {
   gap: 8px;
   margin: 4px auto 6px;
   padding-bottom: 6px;
+}
+
+mat-chip {
+  &.st-pending {
+    background-color: #975b02;
+  }
+  &.st-approved {
+    background-color: #257d1c;
+  }
+  &.st-rejected {
+    background-color: #cc1700;
+  }
+
+  --mdc-chip-container-shape-radius: 0px;
+  --mdc-chip-elevated-container-shape-radius: 0px;
+  --mdc-chip-flat-container-shape-radius: 0px;
+  --mdc-chip-container-height: 24px;
+  --mdc-chip-label-text-color: #ffffff;
+}
+
+.cell-status mat-chip .mdc-evolution-chip__text-label {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+}
+
+:host {
+  --status-chip-width: 100px;
+}
+.cell-status mat-chip {
+  display: inline-flex;
+  inline-size: var(--status-chip-width);
+  min-inline-size: var(--status-chip-width);
+  max-inline-size: var(--status-chip-width);
+  block-size: var(--mdc-chip-container-height);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+:host {
+  --col-status-w: 123px;
+  --col-actions-w: 140px;
+}
+.header-row,
+.data-row {
+  grid-template-columns:
+    50px
+    var(--col-status-w)
+    repeat(5, 1fr)
+    var(--col-actions-w);
+}
+.col-status {
+  min-width: var(--col-status-w);
+  max-width: var(--col-status-w);
+}
+
+:host ::ng-deep .cell-status .mdc-evolution-chip__action {
+  width: 100%;
 }
