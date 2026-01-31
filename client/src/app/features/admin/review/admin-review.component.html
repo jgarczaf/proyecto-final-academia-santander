@@ -123,7 +123,6 @@
 
         <div slot="footer" class="modal-actions">
           <ng-container [ngSwitch]="g.rechazarState">
-            <!-- Confirm: CTA visibles -->
             <ng-container *ngSwitchCase="'confirm'">
               <ath-button
                 fill="outlined"
@@ -144,8 +143,6 @@
                 Rechazar
               </ath-button>
             </ng-container>
-
-            <!-- Success / Error: sin botones (se cierra con el aspa) -->
             <ng-container *ngSwitchDefault></ng-container>
           </ng-container>
         </div>
@@ -413,7 +410,14 @@
           </ath-alert>
         </div>
       </div>
-
+      <!-- <mat-paginator
+        [length]="g.filtered.length"
+        [pageSize]="g.pageSize"
+        [pageSizeOptions]="[5, 10]"
+        [pageIndex]="g.pageIndex"
+        (page)="onPageChangeGroup(g, $event)"
+        showFirstLastButtons
+      ></mat-paginator> -->
       <ath-pagination
         [totalItems]="g.filtered.length"
         [itemsPerPage]="g.pageSize"
