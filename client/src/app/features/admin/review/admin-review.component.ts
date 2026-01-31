@@ -81,11 +81,8 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
   private subSocketNew?: Subscription;
   private subSocketChanged?: Subscription;
-
-  /** Mientras mostramos success/error, bloqueamos recargas para no cerrar la modal por reconstrucción */
   private lockReload = false;
-  /** Si llegan sockets durante lock, podríamos usarla; en tu caso recargaremos siempre al cerrar */
-  // private pendingReload = false;
+  billDetail: BillRow | null = null;
 
   constructor(
     private api: RequestsService,
@@ -332,8 +329,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return canSelect;
   }
 
-  /* ========= Selección ========= */
-
   getTotalSelectedCountGroup(g: ClientGroup): number {
     return g.requests.filter((row) => row.selected).length;
   }
@@ -364,8 +359,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .filter((r) => r.selected)
       .reduce((sum, r) => sum + (r.bills?.length ?? 0), 0);
   }
-
-  /* ========= Acciones ========= */
 
   private runApproveSelected(
     g: ClientGroup,
@@ -423,26 +416,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** ConfirmDialog (se mantienen, sin snackbars) */
-  approveSelectedGroup(g: ClientGroup): void {
-    const selected = g.requests.filter((r) => r.selected);
-    if (selected.length === 0) return;
-
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Confirmación',
-          message:
-            selected.length > 1
-              ? `La selección de estos ${selected.length} anticipos supera los parámetros de importe o vencimiento permitidos.`
-              : `La selección de este anticipo supera los parámetros de importe o vencimiento permitidos.`,
-          subMessage: `¿Desea confirmar la operación?`,
-        },
-      })
-      .afterClosed()
-      .subscribe((ok) => ok && this.runApproveSelected(g));
-  }
-
   rejectSelectedGroup(g: ClientGroup): void {
     const selected = g.requests.filter((r) => r.selected);
     if (selected.length === 0) return;
@@ -459,8 +432,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .subscribe((ok) => ok && this.runRejectSelected(g));
   }
 
-  /* ========= Modales (web component) ========= */
-
   openAthModal(el: any): void {
     if (!el) return;
     if (typeof el.openModal === 'function') el.openModal();
@@ -472,7 +443,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     else el.removeAttribute('open');
   }
 
-  /** Aceptar ANTICIPAR → no cerrar; mostrar success/error y bloquear recargas */
   confirmAnticipar(g: ClientGroup, _el: any): void {
     this.lockReload = true;
     this.runApproveSelected(g, (completed, errors) => {
@@ -481,7 +451,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Aceptar RECHAZAR → no cerrar; mostrar success/error y bloquear recargas */
   confirmRechazar(g: ClientGroup, _el: any): void {
     this.lockReload = true;
     this.runRejectSelected(g, (completed, errors) => {
@@ -490,12 +459,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Handler del aspa/cierre real de la modal (evento nativo `athClosed`)
-   * - Resetea el estado
-   * - Libera el lock
-   * - Recarga el DOM (this.load())
-   */
   onModalClosed(g: ClientGroup, kind: 'anticipar' | 'rechazar'): void {
     if (kind === 'anticipar') {
       g.anticiparState = 'confirm';
@@ -508,46 +471,51 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.load();
   }
 
+  /* ========= Detalle factura ========= */
+  openBillDetail(item: RequestItem): void {
+    if (!item?.bills || item.bills.length === 0) return;
+    const bill = item.bills[0];
+    this.billDetail = bill;
+
+    const modalEl = document.getElementById('billDetailModal') as any;
+    if (modalEl && typeof modalEl.openModal === 'function') {
+      modalEl.openModal();
+    } else {
+      modalEl?.setAttribute('open', 'true');
+    }
+  }
+
+  onBillDetailClosed(): void {
+    this.billDetail = null;
+  }
+
   /* ========= Búsqueda ========= */
 
   onSearchChange(value: string, g: ClientGroup): void {
     g.searchQuery = (value || '').trim();
     this.applyFiltersAndSortGroup(g);
   }
+
   applySearch(value: string, g: ClientGroup): void {
     g.searchQuery = (value || '').trim();
     this.applyFiltersAndSortGroup(g);
   }
+
   onSearchClear(g: ClientGroup, el?: any): void {
     if (el) el.value = '';
     g.searchQuery = '';
     this.applyFiltersAndSortGroup(g);
   }
+
   onStatusChange(g: ClientGroup): void {
     this.applyFiltersAndSortGroup(g);
   }
-
-  /* ========= Detalle factura ========= */
-
-  openBillDetail(item: RequestItem): void {
-    if (item.bills && item.bills.length > 0) {
-      const bill = item.bills[0];
-      const dialogRef = this.dialog.open(BillDialogComponent, {
-        data: bill,
-        width: '600px',
-      });
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) this.load();
-      });
-    }
-  }
-
-  /* ========= Paginación ========= */
 
   onAthPaginateGroup(g: ClientGroup, pageOneBased: number): void {
     g.pageIndex = Math.max(0, (pageOneBased ?? 1) - 1);
     this.updatePaginatedRowsGroup(g);
   }
+
   onAthItemsPerPageChangeGroup(g: ClientGroup, itemsPerPage: number): void {
     const size = Number(itemsPerPage) || 10;
     g.pageSize = size;

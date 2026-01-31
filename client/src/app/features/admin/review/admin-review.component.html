@@ -433,6 +433,63 @@
       ></ath-pagination>
     </div>
   </mat-card>
+
+  <ath-modal
+    id="billDetailModal"
+    has-close="true"
+    has-divider="false"
+    close-aria-label="Cerrar"
+    (athClosed)="onBillDetailClosed()"
+  >
+    <div slot="body" class="bill-detail-modal">
+      <h2 class="bill-detail-title">Detalle de factura</h2>
+
+      <div class="bill-detail-grid" *ngIf="billDetail as b">
+        <div class="bd-item">
+          <div class="bd-label">Deudor</div>
+          <div class="bd-value">
+            {{ b.debtor?.companyName || "Desconocido" }}
+          </div>
+        </div>
+
+        <div class="bd-item">
+          <div class="bd-label">Nº de factura</div>
+          <div class="bd-value">{{ b.invoiceNumber || "—" }}</div>
+        </div>
+
+        <div class="bd-item">
+          <div class="bd-label">Importe</div>
+          <div class="bd-value">
+            {{
+              b.amount
+                ? (b.amount | currency: "EUR" : "symbol" : "1.2-2")
+                : "0 €"
+            }}
+          </div>
+        </div>
+
+        <div class="bd-item">
+          <div class="bd-label">Fecha de expedición</div>
+          <div class="bd-value">
+            {{ b.issueDate ? (b.issueDate | date: "dd/MM/yyyy") : "—" }}
+          </div>
+        </div>
+
+        <div class="bd-item">
+          <div class="bd-label">Fecha de vencimiento</div>
+          <div class="bd-value">
+            {{ b.dueDate ? (b.dueDate | date: "dd/MM/yyyy") : "—" }}
+          </div>
+        </div>
+      </div>
+
+      <div class="bill-detail-empty" *ngIf="!billDetail">
+        No hay información de factura para mostrar.
+      </div>
+    </div>
+
+    <!-- Sin footer -->
+  </ath-modal>
 </ng-container>
 
 <ng-template #loadingTpl>
