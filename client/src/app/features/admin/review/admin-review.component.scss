@@ -166,6 +166,12 @@ h2 {
   justify-content: space-between;
 }
 
+.selection-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .selection-info {
   width: 280px;
 }

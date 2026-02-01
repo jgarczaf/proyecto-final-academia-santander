@@ -179,10 +179,10 @@
               <h2 class="modal-title">
                 {{
                   totalSelectedBills(g) === 1
-                    ? "La selección de la factura seleccionada supera los parámetros de importe o vencimiento permitidos."
-                    : "La selección de las " +
+                    ? "La selección supera los parámetros de importe o vencimiento permitidos."
+                    : "La selección de estas " +
                       totalSelectedBills(g) +
-                      " facturas seleccionadas supera los parámetros de importe o vencimiento permitidos."
+                      " facturas supera los parámetros de importe o vencimiento permitidos."
                 }}
               </h2>
               <p class="modal-subtitle">¿Desea continuar?</p>
@@ -401,13 +401,23 @@
 
     <!-- FOOTER -->
     <div class="list-footer">
-      <div class="selection-info">
-        <div class="story__item">
+      <div class="selection-actions">
+        <div class="selection-info">
           <ath-alert type="page" color="info" has-close="false">
             Has seleccionado {{ getTotalSelectedCountGroup(g) }} solicitud{{
               getTotalSelectedCountGroup(g) === 1 ? "" : "es"
             }}
           </ath-alert>
+        </div>
+        <div class="delete-selection">
+          <ath-button
+            color="primary"
+            size="xs"
+            clear="true"
+            (click)="clearAllSelectionsGroup(g)"
+          >
+            Borrar selección
+          </ath-button>
         </div>
       </div>
       <!-- <mat-paginator

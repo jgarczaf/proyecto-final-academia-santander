@@ -360,6 +360,13 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       .reduce((sum, r) => sum + (r.bills?.length ?? 0), 0);
   }
 
+  clearAllSelectionsGroup(g: ClientGroup): void {
+    g.requests.forEach((r) => {
+      if (r.selected) r.selected = false;
+    });
+    this.updatePaginatedRowsGroup(g);
+  }
+
   private runApproveSelected(
     g: ClientGroup,
     onDone?: (completed: number, errors: number) => void,
