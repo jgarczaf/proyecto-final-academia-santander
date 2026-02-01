@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { BillDialogComponent } from '../../client/bills/bill-dialog/bill-dialog.component';
 import { RequestsService } from '../../../core/services/requests.service';
 import { SocketService } from '../../../core/services/socket.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -35,6 +34,7 @@ interface RequestItem {
   user?: UserLite;
   selected?: boolean;
 }
+
 type SortColumn =
   | 'status'
   | 'debtor'
@@ -44,8 +44,6 @@ type SortColumn =
   | 'dueDate'
   | 'createdAt';
 type SortDirection = 'asc' | 'desc';
-
-/** Estados (sin busy) */
 type ModalState = 'confirm' | 'success' | 'error';
 
 interface ClientGroup {
@@ -60,7 +58,6 @@ interface ClientGroup {
   paginated: RequestItem[];
   pageSize: number;
   pageIndex: number;
-
   anticiparState: ModalState;
   rechazarState: ModalState;
   anticiparResult?: { completed: number; errors: number };
@@ -97,14 +94,12 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
     this.subSocketNew = this.socket.onAdminRequestCreated().subscribe(() => {
       if (!this.lockReload) this.load();
-      // else this.pendingReload = true;
     });
 
     this.subSocketChanged = this.socket
       .onAdminRequestsChanged()
       .subscribe(() => {
         if (!this.lockReload) this.load();
-        // else this.pendingReload = true;
       });
   }
 
@@ -112,8 +107,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.subSocketNew?.unsubscribe();
     this.subSocketChanged?.unsubscribe();
   }
-
-  /* ========= Data ========= */
 
   load(): void {
     this.loading = true;
@@ -124,8 +117,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: () => {
-        // Sin snackbar (lo pediste). Podrías loguear si quieres:
-        // console.error('No se pudo cargar la lista');
         this.loading = false;
       },
     });
@@ -260,24 +251,26 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     g.paginated = g.filtered.slice(start, end);
   }
 
-  /* ========= Display helpers ========= */
-
   getFirstIssueDateValue(item: RequestItem): string {
     return item.bills[0]?.issueDate
       ? this.date.transform(item.bills[0].issueDate, 'dd/MM/yyyy') || ''
       : '';
   }
+
   getFirstDueDateValue(item: RequestItem): string {
     return item.bills[0]?.dueDate
       ? this.date.transform(item.bills[0].dueDate, 'dd/MM/yyyy') || ''
       : '';
   }
+
   getFirstBillDebtor(item: RequestItem): string {
     return item.bills[0]?.debtor?.companyName || 'Desconocido';
   }
+
   getFirstInvoiceNumber(item: RequestItem): string {
     return item.bills[0]?.invoiceNumber || 'Sin número';
   }
+
   getFirstBillAmount(item: RequestItem): string {
     return item.bills[0]?.amount
       ? this.currency.transform(
@@ -288,12 +281,15 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
         ) || '0 €'
       : '0 €';
   }
+
   getFirstIssueDate(item: RequestItem): string {
     return this.getFirstIssueDateValue(item);
   }
+
   getFirstDueDate(item: RequestItem): string {
     return this.getFirstDueDateValue(item);
   }
+
   getFirstBillAmountValue(item: RequestItem): string {
     return item.bills[0]?.amount ? String(item.bills[0].amount) : '0';
   }
@@ -314,6 +310,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     if (s === 'REJECTED') return 'Rechazada';
     return status || '';
   }
+
   statusClass(status?: string): string {
     const s = (status || '').toUpperCase();
     if (s === 'PENDING' || s === 'REVIEW') return 'st-pending';
@@ -332,15 +329,18 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   getTotalSelectedCountGroup(g: ClientGroup): number {
     return g.requests.filter((row) => row.selected).length;
   }
+
   hasSelectedRowsGroup(g: ClientGroup): boolean {
     return this.getTotalSelectedCountGroup(g) > 0;
   }
+
   isAllCurrentPageSelectedGroup(g: ClientGroup): boolean {
     if (g.paginated.length === 0) return false;
     const selectable = g.paginated.filter((r) => this.canSelectRow(r));
     if (selectable.length === 0) return false;
     return selectable.every((r) => r.selected);
   }
+
   isCurrentPageIndeterminateGroup(g: ClientGroup): boolean {
     if (g.paginated.length === 0) return false;
     const selectable = g.paginated.filter((r) => this.canSelectRow(r));
@@ -348,10 +348,12 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     const selectedCount = selectable.filter((r) => r.selected).length;
     return selectedCount > 0 && selectedCount < selectable.length;
   }
+
   toggleSelectAllCurrentPageGroup(g: ClientGroup, checked: boolean): void {
     const selectable = g.paginated.filter((r) => this.canSelectRow(r));
     selectable.forEach((r) => (r.selected = checked));
   }
+
   onCheckboxChange(_r: RequestItem): void {}
 
   totalSelectedBills(g: ClientGroup): number {
@@ -444,6 +446,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     if (typeof el.openModal === 'function') el.openModal();
     else el.setAttribute('open', 'true');
   }
+
   closeAthModal(el: any): void {
     if (!el) return;
     if (typeof el.closeModal === 'function') el.closeModal();
@@ -478,7 +481,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.load();
   }
 
-  /* ========= Detalle factura ========= */
   openBillDetail(item: RequestItem): void {
     if (!item?.bills || item.bills.length === 0) return;
     const bill = item.bills[0];
@@ -495,8 +497,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   onBillDetailClosed(): void {
     this.billDetail = null;
   }
-
-  /* ========= Búsqueda ========= */
 
   onSearchChange(value: string, g: ClientGroup): void {
     g.searchQuery = (value || '').trim();
