@@ -410,14 +410,9 @@
           </ath-alert>
         </div>
         <div class="delete-selection">
-          <ath-button
-            color="primary"
-            size="xs"
-            clear="true"
-            (click)="clearAllSelectionsGroup(g)"
+          <ath-link defaultSlot="Link" (click)="clearAllSelectionsGroup(g)"
+            >Borrar selección</ath-link
           >
-            Borrar selección
-          </ath-button>
         </div>
       </div>
       <!-- <mat-paginator
