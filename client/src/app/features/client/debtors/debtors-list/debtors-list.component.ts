@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DebtorsService } from '../../../../core/services/debtors.service';
-import { Debtor } from '../../../../core/models/models';
+import { IDebtor } from '../../../../core/models/models';
 import { MatDialog } from '@angular/material/dialog';
 import { DebtorDialogComponent } from '../debtor-dialog/debtor-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
@@ -21,7 +21,7 @@ export class DebtorsListComponent implements OnInit {
     'limit',
     'actions',
   ];
-  rows: Debtor[] = [];
+  rows: IDebtor[] = [];
   page = 1;
   limit = 10;
   total = 0;
@@ -60,14 +60,14 @@ export class DebtorsListComponent implements OnInit {
     this.load();
   }
 
-  openDialog(row?: Debtor) {
+  openDialog(row?: IDebtor) {
     this.dialog
       .open(DebtorDialogComponent, { width: '520px', data: row })
       .afterClosed()
       .subscribe((ok) => ok && this.load());
   }
 
-  canDeleteDebtor(d: Debtor): boolean {
+  canDeleteDebtor(d: IDebtor): boolean {
     if (typeof (d as any).billsCount === 'number') {
       return (d as any).billsCount === 0;
     }
@@ -79,7 +79,7 @@ export class DebtorsListComponent implements OnInit {
     return true;
   }
 
-  delete(d: Debtor) {
+  delete(d: IDebtor) {
     if (!this.canDeleteDebtor(d)) return;
 
     this.dialog

@@ -1,68 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, OnInit } from '@angular/core';
 import { RequestsService } from '../../../core/services/requests.service';
-import { SocketService } from '../../../core/services/socket.service';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DatePipe, CurrencyPipe } from '@angular/common';
-import { Subscription } from 'rxjs';
-
-interface DebtorLite {
-  companyName?: string;
-}
-interface BillRow {
-  id: number;
-  invoiceNumber: string;
-  amount: any;
-  issueDate: string | Date;
-  dueDate: string | Date;
-  debtor?: DebtorLite;
-}
-interface UserLite {
-  id: number;
-  name?: string;
-  companyName?: string;
-  email?: string;
-  fiscalId?: string;
-}
-type RequestStatus = 'PENDING' | 'REVIEW' | 'APPROVED' | 'REJECTED';
-interface RequestItem {
-  id: number;
-  status: RequestStatus;
-  createdAt: string | Date;
-  bills: BillRow[];
-  user?: UserLite;
-  selected?: boolean;
-}
-
-type SortColumn =
-  | 'status'
-  | 'debtor'
-  | 'invoice'
-  | 'amount'
-  | 'issueDate'
-  | 'dueDate'
-  | 'createdAt';
-type SortDirection = 'asc' | 'desc';
-type ModalState = 'confirm' | 'success' | 'error';
-
-interface ClientGroup {
-  userId: number;
-  user?: UserLite;
-  requests: RequestItem[];
-  searchQuery: string;
-  selectedStatus: RequestStatus | null;
-  sortColumn: SortColumn;
-  sortDirection: SortDirection;
-  filtered: RequestItem[];
-  paginated: RequestItem[];
-  pageSize: number;
-  pageIndex: number;
-  anticiparState: ModalState;
-  rechazarState: ModalState;
-  anticiparResult?: { completed: number; errors: number };
-  rechazarResult?: { completed: number; errors: number };
-}
+import {
+  IRequestItem,
+  IBillRow,
+  IClientGroup,
+  SortColumn,
+  SortDirection,
+} from 'src/app/core/models/models';
 
 @Component({
   selector: 'app-admin-review',
@@ -70,47 +15,25 @@ interface ClientGroup {
   styleUrls: ['./admin-review.component.scss'],
   providers: [DatePipe, CurrencyPipe],
 })
-export class AdminReviewComponent implements OnInit, OnDestroy {
-  allRows: RequestItem[] = [];
-  groups: ClientGroup[] = [];
-  loading = false;
-  expanded = new Set<number>();
-
-  private subSocketNew?: Subscription;
-  private subSocketChanged?: Subscription;
-  private lockReload = false;
-  billDetail: BillRow | null = null;
+export class AdminReviewComponent implements OnInit {
+  allRows: IRequestItem[] = [];
+  billDetail: IBillRow | null = null;
+  groups: IClientGroup[] = [];
+  loading: boolean = false;
 
   constructor(
-    private api: RequestsService,
-    private dialog: MatDialog,
-    private socket: SocketService,
+    private requestService: RequestsService,
     private date: DatePipe,
     private currency: CurrencyPipe,
   ) {}
 
   ngOnInit(): void {
     this.load();
-
-    this.subSocketNew = this.socket.onAdminRequestCreated().subscribe(() => {
-      if (!this.lockReload) this.load();
-    });
-
-    this.subSocketChanged = this.socket
-      .onAdminRequestsChanged()
-      .subscribe(() => {
-        if (!this.lockReload) this.load();
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.subSocketNew?.unsubscribe();
-    this.subSocketChanged?.unsubscribe();
   }
 
   load(): void {
     this.loading = true;
-    this.api.list().subscribe({
+    this.requestService.list().subscribe({
       next: (res) => {
         this.allRows = res || [];
         this.buildGroups();
@@ -123,7 +46,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   }
 
   buildGroups(): void {
-    const map = new Map<number, RequestItem[]>();
+    const map = new Map<number, IRequestItem[]>();
     for (const r of this.allRows) {
       const uid = r.user?.id ?? -1;
       if (!map.has(uid)) map.set(uid, []);
@@ -132,7 +55,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
 
     this.groups = Array.from(map.entries()).map(([userId, requests]) => {
       const user = requests[0]?.user;
-      const g: ClientGroup = {
+      const g: IClientGroup = {
         userId,
         user,
         requests,
@@ -153,7 +76,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  applyFiltersAndSortGroup(g: ClientGroup): void {
+  applyFiltersAndSortGroup(g: IClientGroup): void {
     let filtered = g.requests;
 
     if (g.searchQuery) {
@@ -181,10 +104,10 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   }
 
   sortData(
-    data: RequestItem[],
+    data: IRequestItem[],
     sortColumn: SortColumn,
     sortDirection: SortDirection,
-  ): RequestItem[] {
+  ): IRequestItem[] {
     const sorted = [...data].sort((a, b) => {
       let aVal: any, bVal: any;
       switch (sortColumn) {
@@ -224,7 +147,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return sorted;
   }
 
-  onSortGroup(g: ClientGroup, column: SortColumn): void {
+  onSortGroup(g: IClientGroup, column: SortColumn): void {
     if (g.sortColumn === column)
       g.sortDirection = g.sortDirection === 'asc' ? 'desc' : 'asc';
     else {
@@ -234,44 +157,38 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.applyFiltersAndSortGroup(g);
   }
 
-  getSortIconGroup(g: ClientGroup, column: SortColumn): string {
+  getSortIconGroup(g: IClientGroup, column: SortColumn): string {
     if (g.sortColumn !== column) return 'unfold_more';
     return g.sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward';
   }
 
-  onPageChangeGroup(g: ClientGroup, event: PageEvent): void {
-    g.pageIndex = event.pageIndex;
-    g.pageSize = event.pageSize;
-    this.updatePaginatedRowsGroup(g);
-  }
-
-  updatePaginatedRowsGroup(g: ClientGroup): void {
+  updatePaginatedRowsGroup(g: IClientGroup): void {
     const start = g.pageIndex * g.pageSize;
     const end = start + g.pageSize;
     g.paginated = g.filtered.slice(start, end);
   }
 
-  getFirstIssueDateValue(item: RequestItem): string {
+  getFirstIssueDateValue(item: IRequestItem): string {
     return item.bills[0]?.issueDate
       ? this.date.transform(item.bills[0].issueDate, 'dd/MM/yyyy') || ''
       : '';
   }
 
-  getFirstDueDateValue(item: RequestItem): string {
+  getFirstDueDateValue(item: IRequestItem): string {
     return item.bills[0]?.dueDate
       ? this.date.transform(item.bills[0].dueDate, 'dd/MM/yyyy') || ''
       : '';
   }
 
-  getFirstBillDebtor(item: RequestItem): string {
+  getFirstBillDebtor(item: IRequestItem): string {
     return item.bills[0]?.debtor?.companyName || 'Desconocido';
   }
 
-  getFirstInvoiceNumber(item: RequestItem): string {
+  getFirstInvoiceNumber(item: IRequestItem): string {
     return item.bills[0]?.invoiceNumber || 'Sin número';
   }
 
-  getFirstBillAmount(item: RequestItem): string {
+  getFirstBillAmount(item: IRequestItem): string {
     return item.bills[0]?.amount
       ? this.currency.transform(
           item.bills[0].amount,
@@ -282,15 +199,15 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       : '0 €';
   }
 
-  getFirstIssueDate(item: RequestItem): string {
+  getFirstIssueDate(item: IRequestItem): string {
     return this.getFirstIssueDateValue(item);
   }
 
-  getFirstDueDate(item: RequestItem): string {
+  getFirstDueDate(item: IRequestItem): string {
     return this.getFirstDueDateValue(item);
   }
 
-  getFirstBillAmountValue(item: RequestItem): string {
+  getFirstBillAmountValue(item: IRequestItem): string {
     return item.bills[0]?.amount ? String(item.bills[0].amount) : '0';
   }
 
@@ -319,29 +236,29 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return 'st-unknown';
   }
 
-  canSelectRow(r: RequestItem): boolean {
+  canSelectRow(r: IRequestItem): boolean {
     const s = (r.status || '').toUpperCase();
     const canSelect = s === 'REVIEW' || s === 'PENDING';
     if (!canSelect && r.selected) r.selected = false;
     return canSelect;
   }
 
-  getTotalSelectedCountGroup(g: ClientGroup): number {
+  getTotalSelectedCountGroup(g: IClientGroup): number {
     return g.requests.filter((row) => row.selected).length;
   }
 
-  hasSelectedRowsGroup(g: ClientGroup): boolean {
+  hasSelectedRowsGroup(g: IClientGroup): boolean {
     return this.getTotalSelectedCountGroup(g) > 0;
   }
 
-  isAllCurrentPageSelectedGroup(g: ClientGroup): boolean {
+  isAllCurrentPageSelectedGroup(g: IClientGroup): boolean {
     if (g.paginated.length === 0) return false;
     const selectable = g.paginated.filter((r) => this.canSelectRow(r));
     if (selectable.length === 0) return false;
     return selectable.every((r) => r.selected);
   }
 
-  isCurrentPageIndeterminateGroup(g: ClientGroup): boolean {
+  isCurrentPageIndeterminateGroup(g: IClientGroup): boolean {
     if (g.paginated.length === 0) return false;
     const selectable = g.paginated.filter((r) => this.canSelectRow(r));
     if (selectable.length === 0) return false;
@@ -349,20 +266,20 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     return selectedCount > 0 && selectedCount < selectable.length;
   }
 
-  toggleSelectAllCurrentPageGroup(g: ClientGroup, checked: boolean): void {
+  toggleSelectAllCurrentPageGroup(g: IClientGroup, checked: boolean): void {
     const selectable = g.paginated.filter((r) => this.canSelectRow(r));
     selectable.forEach((r) => (r.selected = checked));
   }
 
-  onCheckboxChange(_r: RequestItem): void {}
+  onCheckboxChange(_r: IRequestItem): void {}
 
-  totalSelectedBills(g: ClientGroup): number {
+  totalSelectedBills(g: IClientGroup): number {
     return g.requests
       .filter((r) => r.selected)
       .reduce((sum, r) => sum + (r.bills?.length ?? 0), 0);
   }
 
-  clearAllSelectionsGroup(g: ClientGroup): void {
+  clearAllSelectionsGroup(g: IClientGroup): void {
     g.requests.forEach((r) => {
       if (r.selected) r.selected = false;
     });
@@ -370,7 +287,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   }
 
   private runApproveSelected(
-    g: ClientGroup,
+    g: IClientGroup,
     onDone?: (completed: number, errors: number) => void,
   ): void {
     const selected = g.requests.filter((r) => r.selected);
@@ -382,7 +299,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     let completed = 0,
       errors = 0;
     selected.forEach((r) => {
-      this.api.approve(r.id).subscribe({
+      this.requestService.approve(r.id).subscribe({
         next: () => {
           completed++;
           if (completed + errors === selected.length)
@@ -398,7 +315,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
   }
 
   private runRejectSelected(
-    g: ClientGroup,
+    g: IClientGroup,
     onDone?: (completed: number, errors: number) => void,
   ): void {
     const selected = g.requests.filter((r) => r.selected);
@@ -410,7 +327,7 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     let completed = 0,
       errors = 0;
     selected.forEach((r) => {
-      this.api.reject(r.id).subscribe({
+      this.requestService.reject(r.id).subscribe({
         next: () => {
           completed++;
           if (completed + errors === selected.length)
@@ -425,22 +342,6 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  rejectSelectedGroup(g: ClientGroup): void {
-    const selected = g.requests.filter((r) => r.selected);
-    if (selected.length === 0) return;
-
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Cancelar',
-          message: `Va a rechazar el anticipo de ${selected.length} solicitud(es)`,
-          subMessage: `¿Desea confirmar la operación?`,
-        },
-      })
-      .afterClosed()
-      .subscribe((ok) => ok && this.runRejectSelected(g));
-  }
-
   openAthModal(el: any): void {
     if (!el) return;
     if (typeof el.openModal === 'function') el.openModal();
@@ -453,23 +354,21 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     else el.removeAttribute('open');
   }
 
-  confirmAnticipar(g: ClientGroup, _el: any): void {
-    this.lockReload = true;
+  confirmAnticipar(g: IClientGroup, _el: any): void {
     this.runApproveSelected(g, (completed, errors) => {
       g.anticiparResult = { completed, errors };
       g.anticiparState = errors === 0 ? 'success' : 'error';
     });
   }
 
-  confirmRechazar(g: ClientGroup, _el: any): void {
-    this.lockReload = true;
+  confirmRechazar(g: IClientGroup, _el: any): void {
     this.runRejectSelected(g, (completed, errors) => {
       g.rechazarResult = { completed, errors };
       g.rechazarState = errors === 0 ? 'success' : 'error';
     });
   }
 
-  onModalClosed(g: ClientGroup, kind: 'anticipar' | 'rechazar'): void {
+  onModalClosed(g: IClientGroup, kind: 'anticipar' | 'rechazar'): void {
     if (kind === 'anticipar') {
       g.anticiparState = 'confirm';
       g.anticiparResult = undefined;
@@ -477,11 +376,10 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
       g.rechazarState = 'confirm';
       g.rechazarResult = undefined;
     }
-    this.lockReload = false;
     this.load();
   }
 
-  openBillDetail(item: RequestItem): void {
+  openBillDetail(item: IRequestItem): void {
     if (!item?.bills || item.bills.length === 0) return;
     const bill = item.bills[0];
     this.billDetail = bill;
@@ -498,32 +396,32 @@ export class AdminReviewComponent implements OnInit, OnDestroy {
     this.billDetail = null;
   }
 
-  onSearchChange(value: string, g: ClientGroup): void {
+  onSearchChange(value: string, g: IClientGroup): void {
     g.searchQuery = (value || '').trim();
     this.applyFiltersAndSortGroup(g);
   }
 
-  applySearch(value: string, g: ClientGroup): void {
+  applySearch(value: string, g: IClientGroup): void {
     g.searchQuery = (value || '').trim();
     this.applyFiltersAndSortGroup(g);
   }
 
-  onSearchClear(g: ClientGroup, el?: any): void {
+  onSearchClear(g: IClientGroup, el?: any): void {
     if (el) el.value = '';
     g.searchQuery = '';
     this.applyFiltersAndSortGroup(g);
   }
 
-  onStatusChange(g: ClientGroup): void {
+  onStatusChange(g: IClientGroup): void {
     this.applyFiltersAndSortGroup(g);
   }
 
-  onAthPaginateGroup(g: ClientGroup, pageOneBased: number): void {
+  onAthPaginateGroup(g: IClientGroup, pageOneBased: number): void {
     g.pageIndex = Math.max(0, (pageOneBased ?? 1) - 1);
     this.updatePaginatedRowsGroup(g);
   }
 
-  onAthItemsPerPageChangeGroup(g: ClientGroup, itemsPerPage: number): void {
+  onAthItemsPerPageChangeGroup(g: IClientGroup, itemsPerPage: number): void {
     const size = Number(itemsPerPage) || 10;
     g.pageSize = size;
     g.pageIndex = 0;

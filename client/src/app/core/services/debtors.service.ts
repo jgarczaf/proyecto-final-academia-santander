@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Debtor } from '../models/models';
+import { IDebtor } from '../models/models';
 
 interface Paginated<T> {
   data: T[];
@@ -15,7 +15,7 @@ export class DebtorsService {
   constructor(private http: HttpClient) {}
 
   listAll() {
-    return this.http.get<Debtor[]>(`${this.base}`);
+    return this.http.get<IDebtor[]>(`${this.base}`);
   }
 
   listPaginated(query: any) {
@@ -25,16 +25,16 @@ export class DebtorsService {
         params = params.set(k, query[k]);
       }
     });
-    return this.http.get<Paginated<Debtor>>(`${this.base}/paginated`, {
+    return this.http.get<Paginated<IDebtor>>(`${this.base}/paginated`, {
       params,
     });
   }
 
-  create(body: Partial<Debtor>) {
-    return this.http.post<Debtor>(this.base, body);
+  create(body: Partial<IDebtor>) {
+    return this.http.post<IDebtor>(this.base, body);
   }
-  update(id: number, body: Partial<Debtor>) {
-    return this.http.patch<Debtor>(`${this.base}/${id}`, body);
+  update(id: number, body: Partial<IDebtor>) {
+    return this.http.patch<IDebtor>(`${this.base}/${id}`, body);
   }
   delete(id: number) {
     return this.http.delete<void>(`${this.base}/${id}`);

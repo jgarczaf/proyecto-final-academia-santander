@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DebtorsService } from '../../../../core/services/debtors.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Debtor } from '../../../../core/models/models';
+import { IDebtor } from '../../../../core/models/models';
 
 @Component({
   selector: 'app-debtor-dialog',
@@ -18,7 +18,7 @@ export class DebtorDialogComponent {
     private api: DebtorsService,
     private snack: MatSnackBar,
     private ref: MatDialogRef<DebtorDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Debtor | null,
+    @Inject(MAT_DIALOG_DATA) public data: IDebtor | null,
   ) {
     this.form = this.fb.group({
       companyName: [data?.companyName ?? '', Validators.required],
@@ -37,7 +37,7 @@ export class DebtorDialogComponent {
   save(): void {
     if (this.form.invalid) return;
 
-    const payload: Partial<Debtor> = this.form.value;
+    const payload: Partial<IDebtor> = this.form.value;
 
     const request$ = this.data
       ? this.api.update(this.data.id, payload)

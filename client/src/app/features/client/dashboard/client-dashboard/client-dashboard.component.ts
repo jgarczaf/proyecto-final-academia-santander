@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DashboardService } from '../../../../core/services/dashboard.service';
 import {
   ClientDashboardResponse,
-  RequestItem,
-  Bill,
+  IRequestItem,
+  IBill,
 } from '../../../../core/models/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SocketService } from '../../../../core/services/socket.service';
@@ -60,10 +60,10 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
     return item ? Number(item.count) : 0;
   }
 
-  lastBills(): Bill[] {
+  lastBills(): IBill[] {
     return this.data?.lastBills ?? [];
   }
-  lastRequests(): RequestItem[] {
+  lastRequests(): IRequestItem[] {
     return this.data?.lastRequests ?? [];
   }
 }

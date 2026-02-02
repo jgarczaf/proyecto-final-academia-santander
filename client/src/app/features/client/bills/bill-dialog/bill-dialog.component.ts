@@ -6,7 +6,7 @@ import { formatDate } from '@angular/common';
 
 import { BillsService } from '../../../../core/services/bills.service';
 import { DebtorsService } from '../../../../core/services/debtors.service';
-import { Bill, Debtor } from '../../../../core/models/models';
+import { IBill, IDebtor } from '../../../../core/models/models';
 
 interface CreateBillPayload {
   debtorId: number;
@@ -25,11 +25,11 @@ interface UpdateBillPayload extends Partial<CreateBillPayload> {}
 })
 export class BillDialogComponent implements OnInit {
   form: FormGroup;
-  debtors: Debtor[] = [];
+  debtors: IDebtor[] = [];
   readOnly = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: Bill | null,
+    @Inject(MAT_DIALOG_DATA) public data: IBill | null,
     private ref: MatDialogRef<BillDialogComponent>,
     private fb: FormBuilder,
     private bills: BillsService,

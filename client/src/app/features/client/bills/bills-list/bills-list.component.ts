@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BillsService } from '../../../../core/services/bills.service';
 import { RequestsService } from '../../../../core/services/requests.service';
-import { Bill } from '../../../../core/models/models';
+import { IBill } from '../../../../core/models/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -25,7 +25,7 @@ export class BillsListComponent implements OnInit, OnDestroy {
     'status',
     'actions',
   ];
-  rows: Bill[] = [];
+  rows: IBill[] = [];
   search = '';
   status = '';
   selectedIds: number[] = [];
@@ -61,7 +61,7 @@ export class BillsListComponent implements OnInit, OnDestroy {
       });
   }
 
-  toggle(r: Bill) {
+  toggle(r: IBill) {
     const i = this.selectedIds.indexOf(r.id);
     if (i >= 0) this.selectedIds.splice(i, 1);
     else this.selectedIds.push(r.id);
@@ -96,14 +96,14 @@ export class BillsListComponent implements OnInit, OnDestroy {
       });
   }
 
-  openBillDialog(row?: Bill) {
+  openBillDialog(row?: IBill) {
     this.dialog
       .open(BillDialogComponent, { width: '600px', data: row ?? null })
       .afterClosed()
       .subscribe((ok) => ok && this.load());
   }
 
-  delete(r: Bill) {
+  delete(r: IBill) {
     if (r.status !== 'PENDING') return;
 
     this.dialog

@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DashboardService } from '../../../../core/services/dashboard.service';
 import {
   AdminDashboardResponse,
-  RequestItem,
+  IRequestItem,
 } from '../../../../core/models/models';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 
@@ -50,11 +50,11 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  lastRequests(): RequestItem[] {
+  lastRequests(): IRequestItem[] {
     return this.data?.lastRequests ?? [];
   }
 
-  getLastUpdatedRequests(): RequestItem[] {
+  getLastUpdatedRequests(): IRequestItem[] {
     const all = this.data?.lastRequests ?? [];
     return [...all]
       .sort(
@@ -64,7 +64,7 @@ export class AdminDashboardComponent implements OnInit {
       .slice(0, 3);
   }
 
-  getRequestsInReview(): RequestItem[] {
+  getRequestsInReview(): IRequestItem[] {
     const all = this.data?.lastRequests ?? [];
     return all.filter((r) => r.status === 'REVIEW');
   }
@@ -88,7 +88,7 @@ export class AdminDashboardComponent implements OnInit {
     return 0;
   }
 
-  totalOf(r: RequestItem): number {
+  totalOf(r: IRequestItem): number {
     return (r?.bills ?? []).reduce(
       (sum, b: any) => sum + this.toNumber(b?.amount),
       0,
