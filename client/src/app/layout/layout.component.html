@@ -26,17 +26,10 @@
               <mat-icon aria-hidden="true">person</mat-icon>
             </div>
             <div class="user-details">
-              <div
-                class="user-name"
-                [title]="u.companyName || u.name || u.email"
-              >
-                {{
-                  u.companyName ||
-                    u.name ||
-                    (u.email | slice: 0 : u.email.indexOf("@"))
-                }}
+              <div class="user-name" [title]="u.name">
+                {{ u.name }}
               </div>
-              <div class="user-sub" [title]="u.email">{{ u.email }}</div>
+              <div class="user-email" [title]="u.email">{{ u.email }}</div>
             </div>
           </div>
 
