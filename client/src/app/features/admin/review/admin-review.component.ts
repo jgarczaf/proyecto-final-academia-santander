@@ -127,12 +127,21 @@ export class AdminReviewComponent implements OnInit {
           bVal = Number(this.getFirstBillAmountValue(b));
           break;
         case 'issueDate':
-          aVal = this.getFirstIssueDateValue(a);
-          bVal = this.getFirstIssueDateValue(b);
+          aVal = a.bills[0]?.issueDate
+            ? new Date(a.bills[0].issueDate).getTime()
+            : 0;
+          bVal = b.bills[0]?.issueDate
+            ? new Date(b.bills[0].issueDate).getTime()
+            : 0;
           break;
+
         case 'dueDate':
-          aVal = this.getFirstDueDateValue(a);
-          bVal = this.getFirstDueDateValue(b);
+          aVal = a.bills[0]?.dueDate
+            ? new Date(a.bills[0].dueDate).getTime()
+            : 0;
+          bVal = b.bills[0]?.dueDate
+            ? new Date(b.bills[0].dueDate).getTime()
+            : 0;
           break;
         case 'createdAt':
           aVal = new Date(a.createdAt).getTime();
@@ -210,7 +219,6 @@ export class AdminReviewComponent implements OnInit {
     return item.bills[0]?.amount ? String(item.bills[0].amount) : '0';
   }
 
-  // TRADUCCIÓN
   statusLabel(status?: string): string {
     const upperCaseStatus: string = (status || '').toUpperCase();
     if (upperCaseStatus === 'REVIEW') return 'Pendiente';
@@ -219,7 +227,6 @@ export class AdminReviewComponent implements OnInit {
     return status || '';
   }
 
-  // ESTILOS DE CLASE
   statusClass(status?: string): string {
     const upperCaseStatus: string = (status || '').toUpperCase();
     if (upperCaseStatus === 'REVIEW') return 'st-pending';
