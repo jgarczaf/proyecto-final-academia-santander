@@ -75,31 +75,31 @@ export class AdminReviewComponent implements OnInit {
     });
   }
 
-  applyFiltersAndSortGroup(g: IClientGroup): void {
-    let filtered = g.requests;
+  applyFiltersAndSortGroup(group: IClientGroup): void {
+    let filtered = group.requests;
 
-    if (g.searchQuery) {
-      const q: string = g.searchQuery.toLowerCase();
-      filtered = filtered.filter((r) => {
-        const debtorName: string = this.getFirstBillDebtor(r).toLowerCase();
-        const userName: string = r.user?.name?.toLowerCase() || '';
-        const companyName: string = r.user?.companyName?.toLowerCase() || '';
+    if (group.searchQuery) {
+      const query: string = group.searchQuery.toLowerCase();
+      filtered = filtered.filter((row) => {
+        const debtorName: string = this.getFirstBillDebtor(row).toLowerCase();
+        const userName: string = row.user?.name?.toLowerCase() || '';
+        const companyName: string = row.user?.companyName?.toLowerCase() || '';
         return (
-          debtorName.includes(q) ||
-          userName.includes(q) ||
-          companyName.includes(q)
+          debtorName.includes(query) ||
+          userName.includes(query) ||
+          companyName.includes(query)
         );
       });
     }
 
-    if (g.selectedStatus) {
-      filtered = filtered.filter((r) => r.status === g.selectedStatus);
+    if (group.selectedStatus) {
+      filtered = filtered.filter((row) => row.status === group.selectedStatus);
     }
 
-    filtered = this.sortData(filtered, g.sortColumn, g.sortDirection);
-    g.filtered = filtered;
-    g.pageIndex = 0;
-    this.updatePaginatedRowsGroup(g);
+    filtered = this.sortData(filtered, group.sortColumn, group.sortDirection);
+    group.filtered = filtered;
+    group.pageIndex = 0;
+    this.updatePaginatedRowsGroup(group);
   }
 
   sortData(
@@ -146,25 +146,25 @@ export class AdminReviewComponent implements OnInit {
     return sorted;
   }
 
-  onSortGroup(g: IClientGroup, column: SortColumn): void {
-    if (g.sortColumn === column)
-      g.sortDirection = g.sortDirection === 'asc' ? 'desc' : 'asc';
+  onSortGroup(group: IClientGroup, column: SortColumn): void {
+    if (group.sortColumn === column)
+      group.sortDirection = group.sortDirection === 'asc' ? 'desc' : 'asc';
     else {
-      g.sortColumn = column;
-      g.sortDirection = 'asc';
+      group.sortColumn = column;
+      group.sortDirection = 'asc';
     }
-    this.applyFiltersAndSortGroup(g);
+    this.applyFiltersAndSortGroup(group);
   }
 
-  getSortIconGroup(g: IClientGroup, column: SortColumn): string {
-    if (g.sortColumn !== column) return 'unfold_more';
-    return g.sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward';
+  getSortIconGroup(group: IClientGroup, column: SortColumn): string {
+    if (group.sortColumn !== column) return 'unfold_more';
+    return group.sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward';
   }
 
-  updatePaginatedRowsGroup(g: IClientGroup): void {
-    const start = g.pageIndex * g.pageSize;
-    const end = start + g.pageSize;
-    g.paginated = g.filtered.slice(start, end);
+  updatePaginatedRowsGroup(group: IClientGroup): void {
+    const start = group.pageIndex * group.pageSize;
+    const end = start + group.pageSize;
+    group.paginated = group.filtered.slice(start, end);
   }
 
   getFirstIssueDateValue(item: IRequestItem): string {
