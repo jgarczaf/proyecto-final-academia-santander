@@ -90,10 +90,10 @@
               </div>
               <h2 class="modal-title">
                 {{
-                  totalSelectedBills(g) === 1
+                  getTotalSelectedCountGroup(g) === 1
                     ? "¿Desea cancelar el anticipo de la factura seleccionada?"
                     : "¿Desea cancelar el anticipo de las " +
-                      totalSelectedBills(g) +
+                      getTotalSelectedCountGroup(g) +
                       " facturas seleccionadas?"
                 }}
               </h2>
@@ -185,10 +185,10 @@
               </div>
               <h2 class="modal-title">
                 {{
-                  totalSelectedBills(g) === 1
+                  getTotalSelectedCountGroup(g) === 1
                     ? "La selección supera los parámetros de importe o vencimiento permitidos."
                     : "La selección de estas " +
-                      totalSelectedBills(g) +
+                      getTotalSelectedCountGroup(g) +
                       " facturas supera los parámetros de importe o vencimiento permitidos."
                 }}
               </h2>

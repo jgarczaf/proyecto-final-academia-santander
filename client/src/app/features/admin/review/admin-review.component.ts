@@ -67,7 +67,6 @@ export class AdminReviewComponent implements OnInit {
         paginated: [],
         pageSize: 10,
         pageIndex: 0,
-
         anticiparState: 'confirm',
         rechazarState: 'confirm',
       };
@@ -80,11 +79,11 @@ export class AdminReviewComponent implements OnInit {
     let filtered = g.requests;
 
     if (g.searchQuery) {
-      const q = g.searchQuery.toLowerCase();
+      const q: string = g.searchQuery.toLowerCase();
       filtered = filtered.filter((r) => {
-        const debtorName = this.getFirstBillDebtor(r).toLowerCase();
-        const userName = r.user?.name?.toLowerCase() || '';
-        const companyName = r.user?.companyName?.toLowerCase() || '';
+        const debtorName: string = this.getFirstBillDebtor(r).toLowerCase();
+        const userName: string = r.user?.name?.toLowerCase() || '';
+        const companyName: string = r.user?.companyName?.toLowerCase() || '';
         return (
           debtorName.includes(q) ||
           userName.includes(q) ||
@@ -108,8 +107,8 @@ export class AdminReviewComponent implements OnInit {
     sortColumn: SortColumn,
     sortDirection: SortDirection,
   ): IRequestItem[] {
-    const sorted = [...data].sort((a, b) => {
-      let aVal: any, bVal: any;
+    const sorted: IRequestItem[] = [...data].sort((a, b) => {
+      let aVal, bVal;
       switch (sortColumn) {
         case 'status':
           aVal = a.status;
@@ -124,8 +123,8 @@ export class AdminReviewComponent implements OnInit {
           bVal = this.getFirstInvoiceNumber(b);
           break;
         case 'amount':
-          aVal = this.toNumber(this.getFirstBillAmountValue(a));
-          bVal = this.toNumber(this.getFirstBillAmountValue(b));
+          aVal = Number(this.getFirstBillAmountValue(a));
+          bVal = Number(this.getFirstBillAmountValue(b));
           break;
         case 'issueDate':
           aVal = this.getFirstIssueDateValue(a);
@@ -211,86 +210,92 @@ export class AdminReviewComponent implements OnInit {
     return item.bills[0]?.amount ? String(item.bills[0].amount) : '0';
   }
 
-  toNumber(v: any): number {
-    if (typeof v === 'number') return v;
-    if (typeof v === 'string') {
-      const n = Number(v.replace(',', '.'));
-      return Number.isFinite(n) ? n : 0;
-    }
-    return 0;
-  }
-
+  // TRADUCCIÓN
   statusLabel(status?: string): string {
-    const s = (status || '').toUpperCase();
-    if (s === 'PENDING' || s === 'REVIEW') return 'Pendiente';
-    if (s === 'APPROVED') return 'Validada';
-    if (s === 'REJECTED') return 'Rechazada';
+    const upperCaseStatus: string = (status || '').toUpperCase();
+    if (upperCaseStatus === 'REVIEW') return 'Pendiente';
+    if (upperCaseStatus === 'APPROVED') return 'Validada';
+    if (upperCaseStatus === 'REJECTED') return 'Rechazada';
     return status || '';
   }
 
+  // ESTILOS DE CLASE
   statusClass(status?: string): string {
-    const s = (status || '').toUpperCase();
-    if (s === 'PENDING' || s === 'REVIEW') return 'st-pending';
-    if (s === 'APPROVED') return 'st-approved';
-    if (s === 'REJECTED') return 'st-rejected';
+    const upperCaseStatus: string = (status || '').toUpperCase();
+    if (upperCaseStatus === 'REVIEW') return 'st-pending';
+    if (upperCaseStatus === 'APPROVED') return 'st-approved';
+    if (upperCaseStatus === 'REJECTED') return 'st-rejected';
     return 'st-unknown';
   }
 
-  canSelectRow(r: IRequestItem): boolean {
-    const s = (r.status || '').toUpperCase();
-    const canSelect = s === 'REVIEW' || s === 'PENDING';
-    if (!canSelect && r.selected) r.selected = false;
+  canSelectRow(rowItem: IRequestItem): boolean {
+    const status: string = (rowItem.status || '').toUpperCase();
+    const canSelect: boolean = status === 'REVIEW';
+
+    if (!canSelect && rowItem.selected) rowItem.selected = false;
     return canSelect;
   }
 
-  getTotalSelectedCountGroup(g: IClientGroup): number {
-    return g.requests.filter((row) => row.selected).length;
+  getTotalSelectedCountGroup(group: IClientGroup): number {
+    return group.requests.filter((row) => row.selected).length;
   }
 
-  hasSelectedRowsGroup(g: IClientGroup): boolean {
-    return this.getTotalSelectedCountGroup(g) > 0;
+  hasSelectedRowsGroup(group: IClientGroup): boolean {
+    return this.getTotalSelectedCountGroup(group) > 0;
   }
 
-  isAllCurrentPageSelectedGroup(g: IClientGroup): boolean {
-    if (g.paginated.length === 0) return false;
-    const selectable = g.paginated.filter((r) => this.canSelectRow(r));
+  isAllCurrentPageSelectedGroup(group: IClientGroup): boolean {
+    if (group.paginated.length === 0) return false;
+
+    const selectable = group.paginated.filter((row) => this.canSelectRow(row));
     if (selectable.length === 0) return false;
-    return selectable.every((r) => r.selected);
+
+    return selectable.every((row) => row.selected);
   }
 
-  isCurrentPageIndeterminateGroup(g: IClientGroup): boolean {
-    if (g.paginated.length === 0) return false;
-    const selectable = g.paginated.filter((r) => this.canSelectRow(r));
+  isCurrentPageIndeterminateGroup(group: IClientGroup): boolean {
+    if (group.paginated.length === 0) return false;
+
+    const selectable = group.paginated.filter((row) => this.canSelectRow(row));
     if (selectable.length === 0) return false;
-    const selectedCount = selectable.filter((r) => r.selected).length;
+
+    const selectedCount = selectable.filter((row) => row.selected).length;
     return selectedCount > 0 && selectedCount < selectable.length;
   }
 
-  toggleSelectAllCurrentPageGroup(g: IClientGroup, checked: boolean): void {
-    const selectable = g.paginated.filter((r) => this.canSelectRow(r));
-    selectable.forEach((r) => (r.selected = checked));
+  toggleSelectAllCurrentPageGroup(group: IClientGroup, checked: boolean): void {
+    const selectable = group.paginated.filter((row) => this.canSelectRow(row));
+    selectable.forEach((row) => (row.selected = checked));
   }
 
   onCheckboxChange(_r: IRequestItem): void {}
 
-  totalSelectedBills(g: IClientGroup): number {
-    return g.requests
-      .filter((r) => r.selected)
-      .reduce((sum, r) => sum + (r.bills?.length ?? 0), 0);
+  clearAllSelectionsGroup(group: IClientGroup): void {
+    group.requests.forEach((row) => {
+      if (row.selected) row.selected = false;
+    });
+    this.updatePaginatedRowsGroup(group);
   }
 
-  clearAllSelectionsGroup(g: IClientGroup): void {
-    g.requests.forEach((r) => {
-      if (r.selected) r.selected = false;
+  confirmAnticipar(group: IClientGroup, _el: any): void {
+    this.runApproveSelected(group, (completed, errors) => {
+      group.anticiparResult = { completed, errors };
+      group.anticiparState = errors === 0 ? 'success' : 'error';
     });
-    this.updatePaginatedRowsGroup(g);
+  }
+
+  confirmRechazar(group: IClientGroup, _el: any): void {
+    this.runRejectSelected(group, (completed, errors) => {
+      group.rechazarResult = { completed, errors };
+      group.rechazarState = errors === 0 ? 'success' : 'error';
+    });
   }
 
   private runApproveSelected(
-    g: IClientGroup,
+    group: IClientGroup,
     onDone?: (completed: number, errors: number) => void,
   ): void {
-    const selected = g.requests.filter((r) => r.selected);
+    const selected = group.requests.filter((row) => row.selected);
     if (selected.length === 0) {
       onDone?.(0, 0);
       return;
@@ -315,10 +320,10 @@ export class AdminReviewComponent implements OnInit {
   }
 
   private runRejectSelected(
-    g: IClientGroup,
+    group: IClientGroup,
     onDone?: (completed: number, errors: number) => void,
   ): void {
-    const selected = g.requests.filter((r) => r.selected);
+    const selected = group.requests.filter((row) => row.selected);
     if (selected.length === 0) {
       onDone?.(0, 0);
       return;
@@ -354,27 +359,13 @@ export class AdminReviewComponent implements OnInit {
     else el.removeAttribute('open');
   }
 
-  confirmAnticipar(g: IClientGroup, _el: any): void {
-    this.runApproveSelected(g, (completed, errors) => {
-      g.anticiparResult = { completed, errors };
-      g.anticiparState = errors === 0 ? 'success' : 'error';
-    });
-  }
-
-  confirmRechazar(g: IClientGroup, _el: any): void {
-    this.runRejectSelected(g, (completed, errors) => {
-      g.rechazarResult = { completed, errors };
-      g.rechazarState = errors === 0 ? 'success' : 'error';
-    });
-  }
-
-  onModalClosed(g: IClientGroup, kind: 'anticipar' | 'rechazar'): void {
+  onModalClosed(group: IClientGroup, kind: 'anticipar' | 'rechazar'): void {
     if (kind === 'anticipar') {
-      g.anticiparState = 'confirm';
-      g.anticiparResult = undefined;
+      group.anticiparState = 'confirm';
+      group.anticiparResult = undefined;
     } else {
-      g.rechazarState = 'confirm';
-      g.rechazarResult = undefined;
+      group.rechazarState = 'confirm';
+      group.rechazarResult = undefined;
     }
     this.load();
   }
@@ -396,35 +387,38 @@ export class AdminReviewComponent implements OnInit {
     this.billDetail = null;
   }
 
-  onSearchChange(value: string, g: IClientGroup): void {
-    g.searchQuery = (value || '').trim();
-    this.applyFiltersAndSortGroup(g);
+  onSearchChange(value: string, group: IClientGroup): void {
+    group.searchQuery = (value || '').trim();
+    this.applyFiltersAndSortGroup(group);
   }
 
-  applySearch(value: string, g: IClientGroup): void {
-    g.searchQuery = (value || '').trim();
-    this.applyFiltersAndSortGroup(g);
+  applySearch(value: string, group: IClientGroup): void {
+    group.searchQuery = (value || '').trim();
+    this.applyFiltersAndSortGroup(group);
   }
 
-  onSearchClear(g: IClientGroup, el?: any): void {
+  onSearchClear(group: IClientGroup, el?: any): void {
     if (el) el.value = '';
-    g.searchQuery = '';
-    this.applyFiltersAndSortGroup(g);
+    group.searchQuery = '';
+    this.applyFiltersAndSortGroup(group);
   }
 
-  onStatusChange(g: IClientGroup): void {
-    this.applyFiltersAndSortGroup(g);
+  onStatusChange(group: IClientGroup): void {
+    this.applyFiltersAndSortGroup(group);
   }
 
-  onAthPaginateGroup(g: IClientGroup, pageOneBased: number): void {
-    g.pageIndex = Math.max(0, (pageOneBased ?? 1) - 1);
-    this.updatePaginatedRowsGroup(g);
+  onAthPaginateGroup(group: IClientGroup, pageOneBased: number): void {
+    group.pageIndex = Math.max(0, (pageOneBased ?? 1) - 1);
+    this.updatePaginatedRowsGroup(group);
   }
 
-  onAthItemsPerPageChangeGroup(g: IClientGroup, itemsPerPage: number): void {
+  onAthItemsPerPageChangeGroup(
+    group: IClientGroup,
+    itemsPerPage: number,
+  ): void {
     const size = Number(itemsPerPage) || 10;
-    g.pageSize = size;
-    g.pageIndex = 0;
-    this.updatePaginatedRowsGroup(g);
+    group.pageSize = size;
+    group.pageIndex = 0;
+    this.updatePaginatedRowsGroup(group);
   }
 }
