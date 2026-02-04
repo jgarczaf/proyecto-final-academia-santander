@@ -134,7 +134,6 @@ export class AdminReviewComponent implements OnInit {
             ? new Date(b.bills[0].issueDate).getTime()
             : 0;
           break;
-
         case 'dueDate':
           aVal = a.bills[0]?.dueDate
             ? new Date(a.bills[0].dueDate).getTime()
@@ -176,16 +175,10 @@ export class AdminReviewComponent implements OnInit {
     group.paginated = group.filtered.slice(start, end);
   }
 
-  getFirstIssueDateValue(item: IRequestItem): string {
-    return item.bills[0]?.issueDate
-      ? this.date.transform(item.bills[0].issueDate, 'dd/MM/yyyy') || ''
-      : '';
-  }
+  getFirstDateValue(item: IRequestItem, prop: 'issueDate' | 'dueDate'): string {
+    const value = item.bills[0]?.[prop];
 
-  getFirstDueDateValue(item: IRequestItem): string {
-    return item.bills[0]?.dueDate
-      ? this.date.transform(item.bills[0].dueDate, 'dd/MM/yyyy') || ''
-      : '';
+    return value ? this.date.transform(value, 'dd/MM/yyyy') || '' : '';
   }
 
   getFirstBillDebtor(item: IRequestItem): string {
@@ -205,14 +198,6 @@ export class AdminReviewComponent implements OnInit {
           '1.2-2',
         ) || '0 €'
       : '0 €';
-  }
-
-  getFirstIssueDate(item: IRequestItem): string {
-    return this.getFirstIssueDateValue(item);
-  }
-
-  getFirstDueDate(item: IRequestItem): string {
-    return this.getFirstDueDateValue(item);
   }
 
   getFirstBillAmountValue(item: IRequestItem): string {

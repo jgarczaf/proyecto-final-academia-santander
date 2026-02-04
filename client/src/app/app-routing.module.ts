@@ -20,21 +20,7 @@ import { AdminReviewComponent } from './features/admin/review/admin-review.compo
 import { SignInComponent } from './features/auth/sign-in/sign-in.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    component: LayoutComponent,
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        component: AdminReviewComponent,
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN'] },
-      },
-    ],
-  },
-
+  { path: '', pathMatch: 'full', component: HomeRedirectComponent },
   { path: 'login', component: LoginComponent },
   { path: 'sign-in', component: SignInComponent },
   { path: 'forbidden', component: ForbiddenComponent },

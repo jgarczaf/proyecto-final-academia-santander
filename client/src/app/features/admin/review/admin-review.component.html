@@ -383,11 +383,15 @@
           </div>
 
           <div class="col-issue-date">
-            <div class="cell cell-issue-date">{{ getFirstIssueDate(r) }}</div>
+            <div class="cell cell-issue-date">
+              {{ getFirstIssueDate(r, "issueDate") }}
+            </div>
           </div>
 
           <div class="col-due-date">
-            <div class="cell cell-due-date">{{ getFirstDueDate(r) }}</div>
+            <div class="cell cell-due-date">
+              {{ getFirstDueDate(r, "dueDate") }}
+            </div>
           </div>
 
           <div class="col-actions">
